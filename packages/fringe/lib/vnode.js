@@ -1,6 +1,6 @@
-import { isSourceReference } from "./source-reference";
+import { isSourceReference } from "./source-reference.js";
 import { isAsyncIterable, isIterable } from "iterable";
-import { Fragment } from "./fragment";
+import { Fragment } from "./fragment.js";
 function isVNodeLike(value) {
     return typeof value === "object" || typeof value === "function";
 }

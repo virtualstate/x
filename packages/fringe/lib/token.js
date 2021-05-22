@@ -1,7 +1,7 @@
-import { isSourceReference } from "./source-reference";
-import { isVNode } from "./vnode";
-import { assert } from "./assert";
-import { createFragment } from "./fragment";
+import { isSourceReference } from "./source-reference.js";
+import { isVNode } from "./vnode.js";
+import { assert } from "./assert.js";
+import { createFragment } from "./fragment.js";
 export const Token = Symbol.for("@virtualstate/fringe/token");
 export const IsTokenOptions = Symbol.for("@virtualstate/fringe/token/isTokenOptions");
 export function createToken(source, options, ...children) {

@@ -1,6 +1,6 @@
-import { Fragment } from "./fragment";
-import { createNode } from "./create-node";
-import { isFragmentVNode, isScalarVNode } from "./vnode";
+import { Fragment } from "./fragment.js";
+import { createNode } from "./create-node.js";
+import { isFragmentVNode, isScalarVNode } from "./vnode.js";
 describe("createNode", () => {
     describe("types", () => {
         /*

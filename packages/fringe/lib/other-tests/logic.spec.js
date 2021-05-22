@@ -1,7 +1,7 @@
-import { h } from "../h";
-import { isVNode } from "../vnode";
-import { isSourceReference } from "../source-reference";
-import { childrenFiltered } from "../filter";
+import { h } from "../h.js";
+import { isVNode } from "../vnode.js";
+import { isSourceReference } from "../source-reference.js";
+import { childrenFiltered } from "../filter.js";
 async function* Is({ map, match }, input) {
     let yielded = false;
     for await (const children of (map ?? sources)(input)) {

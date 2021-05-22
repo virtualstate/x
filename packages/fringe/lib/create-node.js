@@ -1,8 +1,8 @@
-import { isSourceReference } from "./source-reference";
-import { isFragmentVNode, isMarshalledVNode, isVNode } from "./vnode";
+import { isSourceReference } from "./source-reference.js";
+import { isFragmentVNode, isMarshalledVNode, isVNode } from "./vnode.js";
 import { isAsyncIterable, isIterable, isPromise, asyncExtendedIterable, isIterableIterator, getNext } from "iterable";
-import { children as childrenGenerator } from "./children";
-import { Fragment } from "./fragment";
+import { children as childrenGenerator } from "./children.js";
+import { Fragment } from "./fragment.js";
 // Access to re-assign a functional vnode child between children reads
 export const Child = Symbol("Function VNode Child");
 const childrenContext = {

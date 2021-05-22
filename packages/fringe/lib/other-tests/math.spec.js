@@ -1,5 +1,5 @@
-import { h as f } from "../h";
-import { isScalarVNode } from "../vnode";
+import { h as f } from "../h.js";
+import { isScalarVNode } from "../vnode.js";
 describe("math", () => {
     describe("regions", () => {
         async function* Number({ identity }, state) {

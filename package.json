@@ -10,7 +10,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "tsc -b ./tsconfig.repo.json",
+    "build": "tsc -b ./tsconfig.repo.json && yarn build:post",
+    "build:post": "node correct-import-extensions.js",
     "release": "yarn build && lerna publish"
   },
   "private": true,

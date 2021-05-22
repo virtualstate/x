@@ -1,7 +1,7 @@
-import { h } from "../h";
-import { childrenFiltered } from "../filter";
-import { createToken, isTokenVNode } from "../token";
-import { createFragment } from "../fragment";
+import { h } from "../h.js";
+import { childrenFiltered } from "../filter.js";
+import { createToken, isTokenVNode } from "../token.js";
+import { createFragment } from "../fragment.js";
 import { URL } from "url";
 import { isIterable } from "iterable";
 describe("Tokens", () => {

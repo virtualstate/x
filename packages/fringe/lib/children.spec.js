@@ -1,6 +1,6 @@
-import { createFragment } from "./fragment";
-import { createNode } from "./create-node";
-import { isScalarVNode } from "./vnode";
+import { createFragment } from "./fragment.js";
+import { createNode } from "./create-node.js";
+import { isScalarVNode } from "./vnode.js";
 describe("children", () => {
     describe("fragments", () => {
         it("should flatten", async () => {

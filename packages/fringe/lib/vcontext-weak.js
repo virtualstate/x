@@ -1,4 +1,4 @@
-import { createVContextEvents } from "./vcontext-events";
+import { createVContextEvents } from "./vcontext-events.js";
 export class WeakVContext {
     constructor(weak, { events, target } = createVContextEvents()) {
         this.weak = weak || new WeakMap();

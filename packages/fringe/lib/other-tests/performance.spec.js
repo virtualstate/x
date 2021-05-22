@@ -1,7 +1,7 @@
-import { WeakVContext } from "../vcontext-weak";
-import { hydrate, hydrateChildren } from "../hydrate";
-import { h } from "../h";
-import { createNode } from "../create-node";
+import { WeakVContext } from "../vcontext-weak.js";
+import { hydrate, hydrateChildren } from "../hydrate.js";
+import { h } from "../h.js";
+import { createNode } from "../create-node.js";
 import { performance } from "perf_hooks";
 class HydratingVContext extends WeakVContext {
     async hydrate(node, tree) {

@@ -1,5 +1,5 @@
-import { hydrate, hydrateChildren } from "../hydrate";
-import { h } from "../h";
+import { hydrate, hydrateChildren } from "../hydrate.js";
+import { h } from "../h.js";
 // import { render } from "@virtualstate/dom";
 async function render(node, unused) {
     const context = {

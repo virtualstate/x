@@ -1,4 +1,4 @@
-import { isMarshalledSourceReference } from "./source-reference";
+import { isMarshalledSourceReference } from "./source-reference.js";
 import { asyncExtendedIterable } from "iterable";
 /**
  * Marshals a VNode into a synchronous state allowing for transmission or storage

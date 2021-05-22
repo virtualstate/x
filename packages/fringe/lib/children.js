@@ -1,5 +1,5 @@
-import { isFragmentVNode, isMarshalledVNode, isVNode } from "./vnode";
-import { isSourceReference } from "./source-reference";
+import { isFragmentVNode, isMarshalledVNode, isVNode } from "./vnode.js";
+import { isSourceReference } from "./source-reference.js";
 import { asyncExtendedIterable, isIterableIterator, isPromise } from "iterable";
 import { union } from "@virtualstate/union";
 export async function* childrenUnion(context, childrenGroups) {

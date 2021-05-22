@@ -1,9 +1,9 @@
-import { WeakVContext } from "../vcontext-weak";
-import { hydrate } from "../hydrate";
-import { h } from "../h";
-import { isVNode } from "../vnode";
-import { isSourceReference } from "../source-reference";
-import { childrenFiltered } from "../filter";
+import { WeakVContext } from "../vcontext-weak.js";
+import { hydrate } from "../hydrate.js";
+import { h } from "../h.js";
+import { isVNode } from "../vnode.js";
+import { isSourceReference } from "../source-reference.js";
+import { childrenFiltered } from "../filter.js";
 class HydratingVContext extends WeakVContext {
     hydrate(node, tree) {
         return super.hydrate(node, tree);

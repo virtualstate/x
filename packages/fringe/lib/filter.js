@@ -1,4 +1,4 @@
-import { childrenUnion } from "./children";
+import { childrenUnion } from "./children.js";
 export async function* childrenFiltered(node, isNode, options = {}) {
     if (!node.children)
         return;
