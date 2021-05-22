@@ -8,7 +8,7 @@
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "prepublishOnly": "cp ../../README.md ./README.md"
+    "prepublish": "cp ../../README.md ./README.md"
   },
   "dependencies": {
     "@virtualstate/fringe": "^1.0.1",
