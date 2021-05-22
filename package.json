@@ -10,6 +10,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "prepublishOnly": "yarn build",
     "build": "tsc -b ./tsconfig.repo.json"
   },
   "private": true,
