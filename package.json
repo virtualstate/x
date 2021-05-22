@@ -1,0 +1,41 @@
+{
+  "name": "@virtualstate/x-monorepo",
+  "description": "Virtual state runtime",
+  "version": "0.0.0",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b ./tsconfig.repo.json"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.6.0",
+    "eslint": "^7.27.0",
+    "filehound": "^1.17.4",
+    "iterable": "^5.7.0",
+    "jest": "^26.6.3",
+    "lerna": "^4.0.0",
+    "microtask-collector": "^3.1.0",
+    "prettier": "^2.3.0",
+    "typescript": "^4.2.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/virtualstate/x.git"
+  },
+  "author": "Fabian Cook <hello@fabiancook.dev>",
+  "bugs": {
+    "url": "https://github.com/virtualstate/x/issues"
+  },
+  "homepage": "https://github.com/virtualstate/x#readme",
+  "dependencies": {
+    "commander": "^7.2.0",
+    "minimist": "^1.2.5"
+  }
+}

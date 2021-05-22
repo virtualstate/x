@@ -1,0 +1,21 @@
+{
+  "name": "@virtualstate/fringe",
+  "version": "1.0.0",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "type": "module",
+  "license": "MIT",
+  "peerDependencies": {
+    "@virtualstate/union": "^1.0.0",
+    "iterable": "^5.2.2",
+    "microtask-collector": "^3.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opennetwork/vnode.git"
+  },
+  "devDependencies": {
+    "@virtualstate/union": "^1.0.0"
+  }
+}

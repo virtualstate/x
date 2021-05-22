@@ -1,0 +1,23 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/union"
+    },
+    {
+      "path": "./packages/fringe"
+    },
+    {
+      "path": "./packages/hooks"
+    },
+    {
+      "path": "./packages/hooks-extended"
+    },
+    {
+      "path": "./packages/dom"
+    },
+    {
+      "path": "./packages/x"
+    }
+  ]
+}

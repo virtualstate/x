@@ -1,0 +1,33 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": "./packages",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@virtualstate/union": ["packages/union/src/index.ts"],
+      "@virtualstate/fringe": ["packages/fringe/src/index.ts"],
+      "@virtualstate/hooks": ["packages/hooks/src/index.ts"],
+      "@virtualstate/hooks-extended": ["packages/hooks-extended/src/index.ts"],
+      "@virtualstate/dom": ["packages/dom/src/index.ts"],
+      "@virtualstate/x": ["packages/x/src/index.ts"],
+      "@virtualstate/*": ["packages/*/src"]
+    },
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "createFragment",
+    "composite": true
+  },
+  "exclude": ["node_modules", "tmp"]
+}

@@ -1,0 +1,9 @@
+node_modules
+store
+examples/store
+.idea
+coverage
+**/*.spec.*
+src
+scripts
+yarn-error.log

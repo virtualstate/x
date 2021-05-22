@@ -1,0 +1,35 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./lib",
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "lib"
+  ],
+  "typeRoots": [
+    "./node_modules/@types"
+  ],
+  "references": [
+    {
+      "path": "../union"
+    },
+    {
+      "path": "../fringe"
+    },
+    {
+      "path": "../hooks"
+    },
+    {
+      "path": "../hooks-extended"
+    },
+    {
+      "path": "../dom"
+    }
+  ]
+}
