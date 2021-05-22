@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/fringe",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -16,6 +16,6 @@
     "url": "https://github.com/opennetwork/vnode.git"
   },
   "devDependencies": {
-    "@virtualstate/union": "^1.0.1"
+    "@virtualstate/union": "^1.0.3"
   }
 }

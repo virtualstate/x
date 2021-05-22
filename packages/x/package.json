@@ -1,7 +1,7 @@
 {
   "name": "@virtualstate/x",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -11,9 +11,9 @@
     "prepublish": "cp ../../README.md ./README.md"
   },
   "dependencies": {
-    "@virtualstate/fringe": "^1.0.1",
-    "@virtualstate/hooks": "^1.0.1",
-    "@virtualstate/union": "^1.0.1",
+    "@virtualstate/fringe": "^1.0.3",
+    "@virtualstate/hooks": "^1.0.3",
+    "@virtualstate/union": "^1.0.3",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
