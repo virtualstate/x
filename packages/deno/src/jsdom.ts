@@ -1,10 +1,10 @@
-// @ts-ignore
-import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
+import * as JSDOM from "jsdom";
 import { render } from "./dom";
 import { h } from "./x/fringe";
 import {isElement} from "@virtualstate/dom";
 
-const document = new DOMParser().parseFromString("<body />", "text/html");
+const dom = new JSDOM.JSDOM();
+const document = dom.window.document;
 
 async function *Message() {
   yield h("p", {}, "Loading");

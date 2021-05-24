@@ -32,10 +32,13 @@
     "filehound": "^1.17.4",
     "iterable": "^5.7.0",
     "jest": "^26.6.3",
+    "jsdom": "^16.6.0",
     "lerna": "^4.0.0",
     "microtask-collector": "^3.1.0",
     "prettier": "^2.3.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "commander": "^7.2.0",
+    "minimist": "^1.2.5"
   },
   "repository": {
     "type": "git",
@@ -45,9 +48,5 @@
     "url": "https://github.com/virtualstate/x/issues"
   },
   "homepage": "https://github.com/virtualstate/x#readme",
-  "author": "Fabian Cook <hello@fabiancook.dev>",
-  "dependencies": {
-    "commander": "^7.2.0",
-    "minimist": "^1.2.5"
-  }
+  "author": "Fabian Cook <hello@fabiancook.dev>"
 }

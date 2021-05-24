@@ -1,0 +1,14 @@
+{
+  "imports": {
+    "@virtualstate/deno": "../deno/lib/index.js",
+    "@virtualstate/fringe": "../fringe/lib/index.js",
+    "@virtualstate/dom": "../dom/lib/index.js",
+    "@virtualstate/hooks": "../hooks/lib/index.js",
+    "@virtualstate/hooks-extended": "../hooks-extended/lib/index.js",
+    "@virtualstate/union": "../union/lib/index.js",
+    "@virtualstate/web": "../web/lib/index.js",
+    "@virtualstate/x": "../x/lib/index.js",
+    "iterable": "https://cdn.skypack.dev/iterable",
+    "microtask-collector": "https://cdn.skypack.dev/microtask-collector"
+  }
+}

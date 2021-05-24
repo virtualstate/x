@@ -9,18 +9,16 @@ export function isNode(value: unknown): value is Node {
   }
   return (
     isNodeLike(value) &&
-    typeof value.nodeType === "number" &&
-    typeof value.TEXT_NODE === "number" &&
-    typeof value.ELEMENT_NODE === "number"
+    typeof value.nodeType === "number"
   );
 }
 
 export function isText(node?: unknown): node is Text {
-  return isNode(node) && typeof node.nodeType === "number" && node.nodeType === node.TEXT_NODE;
+  return isNode(node) && typeof node.nodeType === "number" && node.nodeType === (node.TEXT_NODE ?? 3);
 }
 
 export function isElement(node?: unknown): node is Element {
-  return isNode(node) && typeof node.nodeType === "number" && node.nodeType === node.ELEMENT_NODE;
+  return isNode(node) && typeof node.nodeType === "number" && node.nodeType === (node.ELEMENT_NODE ?? 1);
 }
 
 export function assertNode(node?: unknown): asserts node is Node {

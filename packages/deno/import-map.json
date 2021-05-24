@@ -7,6 +7,8 @@
     "@virtualstate/hooks-extended": "https://cdn.skypack.dev/@virtualstate/hooks-extended",
     "@virtualstate/union": "https://cdn.skypack.dev/@virtualstate/union",
     "@virtualstate/web": "https://cdn.skypack.dev/@virtualstate/web",
-    "@virtualstate/x": "https://cdn.skypack.dev/@virtualstate/x"
+    "@virtualstate/x": "https://cdn.skypack.dev/@virtualstate/x",
+    "iterable": "https://cdn.skypack.dev/iterable",
+    "microtask-collector": "https://cdn.skypack.dev/microtask-collector"
   }
 }
