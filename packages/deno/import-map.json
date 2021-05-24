@@ -1,0 +1,12 @@
+{
+  "imports": {
+    "@virtualstate/deno": "https://deno.land/x/vsx@v1.3.1/packages/deno/src/index.ts",
+    "@virtualstate/fringe": "https://deno.land/x/vsx@v1.3.1/packages/fringe/src/index.ts",
+    "@virtualstate/dom": "https://deno.land/x/vsx@v1.3.1/packages/dom/src/index.ts",
+    "@virtualstate/hooks": "https://deno.land/x/vsx@v1.3.1/packages/hooks/src/index.ts",
+    "@virtualstate/hooks-extended": "https://deno.land/x/vsx@v1.3.1/packages/hooks-extended/src/index.ts",
+    "@virtualstate/union": "https://deno.land/x/vsx@v1.3.1/packages/union/src/index.ts",
+    "@virtualstate/web": "https://deno.land/x/vsx@v1.3.1/packages/web/src/index.ts",
+    "@virtualstate/x": "https://deno.land/x/vsx@v1.3.1/packages/x/src/index.ts"
+  }
+}
