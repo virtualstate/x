@@ -20,6 +20,15 @@ export interface MountContext {
   position(context: MountContext): Position | undefined;
 }
 
+export function isDenoDocumentNode(node: unknown): node is Element & { _getChildNodesMutator(): { splice(s: 0, l: number): void }, childNodes: Element["childNodes"] } {
+  if (!isElement(node)) {
+    return false;
+  }
+  function isGetChildNodesMutator(node: object): node is { _getChildNodesMutator: unknown } {
+    return !!node;
+  }
+  return isGetChildNodesMutator(node) && typeof node.ELEMENT_NODE !== "number" && typeof node._getChildNodesMutator === "function";
+}
 
 export async function mount(context: MountContext) {
   const { root, queue, elementDetails, tree, documentNode, node, mountChildren } = context;
@@ -30,6 +39,16 @@ export async function mount(context: MountContext) {
   }
 
   async function taskLifecycleBefore() {
+    if (isDenoDocumentNode(documentNode)) {
+      const children = Array.from(documentNode.childNodes, (_, index) => documentNode.childNodes.item(index));
+      for (const child of children) {
+        const writable: { parentNode: unknown, parentElement: unknown } = child;
+        writable.parentNode = writable.parentElement = undefined;
+      }
+      const mutator = documentNode._getChildNodesMutator();
+      mutator.splice(0, documentNode.childNodes.length);
+    }
+
     if (node.options.onBeforeRender) {
       await node.options.onBeforeRender(documentNode);
     }
@@ -128,6 +147,10 @@ export async function mount(context: MountContext) {
     // from a retained instance, the node can be re-mounted
     for (const [reference, removableDocumentNode] of getRemovableDocumentNodes()) {
       root.removeChild(removableDocumentNode);
+      if (isDenoDocumentNode(root)) {
+        const writable: { parentNode: unknown, parentElement: unknown } = removableDocumentNode;
+        writable.parentNode = writable.parentElement = undefined;
+      }
       elementDetails.rendered.delete(reference);
     }
 

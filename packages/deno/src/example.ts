@@ -17,8 +17,6 @@ const app = h(App);
 const root = document.createElement("div");
 document.body.appendChild(root);
 
-console.log(isElement(root));
-
 await render(app, root);
 
 console.log(document.body.innerHTML);

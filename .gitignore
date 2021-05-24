@@ -45,3 +45,5 @@ Thumbs.db
 lerna-debug.log
 
 *.iml
+
+.deno_plugins
