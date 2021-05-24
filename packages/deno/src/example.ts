@@ -1,15 +1,22 @@
 // @ts-ignore
-import { Document } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
+import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 import { render } from "./dom";
 import { h } from "./x/fringe";
 
-const document = new Document();
+const document = new DOMParser().parseFromString("<body />", "text/html");
 
 async function *App() {
   yield h("p", {}, "Loading");
   const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
   const user = await response.json();
+  console.log(user);
   yield h("p", {}, "Hello Async World!", h("pre", {}, JSON.stringify(user, undefined, "  ")));
 }
 const app = h(App);
-await render(app, document.body);
+
+const root = document.createElement("div");
+document.body.appendChild(root);
+
+await render(app, root);
+
+console.log(document.body.innerHTML);
