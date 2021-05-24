@@ -20,6 +20,9 @@
       "path": "./packages/web"
     },
     {
+      "path": "./packages/deno"
+    },
+    {
       "path": "./packages/x"
     }
   ]

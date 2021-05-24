@@ -22,6 +22,7 @@
       "@virtualstate/hooks-extended": ["packages/hooks-extended/src/index.ts"],
       "@virtualstate/dom": ["packages/dom/src/index.ts"],
       "@virtualstate/web": ["packages/web/src/index.ts"],
+      "@virtualstate/deno": ["packages/deno/src/index.ts"],
       "@virtualstate/x": ["packages/x/src/index.ts"],
       "@virtualstate/*": ["packages/*/src"]
     },
