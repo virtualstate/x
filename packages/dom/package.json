@@ -17,9 +17,12 @@
     "state",
     "virtual-state"
   ],
-  "peerDependencies": {
-    "@virtualstate/hooks": "^1.0.0",
-    "@virtualstate/union": "^1.0.0",
+  "dependencies": {
+    "@virtualstate/dom": "^1.1.1",
+    "@virtualstate/fringe": "^1.1.1",
+    "@virtualstate/hooks": "^1.1.1",
+    "@virtualstate/union": "^1.1.1",
+    "@virtualstate/x": "^1.1.1",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
