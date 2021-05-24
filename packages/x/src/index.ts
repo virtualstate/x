@@ -1,4 +1,5 @@
-export { asyncExtendedIterable as a, extendedIterable as i } from "iterable";
-export * from "@virtualstate/union";
-export * from "@virtualstate/fringe";
-export * from "@virtualstate/hooks";
+export * from "./collector";
+export * from "./fringe";
+export * from "./hooks";
+export * from "./iterable";
+export * from "./union";

@@ -7,6 +7,16 @@
       "packages/*"
     ]
   },
+  "keywords": [
+    "nodejs",
+    "web",
+    "frontend",
+    "backend",
+    "jsx",
+    "vsx",
+    "state",
+    "virtual-state"
+  ],
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -31,11 +41,11 @@
     "type": "git",
     "url": "git+https://github.com/virtualstate/x.git"
   },
-  "author": "Fabian Cook <hello@fabiancook.dev>",
   "bugs": {
     "url": "https://github.com/virtualstate/x/issues"
   },
   "homepage": "https://github.com/virtualstate/x#readme",
+  "author": "Fabian Cook <hello@fabiancook.dev>",
   "dependencies": {
     "commander": "^7.2.0",
     "minimist": "^1.2.5"

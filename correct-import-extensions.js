@@ -3,14 +3,11 @@ import fs from "fs";
 import path from "path";
 import { promisify } from "util";
 
-
 const packages = await FileHound.create()
   .paths(`packages`)
   .directory()
   .depth(1)
   .find();
-
-console.log(packages);
 
 for (const packageName of packages) {
   const filePaths = await FileHound.create()

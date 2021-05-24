@@ -1,5 +1,5 @@
 {
-  "name": "@virtualstate/dom",
+  "name": "@virtualstate/web",
   "version": "1.0.7",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
@@ -7,7 +7,6 @@
   "type": "module",
   "sideEffects": false,
   "keywords": [
-    "dom",
     "nodejs",
     "web",
     "frontend",
@@ -17,9 +16,21 @@
     "state",
     "virtual-state"
   ],
-  "peerDependencies": {
-    "@virtualstate/hooks": "^1.0.0",
-    "@virtualstate/union": "^1.0.0",
+  "exports": {
+    ".": "./lib/index.js",
+    "./x": "./lib/x/index.js",
+    "./x/collector": "./lib/x/collector.js",
+    "./x/fringe": "./lib/x/fringe.js",
+    "./x/hooks": "./lib/x/hooks.js",
+    "./x/iterable": "./lib/x/iterable.js",
+    "./x/union": "./lib/x/union.js"
+  },
+  "dependencies": {
+    "@virtualstate/x": "^1.0.7",
+    "@virtualstate/dom": "^1.0.7",
+    "@virtualstate/fringe": "^1.0.7",
+    "@virtualstate/hooks": "^1.0.7",
+    "@virtualstate/union": "^1.0.7",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },

@@ -1,6 +1,5 @@
 {
   "name": "@virtualstate/union",
-  "license": "MIT",
   "version": "1.0.7",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
@@ -8,5 +7,25 @@
   "type": "module",
   "sideEffects": false,
   "description": "Concurrent union",
-  "gitHead": "977615927c3af8c16324a3ab8cb0ea343b3e2d6d"
+  "gitHead": "977615927c3af8c16324a3ab8cb0ea343b3e2d6d",
+  "license": "MIT",
+  "keywords": [
+    "virtual-state",
+    "vsx",
+    "concurrent-union",
+    "union",
+    "async-iterable",
+    "async-iterator",
+    "iterable",
+    "iterator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/virtualstate/x.git"
+  },
+  "bugs": {
+    "url": "https://github.com/virtualstate/x/issues"
+  },
+  "homepage": "https://github.com/virtualstate/x#readme",
+  "author": "Fabian Cook <hello@fabiancook.dev>"
 }

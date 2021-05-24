@@ -17,6 +17,9 @@
       "path": "./packages/dom"
     },
     {
+      "path": "./packages/web"
+    },
+    {
       "path": "./packages/x"
     }
   ]
