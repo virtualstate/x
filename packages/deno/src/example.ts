@@ -6,14 +6,11 @@ import {isElement} from "@virtualstate/dom";
 
 const document = new DOMParser().parseFromString("<body />", "text/html");
 
-async function *Message() {
+async function *App() {
   yield h("p", {}, "Loading");
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  yield h("p", {}, "Hello Deno!");
-}
-
-function App() {
-  return h("main", {}, h(Message));
+  const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
+  const user = await response.json();
+  yield h("p", {}, "Hello Async World!", h("pre", {}, JSON.stringify(user, undefined, "  ")));
 }
 const app = h(App);
 
