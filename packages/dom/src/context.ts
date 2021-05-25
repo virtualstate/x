@@ -5,7 +5,7 @@ import {
   VContextEventsPair,
   VNode,
   WeakVContext,
-  hydrateChildren, VContextHydrateEvent, hydrateChildrenGroup
+  hydrateChildren, VContextHydrateEvent
 } from "@virtualstate/fringe";
 import { assertNativeVNode } from "./native";
 import { isFragmentDOMNativeVNode } from "./fragment";
@@ -13,7 +13,7 @@ import { DOMNativeVNode, isDOMNativeVNode } from "./node";
 import { DocumentNode, isElement, isExpectedNode, isText } from "./document-node";
 import { NativeOptionsVNode } from "./options";
 import { getDocumentNode } from "./document-node";
-import {isDenoDocumentNode, mount, MountContext, TaskFn} from "./mount";
+import { mount, MountContext, TaskFn } from "./mount";
 import { assertElementDetails, createElementDetails, ElementDetails } from "./element-details";
 import { Position } from "./position";
 import type { VContextChildrenEvent, VContextCreateVNodeEvent } from "@virtualstate/fringe";
@@ -165,24 +165,7 @@ export class DOMVContext<O extends RenderOptions = RenderOptions,
   async commitChildren(documentNode: Element, node: VNode, tree?: Tree) {
     const childContext = this.childContext(documentNode);
 
-    if (isDenoDocumentNode(documentNode)) {
-      if (!node.children) return;
-      for await (const children of node.children) {
-
-        const childNodes = Array.from(documentNode.childNodes, (_, index) => documentNode.childNodes.item(index));
-        for (const child of childNodes) {
-          const writable: { parentNode: unknown, parentElement: unknown } = child;
-          writable.parentNode = writable.parentElement = undefined;
-        }
-        const mutator = documentNode._getChildNodesMutator();
-        mutator.splice(0, documentNode.childNodes.length);
-
-        await hydrateChildrenGroup(childContext, node, tree, children);
-      }
-
-    } else {
-      await hydrateChildren(childContext, node, tree);
-    }
+    await hydrateChildren(childContext, node, tree);
   }
 
 }

@@ -20,3 +20,6 @@ document.body.appendChild(root);
 await render(app, root);
 
 console.log(document.body.innerHTML);
+
+export default true;
+export const example = true;
