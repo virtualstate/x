@@ -12,4 +12,5 @@ export * from "./marshal.js";
 export * from "./source-reference.js";
 export * from "./h.js";
 export * from "./token.js";
+export { asyncExtendedIterable as a, extendedIterable as i } from "iterable";
 //# sourceMappingURL=index.js.map

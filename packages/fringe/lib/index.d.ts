@@ -12,4 +12,5 @@ export * from "./marshal";
 export * from "./source-reference";
 export * from "./h";
 export * from "./token";
+export { asyncExtendedIterable as a, extendedIterable as i } from "iterable";
 //# sourceMappingURL=index.d.ts.map
