@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/hooks",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -26,8 +26,8 @@
     "@types/jest": "^26.0.22",
     "@types/jsdom": "^12.2.4",
     "@types/node": "^15.0.1",
-    "@virtualstate/fringe": "^2.1.1",
-    "@virtualstate/union": "^2.1.1",
+    "@virtualstate/fringe": "^2.1.2",
+    "@virtualstate/union": "^2.1.2",
     "babel-jest": "^26.6.3",
     "esm": "^3.2.25",
     "filehound": "^1.17.3",
