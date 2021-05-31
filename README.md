@@ -1,49 +1,6 @@
-# [@virtualstate/x](http://npmjs.com/package/@virtualstate/x)
+# [@virtualstate/x](http://npmjs.com/package/@virtualstate/x) 
 
-## [`union`](http://npmjs.com/package/@virtualstate/union)
-
-[CodeSandbox Demo](https://codesandbox.io/s/interesting-yalow-hh5ow?file=/src/index.ts:809-880)
-
-```typescript
-import { union } from "@virtualstate/x";
-
-async function wait(ms = 10) {
-  await new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function* left() {
-  yield "Left 1";
-  await wait(19);
-  yield "Left 2";
-  await wait(401);
-  yield "Left 3";
-}
-
-function* middle() {
-  yield "Middle 1";
-  yield "Middle 2";
-  yield "Middle 3";
-}
-
-async function* right() {
-  yield "Right 1";
-  await wait(401);
-  yield "Right 2";
-  yield "Right 3";
-  await wait(19);
-  yield "Right 4";
-}
-
-for await (const [leftResult, middleResult, rightResult] of union([
-  left(),
-  middle(),
-  right()
-])) {
-  const result = { leftResult, middleResult, rightResult };
-  console.log(result);
-  document.body.innerHTML = JSON.stringify(result, undefined, "  ");
-}
-```
+_In depth documentation coming soon!_
 
 ## [`h`](http://npmjs.com/package/@virtualstate/fringe)
 
@@ -161,6 +118,51 @@ if (!children) throw new Error("Expected children");
 for await (const results of children) {
   // Eventually Logs { results: ["Fn", "AsyncFn", "GeneratorFn", "AsyncGeneratorFn" ] }
   console.log({ results: results.map(node => node.options.name) });
+}
+```
+
+## [`union`](http://npmjs.com/package/@virtualstate/union)
+
+[CodeSandbox Demo](https://codesandbox.io/s/interesting-yalow-hh5ow?file=/src/index.ts:809-880)
+
+```typescript
+import { union } from "@virtualstate/x";
+
+async function wait(ms = 10) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function* left() {
+  yield "Left 1";
+  await wait(19);
+  yield "Left 2";
+  await wait(401);
+  yield "Left 3";
+}
+
+function* middle() {
+  yield "Middle 1";
+  yield "Middle 2";
+  yield "Middle 3";
+}
+
+async function* right() {
+  yield "Right 1";
+  await wait(401);
+  yield "Right 2";
+  yield "Right 3";
+  await wait(19);
+  yield "Right 4";
+}
+
+for await (const [leftResult, middleResult, rightResult] of union([
+  left(),
+  middle(),
+  right()
+])) {
+  const result = { leftResult, middleResult, rightResult };
+  console.log(result);
+  document.body.innerHTML = JSON.stringify(result, undefined, "  ");
 }
 ```
 
