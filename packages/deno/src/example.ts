@@ -1,10 +1,22 @@
 // @ts-ignore
 import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 import { render } from "./dom";
-import { h } from "./x/fringe";
-import {isElement} from "@virtualstate/dom";
+import { h, ChildrenSource } from "./x/fringe";
 
 const document = new DOMParser().parseFromString("<body />", "text/html");
+
+const Page = h("main", { class: "main" },
+  h("h1", {}, "This is my title"),
+  h("section", { id: "intro" }, "This is my introduction"),
+  h("main", { }, "Main body"),
+  h("footer", { }, "Footer")
+)
+
+const children = Page.children[ChildrenSource];
+console.log(children.map(node => node.source));
+
+
+
 
 async function *App() {
   yield h("p", {}, "Loading");

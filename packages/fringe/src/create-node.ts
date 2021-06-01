@@ -1,6 +1,6 @@
 import { VContext } from "./vcontext";
 import {
-  ChildrenSourceType,
+  ChildrenSource,
   CreateNodeOp1Function,
   CreateNodeResult,
   Source
@@ -309,10 +309,10 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
     };
   }
 
-  function replay<T>(fn: () => AsyncIterable<T>, source?: unknown): AsyncIterable<T> & { [ChildrenSourceType]?: unknown } {
+  function replay<T>(fn: () => AsyncIterable<T>, source?: unknown): AsyncIterable<T> & { [ChildrenSource]?: unknown } {
     return {
       [Symbol.asyncIterator]: () => fn()[Symbol.asyncIterator](),
-      [ChildrenSourceType]: source
+      [ChildrenSource]: source
     };
   }
 

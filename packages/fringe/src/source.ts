@@ -4,12 +4,15 @@ import {Fragment} from "./fragment";
 
 type GetLength<T extends unknown[]> = T extends { length: infer L } ? L : never
 
-export const ChildrenSourceType = Symbol.for("@virtualstate/fringe/ChildrenSource");
+/**
+ * @experimental This may not be available all the time, and this functionality may disappear.
+ */
+export const ChildrenSource = Symbol.for("@virtualstate/fringe/ChildrenSource");
 
 export type CreateNodeChildrenWithSourceType<C extends unknown[]> = AsyncIterable<VNode> & {
   // This is explicitly only available _sometimes_, so only in best case will it be available,
   // you should assume that it is not available most of the time.
-  [ChildrenSourceType]?: C
+  [ChildrenSource]?: C
 }
 
 export type CreateNodeChildren<C extends unknown[]> =
