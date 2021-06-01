@@ -12,6 +12,9 @@ export const ChildrenSource = Symbol.for("@virtualstate/fringe/ChildrenSource");
 export type CreateNodeChildrenWithSourceType<C extends unknown[]> = AsyncIterable<VNode> & {
   // This is explicitly only available _sometimes_, so only in best case will it be available,
   // you should assume that it is not available most of the time.
+  /**
+   * @experimental This may not be available all the time, and this functionality may disappear.
+   */
   [ChildrenSource]?: C
 }
 
