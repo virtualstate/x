@@ -3,11 +3,19 @@ import { SourceReference } from "./source-reference";
 
 type GetLength<T extends unknown[]> = T extends { length: infer L } ? L : never
 
-type CreateNodeResultChildrenExistence<C extends unknown[]> =
+export const ChildrenSourceType = Symbol.for("@virtualstate/fringe/ChildrenSource");
+
+export type CreateNodeChildrenWithSourceType<C extends unknown[]> = AsyncIterable<VNode> & {
+  // This is only in TypeScript for now, it is possible within user land to
+  // make the initial source available for consumers, implement your own version of `h`
+  [ChildrenSourceType]?: C
+}
+
+export type CreateNodeChildren<C extends unknown[]> =
   // If we have no arguments, we never resolve any children
   0 extends GetLength<C> ?
     undefined :
-    AsyncIterable<VNode[]>;
+    CreateNodeChildrenWithSourceType<C>;
 
 type Options = Record<string, unknown> | undefined;
 
@@ -20,15 +28,15 @@ export type CreateNodeResultOp3Or4<
   options: T["options"] extends O ? O : T["options"] & O,
   children: T["children"] extends AsyncIterable<unknown> ?
     T["children"] :
-    CreateNodeResultChildrenExistence<C>
+    CreateNodeChildren<C>
 };
 
 export type CreateNodeResultOp6<T extends CreateNodeOp6SourceReference, O extends Options, C extends unknown[]> =
   | Omit<VNode, "source" | "scalar" | "options" | "children"> & {
   source: T;
-  scalar: CreateNodeResultChildrenExistence<C> extends AsyncIterable<unknown> ? false : true;
+  scalar: CreateNodeChildren<C> extends AsyncIterable<unknown> ? false : true;
   options: O;
-  children: CreateNodeResultChildrenExistence<C>;
+  children: CreateNodeChildren<C>;
 }
 
 export type CreateNodeResult<T extends Source, O extends Options = Options, C extends unknown[] = []> =
