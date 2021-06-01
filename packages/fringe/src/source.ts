@@ -1,13 +1,14 @@
 import { FragmentVNode, FragmentVNodeWithChildren, MarshalledVNode, VNode } from "./vnode";
 import { SourceReference } from "./source-reference";
+import {Fragment} from "./fragment";
 
 type GetLength<T extends unknown[]> = T extends { length: infer L } ? L : never
 
 export const ChildrenSourceType = Symbol.for("@virtualstate/fringe/ChildrenSource");
 
 export type CreateNodeChildrenWithSourceType<C extends unknown[]> = AsyncIterable<VNode> & {
-  // This is only in TypeScript for now, it is possible within user land to
-  // make the initial source available for consumers, implement your own version of `h`
+  // This is explicitly only available _sometimes_, so only in best case will it be available,
+  // you should assume that it is not available most of the time.
   [ChildrenSourceType]?: C
 }
 
@@ -19,8 +20,8 @@ export type CreateNodeChildren<C extends unknown[]> =
 
 type Options = Record<string, unknown> | undefined;
 
-export type CreateNodeResultOp3Or4<
-  T extends CreateNodeOp3Fragment | CreateNodeOp4VNode,
+export type CreateNodeResultOp3<
+  T extends VNode,
   O extends Options,
   C extends unknown[]
   > =
@@ -39,11 +40,11 @@ export type CreateNodeResultOp6<T extends CreateNodeOp6SourceReference, O extend
   children: CreateNodeChildren<C>;
 }
 
-export type CreateNodeResult<T extends Source, O extends Options = Options, C extends unknown[] = []> =
+export type CreateNodeResult<T, O extends Options = Options, C extends unknown[] = []> =
   T extends CreateNodeOp1Function ? Omit<FragmentVNode, "source"> & { source: T } :
-    T extends CreateNodeOp2Promise ? Omit<FragmentVNode, "source"> & { source: T } :
-      T extends CreateNodeOp3Fragment ? CreateNodeResultOp3Or4<T, O, C> :
-        T extends CreateNodeOp4VNode ? CreateNodeResultOp3Or4<T, O, C> :
+    T extends CreateNodeOp2Promise ? Omit<FragmentVNode, "source"> & { source: T extends Promise<infer I> ? CreateNodeResult<I> : unknown } :
+      T extends CreateNodeOp3Fragment ? CreateNodeResult<FragmentVNode, O, C> :
+        T extends CreateNodeOp4VNode ? CreateNodeResultOp3<T, O, C> :
           T extends CreateNodeOp5MarshalledVNode ? VNode :
             T extends CreateNodeOp6SourceReference ? CreateNodeResultOp6<T, O, C> :
               T extends CreateNodeOp7IterableIterator ? Omit<FragmentVNodeWithChildren, "options"> & { options: O } :
@@ -57,7 +58,7 @@ export type CreateNodeResult<T extends Source, O extends Options = Options, C ex
 
 export type CreateNodeOp1Function = (options?: unknown, children?: VNode) => unknown;
 export type CreateNodeOp2Promise = Promise<unknown>;
-export type CreateNodeOp3Fragment = FragmentVNode;
+export type CreateNodeOp3Fragment = typeof Fragment;
 export type CreateNodeOp4VNode = VNode;
 export type CreateNodeOp5MarshalledVNode = MarshalledVNode;
 export type CreateNodeOp6SourceReference = SourceReference;
