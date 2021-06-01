@@ -97,6 +97,7 @@ export function createNode(source, options, ...children) {
         return {
             source,
             reference: Fragment,
+            options,
             children: generator(Symbol("Iterable Iterator"), source)
         };
     }
@@ -110,6 +111,7 @@ export function createNode(source, options, ...children) {
         return {
             source,
             reference: Fragment,
+            options,
             children: replay(() => childrenGenerator(childrenContext, asyncExtendedIterable(source).map(value => createNode(value, options, childrenInstance))))
         };
     }
@@ -140,7 +142,8 @@ export function createNode(source, options, ...children) {
             if (next.done) {
                 continue;
             }
-            const nextNode = createNode(next.value);
+            const value = next.value;
+            const nextNode = createNode(value);
             if (isFragmentVNode(nextNode)) {
                 yield* nextNode.children ?? [];
             }
@@ -164,6 +167,7 @@ export function createNode(source, options, ...children) {
         };
         return node;
         async function* functionAsChildren() {
+            // Referencing node here allows for external to update the nodes implementation on the fly...
             const options = node.options;
             const source = node.source;
             // Lazy create the children when the function is first invoked
@@ -171,21 +175,21 @@ export function createNode(source, options, ...children) {
             //
             // We will only provide a child to node.source if we have at least one child provided
             const child = node[Child] = node[Child] ?? children.length ? createNode(Fragment, {}, ...children) : undefined;
-            // Referencing node here allows for external to update the nodes implementation on the fly...
-            const nextSource = source(options, child);
-            // If the nextSource is the same as node.source, then we should finish here, it will always return itself
-            // If node.source returns a promise then we can safely assume this was intentional as a "loop" around
+            // If the possibleMatchingSource is the same as node.source, then we should finish here, it will always return itself
+            // If node.source returns a promise, vnode, or "container" of some kind then we can safely assume this
+            // was intentional as a "loop" around
+            //
             // A function can also return an iterator (async or sync) that returns itself too
             //
             // This is to only detect hard loops
             // We will also reference the different dependency here, as they might have been re-assigned,
-            // meaning the possible return from this function has changed, meaning the return value could be different
-            const possibleMatchingSource = nextSource;
+            // meaning the possible return from this function has changed, meaning the return value could be different\
+            const possibleMatchingSource = source(options, child);
             if (possibleMatchingSource !== source ||
                 source !== node.source ||
                 options !== node.options ||
                 child !== node[Child]) {
-                yield* childrenGenerator(childrenContext, createNode(nextSource));
+                yield* childrenGenerator(childrenContext, createNode(possibleMatchingSource));
             }
         }
         function isDefaultOptionsO(value) {
@@ -205,7 +209,7 @@ export function createNode(source, options, ...children) {
     }
     function sourceReferenceVNode(reference, source, options, ...children) {
         return {
-            reference: reference || getReference(options),
+            reference: reference ?? getReference(options),
             scalar: !children.length,
             source,
             options,

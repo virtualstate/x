@@ -1,5 +1,4 @@
 export * from "./fragment.js";
-export * from "./source.js";
 export * from "./vcontext.js";
 export * from "./vcontext-weak.js";
 export * from "./vcontext-events.js";

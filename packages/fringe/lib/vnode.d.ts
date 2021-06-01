@@ -74,6 +74,9 @@ export interface NativeVNode extends VNode {
 export interface FragmentVNode extends VNode {
     reference: typeof Fragment;
 }
+export interface FragmentVNodeWithChildren extends FragmentVNode {
+    children: AsyncIterable<VNode[]>;
+}
 /**
  * A {@link VNode} that requires asynchronous resolution
  */

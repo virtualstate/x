@@ -2,7 +2,7 @@ import { Fragment } from "./fragment";
 import { createNode } from "./create-node";
 import { FragmentVNode, isFragmentVNode, isScalarVNode, ScalarVNode, VNode } from "./vnode";
 import { SourceReference } from "./source-reference";
-import { Source } from "./source";
+import {CreateNodeResult, CreateNodeResultOp6, Source} from "./source";
 
 describe("createNode", () => {
 
@@ -23,7 +23,7 @@ export type CreateNodeFragmentSourceSecondStage =
   | null;
      */
 
-    it.concurrent.each<[Source<object>]>([
+    it.concurrent.each<[Source]>([
       [() => 1],
       [Promise.resolve(1)],
       [Fragment],
@@ -51,7 +51,7 @@ export type CreateNodeFragmentSourceSecondStage =
       [""],
       ["Hello!"],
     ])("%p should produce a scalar node", async <I extends SourceReference>(input: I ) => {
-      const output = createNode(input);
+      const output = createNode<I>(input);
       expect(isScalarVNode(output)).toEqual(true);
       const source = output.source;
       expect(source).toEqual(input);
@@ -64,7 +64,7 @@ export type CreateNodeFragmentSourceSecondStage =
 
     }
 
-    it.concurrent.each<[Source<object>]>([
+    it.concurrent.each<[Source]>([
       [asyncGenerator()],
       [generator()],
       [undefined],

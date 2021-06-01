@@ -6,7 +6,7 @@ export interface VContextHydrateEvent<TVNode extends VNode = VNode, TTree extend
     node: TVNode;
     tree?: TTree;
 }
-export interface VContextCreateVNodeEvent<O extends object = object, S = Source<O>> {
+export interface VContextCreateVNodeEvent<O extends object = object, S = Source> {
     source: S;
     options: O;
 }

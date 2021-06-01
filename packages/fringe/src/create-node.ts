@@ -1,7 +1,8 @@
 import { VContext } from "./vcontext";
 import {
-  Source,
-  SourceRepresentationFactory
+  CreateNodeOp1Function,
+  CreateNodeResult,
+  Source
 } from "./source";
 import {
   isSourceReference,
@@ -35,9 +36,21 @@ const childrenContext: ChildrenContext = {
   createNode
 };
 
-export interface CreateNodeFn<O extends object = object> {
-  <O extends object = object>(source: Source<O>, options?: O, ...children: VNodeRepresentationSource[]): VNode;
+export interface CreateNodeFn {
+  <T extends Source>(source: T): CreateNodeResult<T>;
+  <
+    T extends Source,
+    O extends Record<string, unknown>,
+    >(source: T, options: O): CreateNodeResult<T, O>;
+  <
+    T extends Source,
+    O extends Record<string, unknown>,
+    C extends unknown[]
+    >(source: T, options: O, ...children: C): CreateNodeResult<T, O, C>;
+  (source: Source, options?: Record<string, unknown>, ...children: unknown[]): VNode;
+  (source: unknown, options?: Record<string, unknown>, ...children: unknown[]): VNode;
 }
+
 
 /**
  * Generates instances of {@link FragmentVNode} based on the provided source
@@ -49,9 +62,19 @@ export interface CreateNodeFn<O extends object = object> {
  * The special case to point out here is if the source is an `IterableIterator` (see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#Is_a_generator_object_an_iterator_or_an_iterable})
  * then each iteration will result in a new {@link VNode} being created
  */
-export function createNode(source: unknown, options?: object, ...children: VNodeRepresentationSource[]): VNode
-export function createNode<O extends object = object>(source: Source<O>, options?: O, ...children: VNodeRepresentationSource[]): VNode
-export function createNode<O extends object = object>(source: Source<O>, options?: O, ...children: VNodeRepresentationSource[]): VNode {
+export function createNode<T extends Source>(source: T): CreateNodeResult<T>;
+export function createNode<
+  T extends Source,
+  O extends Record<string, unknown>
+  >(source: T, options: O): CreateNodeResult<T, O>;
+export function createNode<
+  T extends Source,
+  O extends Record<string, unknown>,
+  C extends unknown[]
+  >(source: T, options: O, ...children: C): CreateNodeResult<T, O, C>;
+export function createNode(source: Source, options?: Record<string, unknown>, ...children: unknown[]): VNode;
+export function createNode(source: unknown, options?: Record<string, unknown>, ...children: unknown[]): VNode;
+export function createNode(source: Source, options?: Record<string, unknown>, ...children: VNodeRepresentationSource[]): VNode {
   /**
    * If the source is a function we're going to invoke it as soon as possible with the provided options
    *
@@ -146,6 +169,7 @@ export function createNode<O extends object = object>(source: Source<O>, options
     return {
       source,
       reference: Fragment,
+      options,
       children: generator(Symbol("Iterable Iterator"), source)
     };
   }
@@ -160,6 +184,7 @@ export function createNode<O extends object = object>(source: Source<O>, options
     return {
       source,
       reference: Fragment,
+      options,
       children: replay(() => childrenGenerator(childrenContext, asyncExtendedIterable(source).map(value => createNode(value, options, childrenInstance))))
     };
   }
@@ -186,14 +211,15 @@ export function createNode<O extends object = object>(source: Source<O>, options
    * @param newReference
    * @param reference
    */
-  async function *generator(newReference: SourceReference, reference: IterableIterator<SourceReference> | AsyncIterableIterator<SourceReference>): AsyncIterable<VNode[]> {
-    let next: IteratorResult<SourceReference>;
+  async function *generator(newReference: SourceReference, reference: IterableIterator<unknown> | AsyncIterableIterator<unknown>): AsyncIterable<VNode[]> {
+    let next: IteratorResult<unknown>;
     do {
       next = await getNext(reference, newReference);
       if (next.done) {
         continue;
       }
-      const nextNode = createNode(next.value);
+      const value: unknown = next.value;
+      const nextNode = createNode(value);
       if (isFragmentVNode(nextNode)) {
         yield* nextNode.children ?? [];
       }
@@ -201,14 +227,14 @@ export function createNode<O extends object = object>(source: Source<O>, options
     } while (!next.done);
   }
 
-  async function *promiseGenerator(promise: Source<O> & Promise<unknown>): AsyncIterable<VNode[]> {
+  async function *promiseGenerator(promise: Source & Promise<unknown>): AsyncIterable<VNode[]> {
     const result = await promise;
     yield [
       createNode(result, options, ...children)
     ];
   }
 
-  function functionVNode(source: SourceRepresentationFactory<O>): VNode {
+  function functionVNode(source: CreateNodeOp1Function): VNode {
     const defaultOptions = {};
     const resolvedOptions = isDefaultOptionsO(defaultOptions) ? defaultOptions : options;
 
@@ -225,6 +251,7 @@ export function createNode<O extends object = object>(source: Source<O>, options
     return node;
 
     async function *functionAsChildren(): AsyncIterable<VNode[]> {
+      // Referencing node here allows for external to update the nodes implementation on the fly...
       const options = node.options;
       const source = node.source;
 
@@ -234,28 +261,27 @@ export function createNode<O extends object = object>(source: Source<O>, options
       // We will only provide a child to node.source if we have at least one child provided
       const child = node[Child] = node[Child] ?? children.length ? createNode(Fragment, {}, ...children) : undefined;
 
-      // Referencing node here allows for external to update the nodes implementation on the fly...
-      const nextSource = source(options, child);
-
-      // If the nextSource is the same as node.source, then we should finish here, it will always return itself
-      // If node.source returns a promise then we can safely assume this was intentional as a "loop" around
+      // If the possibleMatchingSource is the same as node.source, then we should finish here, it will always return itself
+      // If node.source returns a promise, vnode, or "container" of some kind then we can safely assume this
+      // was intentional as a "loop" around
+      //
       // A function can also return an iterator (async or sync) that returns itself too
       //
       // This is to only detect hard loops
       // We will also reference the different dependency here, as they might have been re-assigned,
-      // meaning the possible return from this function has changed, meaning the return value could be different
-      const possibleMatchingSource: unknown = nextSource;
+      // meaning the possible return from this function has changed, meaning the return value could be different\
+      const possibleMatchingSource: unknown = source(options, child);
       if (
         possibleMatchingSource !== source ||
         source !== node.source ||
         options !== node.options ||
         child !== node[Child]
       ) {
-        yield * childrenGenerator(childrenContext, createNode(nextSource));
+        yield * childrenGenerator(childrenContext, createNode(possibleMatchingSource));
       }
     }
 
-    function isDefaultOptionsO(value: unknown): value is O {
+    function isDefaultOptionsO(value: unknown): value is Record<string, unknown> {
       return value === defaultOptions && !options;
     }
   }
@@ -274,7 +300,7 @@ export function createNode<O extends object = object>(source: Source<O>, options
 
   function sourceReferenceVNode(reference: SourceReference, source: SourceReference, options?: object, ...children: VNodeRepresentationSource[]): VNode {
     return {
-      reference: reference || getReference(options),
+      reference: reference ?? getReference(options),
       scalar: !children.length,
       source,
       options,
