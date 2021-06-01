@@ -1,5 +1,6 @@
 import { VContext } from "./vcontext";
 import {
+  ChildrenSourceType,
   CreateNodeOp1Function,
   CreateNodeResult,
   Source
@@ -129,7 +130,7 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
     if (children.length && !nextSource.children) {
       nextSource = {
         ...nextSource,
-        children: replay(() => childrenGenerator(childrenContext, ...children))
+        children: replay(() => childrenGenerator(childrenContext, ...children), children)
       };
     }
     return nextSource;
@@ -304,13 +305,14 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
       scalar: !children.length,
       source,
       options,
-      children: children.length ? replay(() => childrenGenerator(childrenContext, ...children)) : undefined
+      children: children.length ? replay(() => childrenGenerator(childrenContext, ...children), children) : undefined
     };
   }
 
-  function replay<T>(fn: () => AsyncIterable<T>): AsyncIterable<T> {
+  function replay<T>(fn: () => AsyncIterable<T>, source?: unknown): AsyncIterable<T> & { [ChildrenSourceType]?: unknown } {
     return {
-      [Symbol.asyncIterator]: () => fn()[Symbol.asyncIterator]()
+      [Symbol.asyncIterator]: () => fn()[Symbol.asyncIterator](),
+      [ChildrenSourceType]: source
     };
   }
 
