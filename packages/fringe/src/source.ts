@@ -9,7 +9,7 @@ type GetLength<T extends unknown[]> = T extends { length: infer L } ? L : never
  */
 export const ChildrenSource = Symbol.for("@virtualstate/fringe/ChildrenSource");
 
-export type CreateNodeChildrenWithSourceType<C extends unknown[]> = AsyncIterable<VNode> & {
+export type CreateNodeChildrenWithSourceType<C extends unknown[], N extends VNode[] = VNode[]> = AsyncIterable<N> & {
   // This is explicitly only available _sometimes_, so only in best case will it be available,
   // you should assume that it is not available most of the time.
   /**
@@ -46,6 +46,9 @@ export type CreateNodeResultOp6<T extends CreateNodeOp6SourceReference, O extend
   children: CreateNodeChildren<C>;
 }
 
+/**
+ * @experimental Use this type directly at your own risk.
+ */
 export type CreateNodeResult<T, O extends Options = Options, C extends unknown[] = []> =
   T extends CreateNodeOp1Function ? Omit<FragmentVNode, "source"> & { source: T } :
     T extends CreateNodeOp2Promise ? Omit<FragmentVNode, "source"> & { source: T extends Promise<infer I> ? CreateNodeResult<I> : unknown } :
@@ -84,3 +87,35 @@ export type Source =
   | CreateNodeOp8Iterable
   | CreateNodeOp9Falsy
   | CreateNodeOp9000ExplicitExceptionCaseForObject;
+
+interface VNodeWithChildrenSourceType<C extends unknown[]> extends VNode {
+  children: CreateNodeChildrenWithSourceType<C>
+}
+
+export type InferChildrenSource<V extends VNode> = V extends VNodeWithChildrenSourceType<infer C> ? C : [];
+
+type ChildrenResult<CValue> =
+  CValue extends ChildrenOp1Undefined ? unknown :
+    CValue extends ChildrenOp2Promise ? CValue extends Promise<infer R> ? ChildrenResult<R> : unknown :
+      CValue extends ChildrenOp3Fragment ?
+        undefined extends CValue["children"] ? unknown :
+          CValue extends AsyncIterable<Array<infer R>> ? ChildrenResult<R> : unknown :
+        CValue extends ChildrenOp4VNode ? CValue :
+          CreateNodeResult<CValue>;
+
+type ArrayItems<T extends unknown[]> = T extends Array<infer I> ? I : never;
+
+type ChildrenResultFromSource<C extends unknown[]> = ChildrenResult<ArrayItems<C>> & VNode;
+
+/**
+ * @experimental This type may be removed if found to be not performant
+ */
+export type VNodeWithChildrenFromSource<V extends VNode> = Omit<V, "children"> & {
+  children: CreateNodeChildrenWithSourceType<InferChildrenSource<V>, ChildrenResultFromSource<InferChildrenSource<V>>[]>
+};
+
+type ChildrenOp1Undefined = undefined;
+type ChildrenOp2Promise = Promise<unknown>;
+type ChildrenOp3Fragment = FragmentVNode;
+type ChildrenOp4VNode = FragmentVNode;
+

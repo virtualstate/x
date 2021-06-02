@@ -1,5 +1,5 @@
 export * from "./fragment";
-export { Source, ChildrenSource } from "./source";
+export { Source, ChildrenSource, VNodeWithChildrenFromSource, CreateNodeResult } from "./source";
 export * from "./vcontext";
 export * from "./vcontext-weak";
 export * from "./vcontext-events";
