@@ -1,3 +1,3 @@
-import { createNode, CreateNodeFn } from "./create-node";
+import { createNode } from "./create-node";
 
-export const h: CreateNodeFn = createNode;
+export const h = createNode;

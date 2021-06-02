@@ -15,9 +15,6 @@ const Page = h("main", { class: "main" },
 const children = Page.children[ChildrenSource];
 console.log(children.map(node => node.source));
 
-
-
-
 async function *App() {
   yield h("p", {}, "Loading");
   const response = await fetch("https://jsonplaceholder.typicode.com/users/1");

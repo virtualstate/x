@@ -42,7 +42,7 @@ export interface CreateNodeFn {
     T extends Source,
     O extends Record<string, unknown>,
     C extends unknown[]
-    >(source: T, options: O, ...children: C): VNodeWithChildrenFromSource<CreateNodeResult<T, O, C>>;
+    >(source: T, options: O, ...children: C): CreateNodeResult<T, O, C>;
   <
     T extends Source,
     O extends Record<string, unknown>,
@@ -67,7 +67,7 @@ export function createNode<
   T extends Source,
   O extends Record<string, unknown>,
   C extends unknown[]
-  >(source: T, options: O, ...children: C): VNodeWithChildrenFromSource<CreateNodeResult<T, O, C>>;
+  >(source: T, options: O, ...children: C): CreateNodeResult<T, O, C>;
 export function createNode<
   T extends Source,
   O extends Record<string, unknown>
