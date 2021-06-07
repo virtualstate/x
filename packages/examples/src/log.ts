@@ -32,3 +32,7 @@ for (const exampleKey in Examples) {
   await log(example, exampleKey.includes("Loop"));
   console.log("");
 }
+
+
+export default 1;
+export const isLog = 1;
