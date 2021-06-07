@@ -1,7 +1,7 @@
 # union
 
-[CodeSandbox Demo 1](https://codesandbox.io/s/interesting-yalow-hh5ow?file=/src/index.ts:809-880)
-[CodeSandbox Demo 2](https://codesandbox.io/s/cool-snow-z6ese?file=/src/index.ts)
+- [CodeSandbox Demo 1](https://codesandbox.io/s/interesting-yalow-hh5ow?file=/src/index.ts:809-880)
+- [CodeSandbox Demo 2](https://codesandbox.io/s/cool-snow-z6ese?file=/src/index.ts)
 
 Take a set of async iterations and turn them into an array of the latest values for that iterator.
 

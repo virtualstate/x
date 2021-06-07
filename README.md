@@ -123,8 +123,8 @@ for await (const results of children) {
 
 ## [`union`](http://npmjs.com/package/@virtualstate/union)
 
-[CodeSandbox Demo 1](https://codesandbox.io/s/interesting-yalow-hh5ow?file=/src/index.ts:809-880)
-[CodeSandbox Demo 2](https://codesandbox.io/s/cool-snow-z6ese?file=/src/index.ts)
+- [CodeSandbox Demo 1](https://codesandbox.io/s/interesting-yalow-hh5ow?file=/src/index.ts:809-880)
+- [CodeSandbox Demo 2](https://codesandbox.io/s/cool-snow-z6ese?file=/src/index.ts)
 
 ```typescript
 import { union } from "@virtualstate/x";
