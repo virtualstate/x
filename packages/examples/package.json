@@ -1,5 +1,5 @@
 {
-  "name": "@virtualstate/deno",
+  "name": "@virtualstate/examples",
   "version": "2.2.4",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
@@ -7,26 +7,11 @@
   "type": "module",
   "sideEffects": false,
   "keywords": [
-    "nodejs",
-    "web",
-    "frontend",
-    "backend",
     "jsx",
     "vsx",
-    "state",
     "virtual-state"
   ],
-  "exports": {
-    ".": "./lib/index.js",
-    "./x": "./lib/x/index.js",
-    "./x/collector": "./lib/x/collector.js",
-    "./x/fringe": "./lib/x/fringe.js",
-    "./x/hooks": "./lib/x/hooks.js",
-    "./x/iterable": "./lib/x/iterable.js",
-    "./x/union": "./lib/x/union.js"
-  },
   "dependencies": {
-    "@virtualstate/dom": "^2.2.4",
     "@virtualstate/fringe": "^2.2.4",
     "@virtualstate/hooks": "^2.2.4",
     "@virtualstate/union": "^2.2.4",

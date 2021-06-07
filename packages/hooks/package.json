@@ -11,8 +11,8 @@
     "virtual-state"
   ],
   "peerDependencies": {
-    "@virtualstate/fringe": "^1.0.0",
-    "@virtualstate/union": "^1.0.0",
+    "@virtualstate/fringe": "^2.2.4",
+    "@virtualstate/union": "^2.2.4",
     "iterable": "^5.7.0",
     "microtask-collector": "^3.1.0"
   },
