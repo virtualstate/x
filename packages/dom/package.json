@@ -18,7 +18,6 @@
     "virtual-state"
   ],
   "dependencies": {
-    "@virtualstate/dom": "^2.2.8",
     "@virtualstate/fringe": "^2.2.8",
     "@virtualstate/hooks": "^2.2.8",
     "@virtualstate/union": "^2.2.8",
