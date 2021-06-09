@@ -5,6 +5,11 @@ import {Fragment} from "./fragment";
 type GetLength<T extends unknown[]> = T extends { length: infer L } ? L : never
 
 /**
+ * @experimental This may go away
+ */
+export const Instance = Symbol("Source Instance");
+
+/**
  * @experimental This may not be available all the time, and this functionality may disappear.
  */
 export const ChildrenSource = Symbol.for("@virtualstate/fringe/ChildrenSource");

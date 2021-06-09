@@ -3,7 +3,8 @@ import {
   ChildrenSource,
   CreateNodeOp1Function,
   CreateNodeResult,
-  Source, VNodeWithChildrenFromSource
+  Source,
+  Instance,
 } from "./source";
 import {
   isSourceReference,
@@ -29,6 +30,8 @@ import {
 } from "iterable";
 import { children as childrenGenerator, ChildrenContext } from "./children";
 import { Fragment } from "./fragment";
+
+const nonConstructable = new WeakSet();
 
 // Access to re-assign a functional vnode child between children reads
 export const Child = Symbol("Function VNode Child");
@@ -242,25 +245,67 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
     const node: VNode & {
       [Child]?: VNode,
       source: typeof source,
-      options: typeof resolvedOptions
+      options: typeof resolvedOptions,
+      [Instance]: unknown
     } = {
       reference: Fragment,
       source,
       options: resolvedOptions,
-      children: replay(() => functionAsChildren()),
+      children: replay(childrenFn),
+      [Instance]: undefined
     };
+
     return node;
+
+    function construct(source: unknown) {
+      if (!isConstructableLike(source)) {
+        return undefined;
+      }
+      if (nonConstructable.has(source)) {
+        return undefined;
+      }
+      const options = node.options;
+      const currentChild = child();
+      try {
+        return new source(options, currentChild);
+      } catch {
+        nonConstructable.add(source);
+        return undefined;
+      }
+
+      function isConstructableLike(value: unknown): value is { new(options: typeof node.options, child?: VNode): unknown } {
+        return typeof value === "function";
+      }
+    }
+
+    async function *classAsChildren(): AsyncIterable<VNode[]> {
+      const instance = node[Instance];
+      if (!instance) {
+        throw new Error("What happened to the instance!");
+      }
+      if (isIterable(instance) || isAsyncIterable(instance)) {
+        for await (const next of instance) {
+          yield * childrenGenerator(childrenContext, createNode(next));
+        }
+      } else {
+        yield [createNode(instance)];
+      }
+    }
+
+    function child(): VNode | undefined {
+      // Lazy create the children when the function is first invoked
+      // This allows children to be a bit more dynamic
+      //
+      // We will only provide a child to node.source if we have at least one child provided
+      return node[Child] = node[Child] ?? children.length ? createNode(Fragment, {}, ...children) : undefined;
+    }
 
     async function *functionAsChildren(): AsyncIterable<VNode[]> {
       // Referencing node here allows for external to update the nodes implementation on the fly...
       const options = node.options;
       const source = node.source;
 
-      // Lazy create the children when the function is first invoked
-      // This allows children to be a bit more dynamic
-      //
-      // We will only provide a child to node.source if we have at least one child provided
-      const child = node[Child] = node[Child] ?? children.length ? createNode(Fragment, {}, ...children) : undefined;
+      const currentChild = child();
 
       // If the possibleMatchingSource is the same as node.source, then we should finish here, it will always return itself
       // If node.source returns a promise, vnode, or "container" of some kind then we can safely assume this
@@ -271,15 +316,23 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
       // This is to only detect hard loops
       // We will also reference the different dependency here, as they might have been re-assigned,
       // meaning the possible return from this function has changed, meaning the return value could be different\
-      const possibleMatchingSource: unknown = source(options, child);
+      const possibleMatchingSource: unknown = source(options, currentChild);
       if (
         possibleMatchingSource !== source ||
         source !== node.source ||
         options !== node.options ||
-        child !== node[Child]
+        currentChild !== node[Child]
       ) {
         yield * childrenGenerator(childrenContext, createNode(possibleMatchingSource));
       }
+    }
+
+    async function *childrenFn(): AsyncIterable<VNode[]> {
+      const source = node.source;
+      if (node[Instance] || (node[Instance] = construct(source))) {
+        return yield * classAsChildren();
+      }
+      yield * functionAsChildren();
     }
 
     function isDefaultOptionsO(value: unknown): value is Record<string, unknown> {

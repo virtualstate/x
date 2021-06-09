@@ -1,5 +1,6 @@
 import * as Examples from "./examples";
 import {isVNode, VNode} from "@virtualstate/fringe";
+import { h } from "./jsx";
 
 async function log(node: VNode, looping = false) {
   console.log(node);
