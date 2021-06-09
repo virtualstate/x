@@ -239,6 +239,8 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
   }
 
   function functionVNode(source: CreateNodeOp1Function): VNode {
+    let forceConstruction = false;
+
     const defaultOptions = {};
     const resolvedOptions = isDefaultOptionsO(defaultOptions) ? defaultOptions : options;
 
@@ -274,7 +276,14 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
       }
 
       function isConstructableLike(value: unknown): value is { new(options: typeof node.options, child?: VNode): unknown } {
-        return typeof value === "function";
+        if (forceConstruction) {
+          return true;
+        }
+        return (
+          typeof value === "function" &&
+          value.prototype &&
+          typeof value.prototype[Symbol.asyncIterator] === "function"
+        );
       }
     }
 
@@ -316,7 +325,21 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
       // This is to only detect hard loops
       // We will also reference the different dependency here, as they might have been re-assigned,
       // meaning the possible return from this function has changed, meaning the return value could be different\
-      const possibleMatchingSource: unknown = source(options, currentChild);
+      let possibleMatchingSource: unknown;
+
+      try {
+        possibleMatchingSource = source(options, currentChild);
+      } catch (error) {
+        if (error instanceof TypeError) {
+          forceConstruction = true;
+          node[Instance] = construct(source);
+          if (node[Instance]) {
+            return yield * classAsChildren();
+          }
+          forceConstruction = false;
+        }
+        throw error;
+      }
       if (
         possibleMatchingSource !== source ||
         source !== node.source ||
