@@ -1,4 +1,5 @@
 import { h } from "../../jsx";
+import {And} from "../experiments/combinational/and";
 
 class Component {
 
@@ -6,14 +7,7 @@ class Component {
 
   async *[Symbol.asyncIterator]() {
     const id = this.iterations += 1;
-    yield `Iteration ${id}`;
-    const randomPicked = Math.random() > 0.5 ? "Task 1" : "Task 2";
-    yield `Doing task ${randomPicked}`;
-    if (randomPicked === "Task 1") {
-      await new Promise<void>(queueMicrotask);
-    } else {
-      await new Promise<void>(resolve => setTimeout(resolve, 5));
-    }
+    yield { reference: `Iteration ${id}` };
   }
 
 }
@@ -22,8 +16,10 @@ const node = <Component />
 
 export const _405_SharedInstance = (
   <container>
-    {node}
-    {node}
-    {node}
+    <And size={3} self>
+      {node}
+      {node}
+      {node}
+    </And>
   </container>
 )
