@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/fringe",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -21,7 +21,7 @@
     "microtask-collector": "^3.1.0"
   },
   "devDependencies": {
-    "@virtualstate/union": "^2.4.2"
+    "@virtualstate/union": "^2.4.3"
   },
   "license": "MIT",
   "repository": {
