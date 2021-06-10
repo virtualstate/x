@@ -2,7 +2,7 @@ import { h } from "@virtualstate/fringe";
 import { Not } from "./not";
 import { And } from "./and";
 import { Or } from "./or";
-import { True, False } from "./truth";
+import { True, False, isTrue } from "./truth";
 import { Truthful } from "./truthful";
 import { Void } from "./void";
 
@@ -50,6 +50,23 @@ const complete =
     {e}
   </Or>;
 
+/**
+ * @experimental
+ */
+export const Combinational = {
+  Void,
+  Truthful,
+  And,
+  Or,
+  Not,
+  isTrue,
+  True,
+  False,
+}
+
+/**
+ * @experimental
+ */
 export const _E0101_Combinational = (
   <Void>
     <Truthful>

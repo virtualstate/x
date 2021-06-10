@@ -93,6 +93,9 @@ function *Loop() {
   yield <Loop />
 }
 
+/**
+ * @experimental
+ */
 export const _E0001_Compact = (
   <container>
     <Compact min={3}>
