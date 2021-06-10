@@ -29,7 +29,12 @@ async function log(node: VNode, looping = false) {
 for (const exampleKey in Examples) {
   const example = Examples[exampleKey];
   if (!isVNode(example)) continue;
-  console.log(`Example: ${exampleKey.replace(/^_\d+_/, "").replace(/([A-Z])/g,  " $1").trim()}\n`);
+  const name = exampleKey
+    .replace(/^_[A-Z]+\d+_/, "")
+    .replace(/_/g, " ")
+    .replace(/([A-Z])/g,  " $1")
+    .trim()
+  console.log(`Example: ${name}\n`);
   await log(example, exampleKey.includes("Loop"));
   console.log("");
 }

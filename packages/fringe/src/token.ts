@@ -68,29 +68,36 @@ export function createToken<T extends SourceReference, O extends object = object
   type Token = TokenVNodeBase<T, TokenInitialOptions<O, P>>;
   let tokenized: TokenVNodeFn<T, TokenInitialOptions<O, P>>;
   const isOptionsOptions = isOptionsIsOptions(options) ? options : undefined;
-  function token<I extends O & Partial<TokenOptionsRecord>>(this: unknown, partialOptions?: I, child?: VNode): TokenVNode<T, I & O> {
+
+  let frozen: Token | undefined = undefined;
+  const isOptionsFrozen = !!options && Object.isFrozen(options);
+  const optionsKeyLength = isOptionsFrozen ? Object.keys(options).length : 0;
+
+  function token<I extends O & Partial<TokenOptionsRecord>>(this: unknown, partialOptions?: I, child?: VNode): Token {
     const node: Token = isTokenVNode<T, TokenInitialOptions<O, P>>(this) ? this : tokenized;
     let nextNode: Pick<Token, keyof Token> = node;
-    if (partialOptions && hasOwnPropertyAvailable(partialOptions)) {
-      nextNode = {
-        ...nextNode,
-        options: {
-          ...nextNode.options,
-          ...partialOptions
-        }
+    let nextOptions = node.options;
+    let nextChildren = node.children;
+    if (partialOptions && hasOwnPropertyAvailable(partialOptions) && !(isOptionsFrozen && !child)) {
+      nextOptions = {
+        ...nextNode.options,
+        ...partialOptions
       };
     }
     if (child) {
-      nextNode = {
-        ...nextNode,
-        children: createFragment(undefined, child).children
-      };
+      nextChildren = createFragment(undefined, child).children;
     }
-    assertTokenVNode<T, I & O>(nextNode, node.isTokenSource, isCompleteOptions);
     // Terminates the node, will no longer be a function if it still was one
-    return {
+    const instance = {
       ...nextNode
     };
+    defineProperties(instance, nextOptions, nextChildren);
+    assertTokenVNode<T, I & O>(instance, node.isTokenSource, isCompleteOptions);
+    if (isOptionsFrozen && !child) {
+      frozen = Object.freeze(instance);
+      return frozen;
+    }
+    return instance;
 
     function isCompleteOptions(value: unknown): value is I & O {
       if (isOptionsOptions?.[IsTokenOptions]) {
@@ -99,18 +106,7 @@ export function createToken<T extends SourceReference, O extends object = object
       return value === nextNode.options;
     }
   }
-  Object.assign(token, {
-    reference: Token,
-    source,
-    options,
-    isTokenSource,
-    isTokenOptions,
-    assert,
-    assertFn,
-    is,
-    isFn,
-    children: children.length ? createFragment(undefined, ...children).children : undefined
-  });
+  defineProperties(token, options, children ? createFragment({}, ...children).children : undefined);
   const almost: unknown = token;
   // Even though we can provide partial options as per the type, if there are minimum requirements
   // then IsTokenOptions will verify this
@@ -121,6 +117,60 @@ export function createToken<T extends SourceReference, O extends object = object
   );
   tokenized = almost;
   return tokenized;
+
+  function defineProperties(token: object, options?: object, children?: AsyncIterable<VNode[]>) {
+    const accessOnly: PropertyDescriptor = {
+      enumerable: false,
+      writable: false,
+      configurable: false
+    }
+    Object.defineProperties(token, {
+      reference: {
+        ...accessOnly,
+        value: Token,
+        enumerable: !isOptionsFrozen
+      },
+      source: {
+        ...accessOnly,
+        value: source,
+        enumerable: true,
+      },
+      options: {
+        ...accessOnly,
+        value: options,
+        enumerable: !(isOptionsFrozen && optionsKeyLength === 0)
+      },
+      isTokenSource: {
+        ...accessOnly,
+        value: isTokenSource
+      },
+      isTokenOptions: {
+        ...accessOnly,
+        value: isTokenOptions
+      },
+      assert: {
+        ...accessOnly,
+        value: assert
+      },
+      assertFn: {
+        ...accessOnly,
+        value: assertFn
+      },
+      is: {
+        ...accessOnly,
+        value: is
+      },
+      isFn: {
+        ...accessOnly,
+        value: isFn
+      },
+      children: {
+        ...accessOnly,
+        value: children,
+        enumerable: !!children
+      }
+    });
+  }
 
   function isPartialOptions(value: unknown): value is TokenInitialOptions<O, P> {
     return Object.is(value, options);
