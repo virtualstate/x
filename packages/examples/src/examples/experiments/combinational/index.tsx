@@ -4,6 +4,7 @@ import { And } from "./and";
 import { Or } from "./or";
 import { True, False } from "./truth";
 import { Truthful } from "./truthful";
+import { Void } from "./void";
 
 const a = (
   <And>
@@ -50,9 +51,11 @@ const complete =
   </Or>;
 
 export const _E0101_Combinational = (
-  <Truthful>
-    {a}
-    {e}
-    {complete}
-  </Truthful>
+  <Void>
+    <Truthful>
+      {a}
+      {e}
+      {complete}
+    </Truthful>
+  </Void>
 )
