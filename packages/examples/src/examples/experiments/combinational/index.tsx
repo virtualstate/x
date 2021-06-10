@@ -1,36 +1,58 @@
-import {h} from "@virtualstate/fringe";
-import {Not} from "./not";
-import {And} from "./and";
-import {Or} from "./or";
-import { True, False } from "./thing";
+import { h } from "@virtualstate/fringe";
+import { Not } from "./not";
+import { And } from "./and";
+import { Or } from "./or";
+import { True, False } from "./truth";
+import { Truthful } from "./truthful";
+
+const a = (
+  <And>
+    <True />
+    <True />
+  </And>
+);
+const b = (
+  <Not>
+    <And>
+      <True />
+      <False />
+    </And>
+  </Not>
+);
+const c = (
+  <Not>
+    <And>
+      <False />
+      <True />
+    </And>
+  </Not>
+);
+const d = (
+  <Not>
+    <And>
+      <False />
+      <False />
+    </And>
+  </Not>
+);
+const e = (
+  <And>
+    {a}
+    {b}
+    {c}
+    {d}
+  </And>
+);
+
+const complete =
+  <Or>
+    {e}
+  </Or>;
 
 export const _E0101_Combinational = (
-  <container>
-    <Or>
-      <And size={4}>
-        <And size={2}>
-          <True />
-          <True />
-        </And>
-        <Not>
-          <And size={2}>
-            <True />
-            <False />
-          </And>
-        </Not>
-        <Not>
-          <And size={2}>
-            <False />
-            <True />
-          </And>
-        </Not>
-        <Not>
-          <And size={2}>
-            <False />
-            <False />
-          </And>
-        </Not>
-      </And>
-    </Or>
-  </container>
+  <Truthful>
+    {a}
+    {e}
+    {complete}
+  </Truthful>
 )

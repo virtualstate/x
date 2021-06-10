@@ -1,6 +1,6 @@
 import { Fragment, VNode, h } from "@virtualstate/fringe";
-import { isTrue } from "./thing";
-import { True, False } from "./thing";
+import { isTrue } from "./truth";
+import { True, False } from "./truth";
 
 export async function *Or(o: unknown, state: VNode) {
   // We have no child state, no input is true
