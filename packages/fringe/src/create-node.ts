@@ -266,10 +266,13 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
       if (nonConstructable.has(source)) {
         return undefined;
       }
+      if (node[Instance]) {
+        return node[Instance];
+      }
       const options = node.options;
       const currentChild = child();
       try {
-        return new source(options, currentChild);
+        return node[Instance] = node[Instance] || new source(options, currentChild);
       } catch {
         nonConstructable.add(source);
         return undefined;
@@ -352,7 +355,7 @@ export function createNode(source: Source, options?: Record<string, unknown>, ..
 
     async function *childrenFn(): AsyncIterable<VNode[]> {
       const source = node.source;
-      if (node[Instance] || (node[Instance] = construct(source))) {
+      if (construct(source)) {
         return yield * classAsChildren();
       }
       yield * functionAsChildren();
