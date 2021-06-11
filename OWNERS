@@ -1,0 +1,5 @@
+* @virtualstate/x
+packages/fringe @virtualstate/core
+packages/union @virtualstate/core
+packages/dom @virtualstate/web
+packages/web @virtualstate/web
