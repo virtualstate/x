@@ -38,6 +38,41 @@ There are a few basic ground-rules for contributors:
 - A lead maintainer must merge SemVer-major changes in this repository.
 - In case it is not possible to reach consensus in a pull-request, the decision is left to the lead maintainer's team.
 
+# Virtual State Organization Structure
+
+The Virtual State structure is detailed in the [GOVERNANCE](GOVERNANCE.md) document.
+
+### Onboarding Collaborators
+
+Welcome to the team! We are happy to have you. Before you start, please complete the following tasks:
+
+1. Set up 2 factor authentication for GitHub and NPM
+  - [GitHub 2FA](https://help.github.com/en/articles/securing-your-account-with-two-factor-authentication-2fa)
+  - [NPM 2FA](https://docs.npmjs.com/about-two-factor-authentication)
+2. Choose which team to join *(more than one is ok!)* based on how you want to help.
+3. Open a pull request to [`virtualstate/x:HEAD`](https://github.com/virtualstate/x/pulls) that adds your name, username, and email to the team you have choosen in the [README.md](./README.md) and [package.json](./package.json) *(if you are part of the core team)* files. The members lists are sorted alphabetically; make sure to add your name in the proper order.
+4. The person that does the onboarding must add you to the [npm org](https://www.npmjs.com/org/virtualstate), so that you can help maintaining the official plugins.
+
+### Offboarding Collaborators
+
+We are thankful to you and we are really glad to have worked with you.
+
+We'll be really happy to see you here again if you want to come back, but for now the person that did the onboarding must:
+
+1. Ask the collaborator if they want to stay or not.
+1. If the collaborator can't work with us anymore, they should:
+  1. Open a pull request to [`virtualstate/x:HEAD`](https://github.com/virtualstate/x/pulls) and move themselves to the *Past Collaborators* section.
+
+The person that did the onboarding must:
+
+1. If the collaborator doesn't reply to the ping in reasonable time, open the pull requests described above.
+2. Remove the collaborator from the Virtual State teams on GitHub.
+3. Remove the collaborator from the [npm org](https://www.npmjs.com/org/virtualstate).
+4. Remove the collaborator from the Digital Ocean team.
+5. Remove the collaborator from the Netlify team.
+
+-----------------------------------------
+
 <a id="developers-certificate-of-origin"></a>
 ## Developer's Certificate of Origin 1.1
 
