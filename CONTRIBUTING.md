@@ -1,5 +1,16 @@
 # Contributing
 
+## Active Contributors
+
+Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. 
+
+### Needing Contributor Access?
+
+If you think you meet the above criteria and we have not invited you yet, we are sorry!
+Feel free reach out to a [Lead Maintainer](https://github.com/orgs/virtualstate/teams/leads) privately with
+a few links to your valuable contributions.
+Read the [GOVERNANCE](GOVERNANCE.md) to get more information.
+
 ## Code of Conduct
 
 The Virtual State project has a
@@ -12,6 +23,20 @@ When contributing to this repository, please first discuss the change you wish t
 email, or any other method with the owners of this repository before making a change. 
 
 We are open to all ideas big or small, and are greatly appreciative of any and all contributions.
+
+# Rules
+
+There are a few basic ground-rules for contributors:
+
+- No --force pushes on main or modifying the Git history in any way after a PR has been merged.
+- Non-main branches ought to be used for ongoing work.
+- External API changes and significant modifications ought to be subject to an internal pull-request to solicit feedback from other contributors.
+- Internal pull-requests to solicit feedback are encouraged for any other non-trivial contribution but left to the discretion of the contributor.
+- Contributors should attempt to adhere to the prevailing code-style.
+- At least two contributors, or one core member, must approve pull-requests prior to merging.
+- All integrated CI services must be green before a pull-request can be merged.
+- A lead maintainer must merge SemVer-major changes in this repository.
+- In case it is not possible to reach consensus in a pull-request, the decision is left to the lead maintainer's team.
 
 <a id="developers-certificate-of-origin"></a>
 ## Developer's Certificate of Origin 1.1
