@@ -27,7 +27,7 @@ They are split into the following teams:
 |  Team | Responsibility  |  Repository | Package |
 |---|---|---|---|
 | `@virtualstate/leads` | Virtual State Lead Maintainers | GitHub organization owners |  |
-| `@virtualstate/core`   |  Virtual State Core development  | `x` | fringe`, `union` |
+| `@virtualstate/core`   |  Virtual State Core development  | `x` | `fringe`, `union` |
 | `@virtualstate/x`   |  Virtual State General development  | `x` | `x`, `hooks`, `hooks-extended`, `deno`, `examples` |
 | `@virtualstate/web`   |  Virtual State Web development  |  `x` | `dom`, `web` |
 
