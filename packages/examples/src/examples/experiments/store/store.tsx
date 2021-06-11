@@ -64,7 +64,6 @@ export class Store<T extends StoreToken> {
       const nextDomain: DomainMap<T> = new Map();
       for (const child of children) {
         if (!this.#isDomainToken(child)) {
-          console.log(child);
           continue;
         }
         const currentArray = nextDomain.get(child.source);
