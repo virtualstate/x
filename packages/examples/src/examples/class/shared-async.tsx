@@ -5,7 +5,7 @@ class Component {
 
   iterations = 0;
 
-  *[Symbol.iterator]() {
+  async *[Symbol.asyncIterator]() {
     const id = this.iterations += 1;
     yield { reference: `Iteration ${id}` };
   }
@@ -14,7 +14,7 @@ class Component {
 
 const node = <Component />
 
-export const _405_SharedInstance = (
+export const _406_SharedAsync = (
   <container>
     <And size={3} self>
       {node}

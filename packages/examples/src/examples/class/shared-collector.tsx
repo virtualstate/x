@@ -33,7 +33,7 @@ class Component {
 
 const node = <Component expect={3} />
 
-export const _406_SharedCollector = (
+export const _407_SharedCollector = (
   <container>
     <And size={3} self>
       {node}
