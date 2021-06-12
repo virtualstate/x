@@ -7,12 +7,11 @@ import {
   VNode
 } from "@virtualstate/fringe";
 import {extendedIterable} from "iterable";
-import {read, VNodeSource} from "./read";
+import {read, ReadOptions, VNodeSource} from "./read";
 
 type DomainMap<T extends VNodeSource> = Map<T["source"], Set<T>>;
 
-export interface StoreOptions<T extends VNodeSource> {
-  domain: T[];
+export interface StoreOptions<T extends VNodeSource> extends ReadOptions<T> {
   defaults?: DomainMap<T>;
 }
 

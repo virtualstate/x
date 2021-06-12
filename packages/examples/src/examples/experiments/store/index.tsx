@@ -6,7 +6,7 @@ import {Instance} from "@virtualstate/fringe";
 export * from "./store";
 
 const store: VNode & { [Instance]?: Store<DomainToken> } = (
-  <Store domain={Domain}>
+  <Store domain={Domain} final visit={[TestTube]}>
     <TestTube>
       <Thread size={2} />
       <Cactus spikes="spikey" />
