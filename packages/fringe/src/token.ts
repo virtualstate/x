@@ -75,12 +75,12 @@ export function createToken<T extends SourceReference, O extends object = object
 
   function token<I extends O & Partial<TokenOptionsRecord>>(this: unknown, partialOptions?: I, child?: VNode): Token {
     const node: Token = isTokenVNode<T, TokenInitialOptions<O, P>>(this) ? this : tokenized;
-    let nextNode: Pick<Token, keyof Token> = node;
+    const previousNode: Pick<Token, keyof Token> = node;
     let nextOptions = node.options;
     let nextChildren = node.children;
     if (partialOptions && hasOwnPropertyAvailable(partialOptions) && !(isOptionsFrozen && !child)) {
       nextOptions = {
-        ...nextNode.options,
+        ...previousNode.options,
         ...partialOptions
       };
     }
@@ -89,13 +89,14 @@ export function createToken<T extends SourceReference, O extends object = object
     }
     // Terminates the node, will no longer be a function if it still was one
     const instance = {
-      ...nextNode
+      ...previousNode
     };
     defineProperties(instance, nextOptions, nextChildren);
-    assertTokenVNode<T, I & O>(instance, node.isTokenSource, isCompleteOptions);
     if (isOptionsFrozen && !child) {
       frozen = Object.freeze(instance);
       return frozen;
+    } else {
+      assertTokenVNode<T, I & O>(instance, isTokenSource, isCompleteOptions);
     }
     return instance;
 
@@ -103,7 +104,7 @@ export function createToken<T extends SourceReference, O extends object = object
       if (isOptionsOptions?.[IsTokenOptions]) {
         return isOptionsOptions[IsTokenOptions](value);
       }
-      return value === nextNode.options;
+      return value === instance.options;
     }
   }
   defineProperties(token, options, children ? createFragment({}, ...children).children : undefined);
