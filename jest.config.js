@@ -12,6 +12,10 @@ const packages = readdirSync(basePath)
 export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  transform: {
+    '\\.ts$': 'ts-jest',
+    '\\.tsx$': 'ts-jest',
+  },
   moduleNameMapper: {
     ...packages.reduce(
       (acc, name) => ({

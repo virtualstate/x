@@ -25,6 +25,7 @@
     "./union": "./lib/union.js"
   },
   "scripts": {
+    "test": "yarn jest",
     "prepublish": "cp ../../README.md ./README.md"
   },
   "dependencies": {

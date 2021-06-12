@@ -39,5 +39,8 @@
     "url": "https://github.com/virtualstate/x/issues"
   },
   "homepage": "https://github.com/virtualstate/x#readme",
-  "author": "Fabian Cook <hello@fabiancook.dev>"
+  "author": "Fabian Cook <hello@fabiancook.dev>",
+  "scripts": {
+    "test": "yarn jest"
+  }
 }
