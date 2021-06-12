@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/x",
-  "version": "2.4.6",
+  "version": "2.4.7",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -29,9 +29,9 @@
     "prepublish": "cp ../../README.md ./README.md"
   },
   "dependencies": {
-    "@virtualstate/fringe": "^2.4.6",
-    "@virtualstate/hooks": "^2.4.6",
-    "@virtualstate/union": "^2.4.6",
+    "@virtualstate/fringe": "^2.4.7",
+    "@virtualstate/hooks": "^2.4.7",
+    "@virtualstate/union": "^2.4.7",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
