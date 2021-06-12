@@ -1,31 +1,29 @@
 import {
   createFragment,
-  isSourceReference, isTokenVNode,
+  isSourceReference, isTokenVNode, isVNode,
   SourceReference,
   TokenVNodeBase,
   TokenVNodeFn,
   VNode
 } from "@virtualstate/fringe";
 import {extendedIterable} from "iterable";
+import {read, VNodeSource} from "./read";
 
-type StoreToken = Pick<TokenVNodeBase | TokenVNodeFn, "source" | "options">
+type DomainMap<T extends VNodeSource> = Map<T["source"], Set<T>>;
 
-type DomainMap<T extends StoreToken> = Map<T["source"], TokenVNodeBase<T["source"], T["options"]>[]>;
-type ReadonlyDomainMap<T extends StoreToken> = Map<T["source"], ReadonlyArray<TokenVNodeBase<T["source"], T["options"]>>>;
-
-export interface StoreOptions<T extends StoreToken> {
+export interface StoreOptions<T extends VNodeSource> {
   domain: T[];
-  defaults?: ReadonlyDomainMap<T>;
+  defaults?: DomainMap<T>;
 }
 
 export const Delivery = Symbol("📦");
 
-export class Store<T extends StoreToken> {
+export class Store<T extends VNodeSource> {
 
   #options: StoreOptions<T>;
   #domainSources: unknown[];
   #domainTokens: ReadonlyArray<T>;
-  #domain: ReadonlyDomainMap<T> | undefined = undefined;
+  #domain: DomainMap<T> | undefined = undefined;
   #state: VNode;
 
   constructor(options: StoreOptions<T>, state?: VNode) {
@@ -39,7 +37,8 @@ export class Store<T extends StoreToken> {
     return this.#domainSources.includes(value);
   }
 
-  #isDomainToken(value: VNode): value is TokenVNodeBase<T["source"], T["options"]> {
+  #isDomainToken(value: unknown): value is VNode & T {
+    if (!isVNode(value)) return false;
     if (!this.#isDomainSource(value.source)) return false;
     const found = this.#domainTokens.find(token => token.source === value.source);
     if (!isTokenVNode(found)) {
@@ -48,27 +47,23 @@ export class Store<T extends StoreToken> {
     return found.is(value);
   }
 
-  get(key: T["source"] | T): ReadonlyArray<TokenVNodeBase<T["source"], T["options"]>> {
-    if (isSourceReference(key)) {
-      return this.#domain?.get(key);
-    } else {
+  get(key: T["source"] | T): Set<T> {
+    if (this.#isDomainToken(key)) {
       const value = this.get(key.source);
-      if (!value) return [];
-
+      if (!value) return new Set();
       return value;
+    } else {
+      return this.#domain?.get(key);
     }
   }
 
   async *[Symbol.asyncIterator]() {
     for await (const children of this.#state.children) {
       const nextDomain: DomainMap<T> = new Map();
-      for (const child of children) {
-        if (!this.#isDomainToken(child)) {
-          continue;
-        }
+      for await (const child of read(this.#options, this.#state)) {
         const currentArray = nextDomain.get(child.source);
-        const array: TokenVNodeBase<T["source"], T["options"]>[] = currentArray ?? [];
-        array.push(child);
+        const array: Set<T> = currentArray ?? new Set();
+        array.add(child);
         if (!currentArray) {
           nextDomain.set(child.source, array);
         }
