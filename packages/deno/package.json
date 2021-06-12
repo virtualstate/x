@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/deno",
-  "version": "2.4.5",
+  "version": "2.4.6",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -26,11 +26,11 @@
     "./x/union": "./lib/x/union.js"
   },
   "dependencies": {
-    "@virtualstate/dom": "^2.4.5",
-    "@virtualstate/fringe": "^2.4.5",
-    "@virtualstate/hooks": "^2.4.5",
-    "@virtualstate/union": "^2.4.5",
-    "@virtualstate/x": "^2.4.5",
+    "@virtualstate/dom": "^2.4.6",
+    "@virtualstate/fringe": "^2.4.6",
+    "@virtualstate/hooks": "^2.4.6",
+    "@virtualstate/union": "^2.4.6",
+    "@virtualstate/x": "^2.4.6",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
