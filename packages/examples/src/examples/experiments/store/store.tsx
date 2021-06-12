@@ -32,11 +32,11 @@ export class Store<T extends VNodeSource> {
     this.#domainSources = this.#domainTokens.map(token => token.source);
   }
 
-  #isDomainSource(value: unknown): value is T["source"] {
+  #isDomainSource = (value: unknown): value is T["source"] => {
     return this.#domainSources.includes(value);
   }
 
-  #isDomainToken(value: unknown): value is VNode & T {
+  #isDomainToken = (value: unknown): value is VNode & T => {
     if (!isVNode(value)) return false;
     if (!this.#isDomainSource(value.source)) return false;
     const found = this.#domainTokens.find(token => token.source === value.source);
@@ -67,7 +67,7 @@ export class Store<T extends VNodeSource> {
           nextDomain.set(child.source, array);
         }
       }
-      this.#domain = new Map(extendedIterable(nextDomain.entries()).map(([key, values]) => [key, Object.freeze(values)]));
+      this.#domain = nextDomain;
       yield {
         reference: Delivery,
         source: nextDomain
