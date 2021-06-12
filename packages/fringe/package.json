@@ -21,7 +21,10 @@
     "microtask-collector": "^3.1.0"
   },
   "devDependencies": {
-    "@virtualstate/union": "^2.4.6"
+    "@virtualstate/union": "^2.4.6",
+    "babel-jest": "^27.0.2",
+    "ts-jest": "^27.0.3",
+    "ts-node": "^10.0.0"
   },
   "license": "MIT",
   "repository": {
@@ -32,5 +35,8 @@
     "url": "https://github.com/virtualstate/x/issues"
   },
   "homepage": "https://github.com/virtualstate/x#readme",
-  "author": "Fabian Cook <hello@fabiancook.dev>"
+  "author": "Fabian Cook <hello@fabiancook.dev>",
+  "scripts": {
+    "test": "jest"
+  }
 }

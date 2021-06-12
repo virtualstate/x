@@ -20,6 +20,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "test": "yarn jest",
     "build": "tsc -b ./tsconfig.repo.json && yarn build:post",
     "build:post": "node correct-import-extensions.js",
     "release": "yarn build && lerna publish"
@@ -28,7 +29,9 @@
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "@types/node": "^15.6.0",
+    "babel-jest": "^27.0.2",
     "commander": "^7.2.0",
+    "domexception": "^2.0.1",
     "eslint": "^7.27.0",
     "filehound": "^1.17.4",
     "isomorphic-fetch": "^3.0.0",
@@ -39,6 +42,8 @@
     "microtask-collector": "^3.1.0",
     "minimist": "^1.2.5",
     "prettier": "^2.3.0",
+    "ts-jest": "^27.0.3",
+    "ts-node": "^10.0.0",
     "typescript": "^4.3.2"
   },
   "repository": {
