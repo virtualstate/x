@@ -4,6 +4,7 @@ import {Domain, Cactus, Scroll, TestTube, Thread, DomainToken} from "./domain";
 import {Instance} from "@virtualstate/fringe";
 
 export * from "./store";
+export * from "./read";
 
 const store: VNode & { [Instance]?: Store<DomainToken> } = (
   <Store domain={Domain} final visit={[TestTube]}>
