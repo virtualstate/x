@@ -48,11 +48,9 @@ export class Store<T extends VNodeSource> {
 
   get(key: T["source"] | T): Set<T> {
     if (this.#isDomainToken(key)) {
-      const value = this.get(key.source);
-      if (!value) return new Set();
-      return value;
+      return this.get(key.source);
     } else {
-      return this.#domain?.get(key);
+      return this.#domain?.get(key) ?? new Set();
     }
   }
 
