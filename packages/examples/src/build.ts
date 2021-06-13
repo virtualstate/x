@@ -26,7 +26,7 @@ async function build(node: VNode, key: string, looping = false, main = false) {
   );
   const cleanerSource = source
     .replace(/^export const _[A-Z]*\d+_URL.+$/gm, "")
-    .replace(/^(export const )_[A-Z]*\d+_(.+)$/gm, "$1$2")
+    .replace(/^(export const )_[A-Z]*\d+_[A-Z]+( =.+)$/igm, "$1Example$2")
 
   return `export const _${id}_ExampleInformation = ${JSON.stringify({
     key,
