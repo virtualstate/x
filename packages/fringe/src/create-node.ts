@@ -29,7 +29,8 @@ import {
   getNext
 } from "iterable";
 import { children as childrenGenerator, ChildrenContext } from "./children";
-import { Fragment } from "./fragment";
+import {createFragment, Fragment} from "./fragment";
+import {isTokenVNodeFn} from "./token";
 
 const nonConstructable = new WeakSet();
 
@@ -79,6 +80,13 @@ export function createNode<T extends Source>(source: T): CreateNodeResult<T>;
 export function createNode(source: Source, options?: Record<string, unknown>, ...children: unknown[]): VNode;
 export function createNode(source: unknown, options?: Record<string, unknown>, ...children: unknown[]): VNode;
 export function createNode(source: Source, options?: Record<string, unknown>, ...children: VNodeRepresentationSource[]): VNode {
+  /**
+   * Shortcut a functional token, this will allow the node to be directly created here
+   */
+  if (isTokenVNodeFn(source)) {
+    return source(options,  createFragment({}, ...children));
+  }
+
   /**
    * If the source is a function we're going to invoke it as soon as possible with the provided options
    *

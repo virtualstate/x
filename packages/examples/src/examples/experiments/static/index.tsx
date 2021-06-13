@@ -1,0 +1,14 @@
+import { createStaticNode } from "./static";
+import {Cactus, Scroll, TestTube, Thread} from "../store/domain";
+import {h} from "@virtualstate/fringe";
+
+const node = (
+  <TestTube>
+    <Thread size={2} />
+      <Cactus spikes="spikey" />
+      <Cactus spikes="not very spikey" />
+    <Scroll />
+  </TestTube>
+)
+
+export const _E4001_Static = createStaticNode(node);

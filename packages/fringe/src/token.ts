@@ -123,7 +123,7 @@ export function createToken<T extends SourceReference, O extends object = object
     const accessOnly: PropertyDescriptor = {
       enumerable: false,
       writable: false,
-      configurable: false
+      configurable: true
     }
     Object.defineProperties(token, {
       reference: {

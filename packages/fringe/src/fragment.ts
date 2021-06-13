@@ -1,4 +1,4 @@
-import { VNodeRepresentationSource } from "./vnode";
+import {isVNode, VNode, VNodeRepresentationSource} from "./vnode";
 import { createNode } from "./create-node";
 
 /**
@@ -7,6 +7,9 @@ import { createNode } from "./create-node";
  */
 export const Fragment = Symbol.for("@virtualstate/fringe/fragment");
 
-export function createFragment(options: Record<string, unknown>, ...children: VNodeRepresentationSource[]) {
+export function createFragment(options: Record<string, unknown>, ...children: VNodeRepresentationSource[]): VNode {
+  if (children.length === 1 && isVNode(children[0])) {
+    return children[0];
+  }
   return createNode(Fragment, options, ...children);
 }
