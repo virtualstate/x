@@ -76,3 +76,4 @@ export const _E0101_Combinational = (
     </Truthful>
   </Void>
 )
+export const _E0101_URL = import.meta.url;

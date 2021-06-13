@@ -1,8 +1,7 @@
 import * as Examples from "./examples";
 import {isVNode, VNode} from "@virtualstate/fringe";
-import { h } from "./jsx";
-import { PerformanceObserver, performance } from "perf_hooks";
-import {createHook} from "async_hooks";
+import {dirname, join} from "path";
+import {promises as fs} from "fs";
 
 // const obs = new PerformanceObserver((items) => {
 //   console.log(items.getEntries());
@@ -10,55 +9,34 @@ import {createHook} from "async_hooks";
 // });
 // obs.observe({ entryTypes: ['measure'] });
 
-async function build(node: VNode, looping = false, main = false) {
-  const types = new Map();
-  let count = 0n;
-  let resolved = 0n;
-  const hook = createHook({
-    init(asyncId, type) {
-      count += 1n;
-      types.set(type, (types.get(type) || 0n) + 1n);
-    },
-    promiseResolve(asyncId) {
-      resolved += 1n;
-    }
-  });
-
-  if (main) {
-    hook.enable();
-    performance.mark('A');
+async function build(node: VNode, key: string, looping = false, main = false) {
+  const id = key.split("_").find(Boolean);
+  const urlString = Examples[`_${id}_URL`];
+  if (typeof urlString !== "string") {
+    throw new Error(`${id} has no URL defined`);
   }
+  const url = new URL(urlString);
+  const output = await fs.readFile(url.pathname, "utf8");
+  const source = (
+    await fs.readFile(
+      url.pathname
+        .replace(/(packages\/[^\/]+\/)lib/, "$1src")
+        .replace(/\.js$/, ".tsx"),
+      "utf8")
+  );
+  const cleanerSource = source
+    .replace(/^export const _[A-Z]*\d+_URL.+$/gm, "")
+    .replace(/^(export const )_[A-Z]*\d+_(.+)$/gm, "$1$2")
 
-  console.log(node);
-  const children = node.children;
-  if (!children) return;
-  console.group("Starting Logging children:");
-  console.log("===========================");
-
-  let loops = 0;
-  for await (const updates of children) {
-    loops += 1;
-    console.log(`${updates.length} Child${updates.length === 1 ? "" : "ren"}:`);
-    for (const child of updates) {
-      await build(child);
-    }
-    console.log("===========================");
-
-    if (looping && loops >= 2) {
-      break;
-    }
-  }
-  console.groupEnd();
-
-  if (main) {
-    hook.disable();
-    performance.mark('B');
-    performance.measure(`A to B`, 'A', 'B');
-    console.log({ count, resolved, types });
-  }
+  return `export const _${id}_ExampleInformation = ${JSON.stringify({
+    key,
+    source,
+    output,
+    cleanerSource
+  }, undefined, "  ")}`;
 }
 
-
+const parts: string[] = [];
 for (const exampleKey in Examples) {
   const example = Examples[exampleKey];
   if (!isVNode(example)) continue;
@@ -67,10 +45,19 @@ for (const exampleKey in Examples) {
     .replace(/_/g, " ")
     .replace(/([A-Z])/g,  " $1")
     .trim()
-  console.log(`Example: ${name}\n`);
-  await build(example, exampleKey.includes("Loop"), true);
-  console.log("");
+  console.log(`Building: ${name}`);
+  const part = await build(example, exampleKey, exampleKey.includes("Loop"), true);
+  parts.push(part);
 }
+
+const information = `// @ts-ignore
+${parts.join("\n")}
+`;
+
+await fs.writeFile(
+  join(dirname(new URL(import.meta.url).pathname), "../src/information.built.ts"),
+  information
+);
 
 export default 2;
 export const isBuild = 1;

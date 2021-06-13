@@ -1,8 +1,28 @@
 import * as Examples from "./examples";
 import {isVNode, VNode} from "@virtualstate/fringe";
 import { h } from "./jsx";
+import {createHook} from "async_hooks";
+import {performance} from "perf_hooks";
 
-async function log(node: VNode, looping = false) {
+async function log(node: VNode, looping = false, main = false) {
+  const types = new Map();
+  let count = 0n;
+  let resolved = 0n;
+  const hook = createHook({
+    init(asyncId, type) {
+      count += 1n;
+      types.set(type, (types.get(type) || 0n) + 1n);
+    },
+    promiseResolve(asyncId) {
+      resolved += 1n;
+    }
+  });
+
+  if (main) {
+    hook.enable();
+    performance.mark('A');
+  }
+
   console.log(node);
   const children = node.children;
   if (!children) return;
@@ -23,6 +43,14 @@ async function log(node: VNode, looping = false) {
     }
   }
   console.groupEnd();
+
+
+  if (main) {
+    hook.disable();
+    performance.mark('B');
+    performance.measure(`A to B`, 'A', 'B');
+    console.log({ count, resolved, types });
+  }
 }
 
 
@@ -35,7 +63,7 @@ for (const exampleKey in Examples) {
     .replace(/([A-Z])/g,  " $1")
     .trim()
   console.log(`Example: ${name}\n`);
-  await log(example, exampleKey.includes("Loop"));
+  await log(example, exampleKey.includes("Loop"), true);
   console.log("");
 }
 

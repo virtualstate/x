@@ -17,3 +17,4 @@ export const _403_ClassWithChildren= (
     <innerChild />
   </Component>
 )
+export const _403_URL = import.meta.url;

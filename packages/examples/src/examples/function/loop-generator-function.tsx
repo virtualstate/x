@@ -5,4 +5,5 @@ function *Component() {
   yield <Component />
 }
 
-export const _206_LoopGeneratorFunction = <Component />
+export const _205_LoopGeneratorFunction = <Component />
+export const _205_URL = import.meta.url;

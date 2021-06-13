@@ -10,8 +10,9 @@ function Component(o: unknown, child: VNode) {
   )
 }
 
-export const _208_FunctionWithChildren = (
+export const _207_FunctionWithChildren = (
   <Component>
     <innerChild />
   </Component>
 )
+export const _207_URL = import.meta.url;

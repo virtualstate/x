@@ -5,3 +5,4 @@ export const _105_ChildrenScalar = (
     <child />
   </example>
 )
+export const _105_URL = import.meta.url;

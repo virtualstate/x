@@ -23,3 +23,4 @@ export const _405_SharedInstance = (
     </And>
   </container>
 )
+export const _405_URL = import.meta.url;

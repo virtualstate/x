@@ -5,3 +5,4 @@ export const _301_Promise = (
     {Promise.resolve("This is my promise result")}
   </container>
 )
+export const _301_URL = import.meta.url;

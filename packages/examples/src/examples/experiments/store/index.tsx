@@ -28,3 +28,4 @@ export const _E2001_Store = (
     </Look>
   </container>
 )
+export const _E2001_URL = import.meta.url;

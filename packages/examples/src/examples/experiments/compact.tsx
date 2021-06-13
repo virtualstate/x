@@ -103,3 +103,4 @@ export const _E0001_Compact = (
     </Compact>
   </container>
 )
+export const _E0001_URL = import.meta.url;

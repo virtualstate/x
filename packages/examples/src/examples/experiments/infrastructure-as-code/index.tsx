@@ -11,3 +11,4 @@ export const _E3001_InfrastructureAsCode = (
     </Service>
   </Farm>
 )
+export const _E3001_URL = import.meta.url;

@@ -5,3 +5,4 @@ async function Component() {
 }
 
 export const _202_AsyncFunction = <Component />
+export const _202_URL = import.meta.url;

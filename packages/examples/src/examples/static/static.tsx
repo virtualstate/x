@@ -9,3 +9,4 @@ export const _501_Static = (
     <Scroll />
   </TestTube>
 );
+export const _501_URL = import.meta.url;

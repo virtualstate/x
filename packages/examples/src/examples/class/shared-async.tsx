@@ -23,3 +23,4 @@ export const _406_SharedAsync = (
     </And>
   </container>
 )
+export const _406_URL = import.meta.url;

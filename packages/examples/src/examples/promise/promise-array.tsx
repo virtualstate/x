@@ -8,3 +8,4 @@ export const _302_PromiseArray = (
     ]}
   </container>
 )
+export const _302_URL = import.meta.url;

@@ -6,3 +6,4 @@ async function *Component() {
 }
 
 export const _204_AsyncGeneratorFunction = <Component />
+export const _204_URL = import.meta.url;

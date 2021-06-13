@@ -42,3 +42,4 @@ export const _407_SharedCollector = (
     </And>
   </container>
 )
+export const _407_URL = import.meta.url;

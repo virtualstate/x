@@ -12,3 +12,4 @@ class Component {
 export const _401_Class = (
   <Component />
 )
+export const _401_URL = import.meta.url;

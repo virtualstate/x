@@ -5,4 +5,5 @@ function *Component() {
   yield <example2 />
 }
 
-export const _204_GeneratorFunction = <Component />
+export const _203_GeneratorFunction = <Component />
+export const _203_URL = import.meta.url;

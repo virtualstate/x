@@ -14,3 +14,4 @@ class Component {
 export const _404_ReferenceClass = (
   <Component />
 )
+export const _404_URL = import.meta.url;
