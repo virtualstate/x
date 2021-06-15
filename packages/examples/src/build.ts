@@ -1,7 +1,8 @@
 import * as Examples from "./examples";
-import {isVNode, VNode} from "@virtualstate/fringe";
+import {isVNode} from "@virtualstate/fringe";
 import {dirname, join} from "path";
 import {promises as fs} from "fs";
+import {getExampleNameFromKey} from "./log.util";
 
 // const obs = new PerformanceObserver((items) => {
 //   console.log(items.getEntries());
@@ -9,8 +10,8 @@ import {promises as fs} from "fs";
 // });
 // obs.observe({ entryTypes: ['measure'] });
 
-async function build(node: VNode, key: string, looping = false, main = false) {
-  const id = key.split("_").find(Boolean);
+async function build(exampleKey: string) {
+  const id = exampleKey.split("_").find(Boolean);
   const urlString = Examples[`_${id}_URL`];
   if (typeof urlString !== "string") {
     throw new Error(`${id} has no URL defined`);
@@ -30,8 +31,10 @@ async function build(node: VNode, key: string, looping = false, main = false) {
     .replace(/^export const _[A-Z]*\d+_URL.+$/gm, "")
     .replace(/^(export const )_[A-Z]*\d+_[A-Z]+( =.+)$/igm, "$1Example$2")
 
-  return `export const _${id}_ExampleInformation = ${JSON.stringify({
-    key,
+  return `export const _${id}_ExampleInformation: ExampleInformation = ${JSON.stringify({
+    exportedAs: exampleKey,
+    id,
+    name: getExampleNameFromKey(exampleKey),
     source,
     output,
     cleanerSource
@@ -42,17 +45,22 @@ const parts: string[] = [];
 for (const exampleKey in Examples) {
   const example = Examples[exampleKey];
   if (!isVNode(example)) continue;
-  const name = exampleKey
-    .replace(/^_[A-Z]+\d+_/, "")
-    .replace(/_/g, " ")
-    .replace(/([A-Z])/g,  " $1")
-    .trim()
+  const name = getExampleNameFromKey(exampleKey);
   console.log(`Building: ${name}`);
-  const part = await build(example, exampleKey, exampleKey.includes("Loop"), true);
+  const part = await build(exampleKey);
   parts.push(part);
 }
 
-const information = `// @ts-ignore
+const information = `
+export interface ExampleInformation {
+  name: string;
+  id: string;
+  exportedAs: string;
+  source: string;
+  output: string;
+  cleanerSource: string;
+}
+
 ${parts.join("\n")}
 `;
 
