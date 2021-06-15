@@ -1,6 +1,6 @@
 import {VNode} from "@virtualstate/fringe";
-import {createHook} from "async_hooks";
-import {performance} from "perf_hooks";
+// import {createHook} from "async_hooks";
+// import {performance} from "perf_hooks";
 
 export function getExampleNameFromKey(exampleKey: string) {
   return exampleKey
@@ -15,20 +15,20 @@ export async function log(node: VNode, looping = false, main = false) {
   const types = new Map();
   let count = 0n;
   let resolved = 0n;
-  const hook = createHook({
-    init(asyncId, type) {
-      count += 1n;
-      types.set(type, (types.get(type) || 0n) + 1n);
-    },
-    promiseResolve(asyncId) {
-      resolved += 1n;
-    }
-  });
+  // const hook = createHook({
+  //   init(asyncId, type) {
+  //     count += 1n;
+  //     types.set(type, (types.get(type) || 0n) + 1n);
+  //   },
+  //   promiseResolve(asyncId) {
+  //     resolved += 1n;
+  //   }
+  // });
 
-  if (main) {
-    hook.enable();
-    performance.mark('A');
-  }
+  // if (main) {
+  //   hook.enable();
+  //   performance.mark('A');
+  // }
 
   console.log(node);
   const children = node.children;
@@ -52,10 +52,10 @@ export async function log(node: VNode, looping = false, main = false) {
   console.groupEnd();
 
 
-  if (main) {
-    hook.disable();
-    performance.mark('B');
-    performance.measure(`A to B`, 'A', 'B');
-    console.log({ count, resolved, types });
-  }
+  // if (main) {
+  //   hook.disable();
+  //   performance.mark('B');
+  //   performance.measure(`A to B`, 'A', 'B');
+  //   console.log({ count, resolved, types });
+  // }
 }

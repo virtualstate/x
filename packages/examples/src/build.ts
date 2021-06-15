@@ -44,8 +44,11 @@ async function build(exampleKey: string) {
     output: ${JSON.stringify(output)},
     cleanerSource: ${JSON.stringify(cleanerSource)},
     import: async (): Promise<VNode> => {
+      ${
+      !/EO/.test(id) ? `
       const module = await import("./${targetImport}");
-      return module.${exampleKey};
+      return module.${exampleKey};`.trim() : "throw new Error(`Not available`);"
+      }
     }
   }`;
 }
@@ -62,7 +65,6 @@ for (const exampleKey in Examples) {
 
 const information = `
 import { VNode } from "@virtualstate/fringe";
-import * as Examples from "./examples";
 
 export interface ExampleInformation {
   name: string;
