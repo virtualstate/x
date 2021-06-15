@@ -45,7 +45,7 @@ async function build(exampleKey: string) {
     cleanerSource: ${JSON.stringify(cleanerSource)},
     import: async (): Promise<VNode> => {
       ${
-      !/EO/.test(id) ? `
+      !/[A-Z]/.test(id) ? `
       const module = await import("./${targetImport}");
       return module.${exampleKey};`.trim() : "throw new Error(`Not available`);"
       }
