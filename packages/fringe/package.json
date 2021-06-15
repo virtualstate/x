@@ -16,7 +16,7 @@
     "virtual-state"
   ],
   "peerDependencies": {
-    "@virtualstate/union": "^1.0.0",
+    "@virtualstate/union": "^2.10.0",
     "iterable": "^5.2.2",
     "microtask-collector": "^3.1.0"
   },
