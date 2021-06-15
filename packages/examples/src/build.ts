@@ -50,8 +50,9 @@ async function build(exampleKey: string) {
     output: ${JSON.stringify(output)},
     cleanerSource: ${JSON.stringify(cleanerSource)},
     import: async (): Promise<VNode> => {
-      const module = await import("./examples");
-      return module.${exampleKey};
+      // For now we are just using the top level import directly, but in the future I want
+      // to lazy load these when there is a heap
+      return Examples.${exampleKey};
     }
   }`;
 }
@@ -68,6 +69,7 @@ for (const exampleKey in Examples) {
 
 const information = `
 import { VNode } from "@virtualstate/fringe";
+import * as Examples from "./examples";
 
 export interface ExampleInformation {
   name: string;
