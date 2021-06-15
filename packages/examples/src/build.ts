@@ -31,14 +31,29 @@ async function build(exampleKey: string) {
     .replace(/^export const _[A-Z]*\d+_URL.+$/gm, "")
     .replace(/^(export const )_[A-Z]*\d+_[A-Z]+( =.+)$/igm, "$1Example$2")
 
-  return `export const _${id}_ExampleInformation: ExampleInformation = ${JSON.stringify({
+  /*
+  ${JSON.stringify({
     exportedAs: exampleKey,
     id,
     name: getExampleNameFromKey(exampleKey),
     source,
     output,
     cleanerSource
-  }, undefined, "  ")}`;
+  }, undefined, "  ")}
+   */
+
+  return `export const _${id}_ExampleInformation: ExampleInformation = {
+    name: ${JSON.stringify(getExampleNameFromKey(exampleKey))},
+    id: ${JSON.stringify(id)},
+    exportedAs: ${JSON.stringify(exampleKey)},
+    source: ${JSON.stringify(source)},
+    output: ${JSON.stringify(output)},
+    cleanerSource: ${JSON.stringify(cleanerSource)},
+    import: async (): Promise<VNode> => {
+      const module = await import("./examples");
+      return module.${exampleKey};
+    }
+  }`;
 }
 
 const parts: string[] = [];
@@ -52,6 +67,8 @@ for (const exampleKey in Examples) {
 }
 
 const information = `
+import { VNode } from "@virtualstate/fringe";
+
 export interface ExampleInformation {
   name: string;
   id: string;
@@ -59,6 +76,7 @@ export interface ExampleInformation {
   source: string;
   output: string;
   cleanerSource: string;
+  import(): Promise<VNode>
 }
 
 ${parts.join("\n")}
