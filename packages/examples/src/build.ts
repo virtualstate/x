@@ -1,6 +1,6 @@
 import * as Examples from "./examples";
 import {isVNode} from "@virtualstate/fringe";
-import {dirname, join} from "path";
+import {dirname, join, relative, basename} from "path";
 import {promises as fs} from "fs";
 import {getExampleNameFromKey} from "./log.util";
 
@@ -31,16 +31,10 @@ async function build(exampleKey: string) {
     .replace(/^export const _[A-Z]*\d+_URL.+$/gm, "")
     .replace(/^(export const )_[A-Z]*\d+_[A-Z]+( =.+)$/igm, "$1Example$2")
 
-  /*
-  ${JSON.stringify({
-    exportedAs: exampleKey,
-    id,
-    name: getExampleNameFromKey(exampleKey),
-    source,
-    output,
-    cleanerSource
-  }, undefined, "  ")}
-   */
+  const buildUrl = new URL(import.meta.url);
+  const buildDirectory = dirname(buildUrl.pathname);
+  const sourceImport = relative(buildDirectory, url.pathname);
+  const targetImport = `${dirname(sourceImport)}/${basename(sourceImport, ".js")}`
 
   return `export const _${id}_ExampleInformation: ExampleInformation = {
     name: ${JSON.stringify(getExampleNameFromKey(exampleKey))},
@@ -50,9 +44,8 @@ async function build(exampleKey: string) {
     output: ${JSON.stringify(output)},
     cleanerSource: ${JSON.stringify(cleanerSource)},
     import: async (): Promise<VNode> => {
-      // For now we are just using the top level import directly, but in the future I want
-      // to lazy load these when there is a heap
-      return Examples.${exampleKey};
+      const module = await import("./${targetImport}");
+      return module.${exampleKey};
     }
   }`;
 }
@@ -78,7 +71,7 @@ export interface ExampleInformation {
   source: string;
   output: string;
   cleanerSource: string;
-  import(): Promise<VNode>
+  import?(): Promise<VNode>
 }
 
 ${parts.join("\n")}
