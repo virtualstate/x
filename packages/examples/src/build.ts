@@ -25,6 +25,8 @@ async function build(node: VNode, key: string, looping = false, main = false) {
       "utf8")
   );
   const cleanerSource = source
+    // Replace any unknown types, for clarity
+    .replace(/: unknown/g, "")
     .replace(/^export const _[A-Z]*\d+_URL.+$/gm, "")
     .replace(/^(export const )_[A-Z]*\d+_[A-Z]+( =.+)$/igm, "$1Example$2")
 

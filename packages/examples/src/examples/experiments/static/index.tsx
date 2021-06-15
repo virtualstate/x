@@ -14,3 +14,4 @@ const node = (
 )
 
 export const _E4001_Static = createStaticNode(node);
+export const _E4001_URL = import.meta.url;
