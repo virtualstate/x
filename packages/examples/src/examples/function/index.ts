@@ -5,3 +5,4 @@ export * from "./async-generator-function";
 export * from "./loop-generator-function";
 export * from "./options-function";
 export * from "./children-function";
+export * from "./generator-order";
