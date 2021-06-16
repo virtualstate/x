@@ -1,7 +1,7 @@
 import { h } from "../../jsx";
 
 async function Component() {
-  return <example />;
+  return "🎃";
 }
 
 export const _202_AsyncFunction = <Component />;
