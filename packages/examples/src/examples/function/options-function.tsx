@@ -5,8 +5,8 @@ interface ComponentOptions {
 }
 
 function Component({ meta }: ComponentOptions) {
-  return <example meta={`${meta} Value`} />
+  return <example meta={`${meta} 🎾`} />
 }
 
-export const _206_FunctionWithOptions = <Component meta="Some" />
+export const _206_FunctionWithOptions = <Component meta="🏓" />
 export const _206_URL = import.meta.url;

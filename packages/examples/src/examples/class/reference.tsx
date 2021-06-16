@@ -5,13 +5,12 @@ class Component {
   reference: symbol;
 
   constructor() {
-    // Define as specific instance
-    this.reference = Symbol("Component Instance");
+    this.reference = Symbol("🛎️");
   }
 
 }
 
 export const _404_ReferenceClass = (
   <Component />
-)
+);
 export const _404_URL = import.meta.url;

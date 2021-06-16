@@ -12,9 +12,9 @@ class Component {
 
 }
 
-export const _403_ClassWithChildren= (
+export const _403_ClassWithChildren = (
   <Component>
-    <innerChild />
+    {"🐸"}
   </Component>
-)
+);
 export const _403_URL = import.meta.url;

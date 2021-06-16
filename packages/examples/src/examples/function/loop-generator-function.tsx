@@ -1,7 +1,7 @@
 import { h } from "../../jsx";
 
 function *Component() {
-  yield <example1 />
+  yield "💥"
   yield <Component />
 }
 

@@ -10,12 +10,12 @@ class Component {
   }
 
   async *[Symbol.asyncIterator]() {
-    yield `${this.options.meta} value`;
+    yield `${this.options.meta} 🛑`;
   }
 
 }
 
 export const _402_ClassWithOptions = (
-  <Component meta="Some" />
-)
+  <Component meta="🟢" />
+);
 export const _402_URL = import.meta.url;

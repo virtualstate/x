@@ -1,8 +1,8 @@
 import { h } from "../../jsx";
 
 function *Component() {
-  yield <example1 />
-  yield <example2 />
+  yield <example1 />;
+  yield <example2 />;
 }
 
 export const _203_GeneratorFunction = <Component />

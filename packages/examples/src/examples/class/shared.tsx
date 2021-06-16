@@ -7,12 +7,12 @@ class Component {
 
   *[Symbol.iterator]() {
     const id = this.iterations += 1;
-    yield { reference: `Iteration ${id}` };
+    yield { reference: `Iteration ${id} 🐸` };
   }
 
 }
 
-const node = <Component />
+const node = <Component />;
 
 export const _405_SharedInstance = (
   <container>
@@ -22,5 +22,5 @@ export const _405_SharedInstance = (
       {node}
     </And>
   </container>
-)
+);
 export const _405_URL = import.meta.url;

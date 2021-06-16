@@ -18,20 +18,20 @@ class Component {
 
   async watch() {
     for await (const batch of this.collector) {
-      this.seen.push(...batch)
+      this.seen.push(...batch);
     }
   }
 
   async *[Symbol.asyncIterator]() {
     const id = this.iterations += 1;
     this.collector.add(id);
-    yield { reference: `Iteration ${id}` };
-    yield `Seen: ${this.seen.join(", ")}`;
+    yield { reference: `Iteration ${id} 🦆` };
+    yield `Seen: ${this.seen.join(", ")} 🐸`;
   }
 
 }
 
-const node = <Component expect={3} />
+const node = <Component expect={3} />;
 
 export const _407_SharedCollector = (
   <container>
@@ -41,5 +41,5 @@ export const _407_SharedCollector = (
       {node}
     </And>
   </container>
-)
+);
 export const _407_URL = import.meta.url;

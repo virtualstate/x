@@ -7,12 +7,12 @@ class Component {
 
   async *[Symbol.asyncIterator]() {
     const id = this.iterations += 1;
-    yield { reference: `Iteration ${id}` };
+    yield { reference: `Iteration ${id} 🕊️` };
   }
 
 }
 
-const node = <Component />
+const node = <Component />;
 
 export const _406_SharedAsync = (
   <container>
@@ -22,5 +22,5 @@ export const _406_SharedAsync = (
       {node}
     </And>
   </container>
-)
+);
 export const _406_URL = import.meta.url;
