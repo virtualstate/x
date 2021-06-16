@@ -25,11 +25,19 @@ async function build(exampleKey: string) {
         .replace(/\.js$/, ".tsx"),
       "utf8")
   );
-  const cleanerSource = source
+
+  let cleanerSource = source;
+  const baseCleanerSource = cleanerSource.split("\n");
+  const infoIndex = baseCleanerSource.findIndex(value => /\d+_(Info|URL) =/.test(value));
+  if (infoIndex > -1) {
+    cleanerSource = baseCleanerSource.slice(0, infoIndex).join("\n");
+  }
+  cleanerSource = cleanerSource
     // Replace any unknown types, for clarity
     .replace(/: unknown/g, "")
     .replace(/^export const _[A-Z]*\d+_URL.+$/gm, "")
-    .replace(/^(export const )_[A-Z]*\d+_[A-Z]+( =.+)$/igm, "$1Example$2")
+    .replace(/^(export const )_[A-Z]*\d+_[A-Z]+( =.+)$/igm, "$1Example$2");
+
 
   const buildUrl = new URL(import.meta.url);
   const buildDirectory = dirname(buildUrl.pathname);
