@@ -23,7 +23,9 @@
     "test": "yarn jest",
     "build": "tsc -b ./tsconfig.repo.json && yarn build:post",
     "build:post": "node correct-import-extensions.js",
-    "release": "yarn build && lerna publish"
+    "release": "yarn build && lerna publish",
+    "examples:log": "yarn build && node packages/examples/lib/log.js",
+    "examples:build": "yarn build && node packages/examples/lib/log.js && yarn build"
   },
   "private": true,
   "devDependencies": {

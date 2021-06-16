@@ -10,11 +10,12 @@ function *Component() {
 }
 
 async function Log() {
-  console.log("🧲");
+  console.log("🟢️\n");
   for await (const node of read(<Component />)) {
     console.log(node.source);
+    console.log("\n⏭️\n");
   }
-  console.log("🧪");
+  console.log("\n🛑");
 }
 
 export const _208_LogOrder = (
