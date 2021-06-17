@@ -29,7 +29,7 @@ function SecretContents() {
   )
 }
 
-export const _702_BoxChildren = (
+export const _702_TokenChildren = (
   <Box>
     <Scroll />
     <TestTube />
