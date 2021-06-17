@@ -1,8 +1,9 @@
 import * as Examples from "./examples";
 import { isVNode } from "@virtualstate/fringe";
-import {getExampleNameFromKey, log} from "./log.util";
+import {getExampleNameFromKey, isWantedExampleKey, log} from "./log.util";
 
 for (const exampleKey in Examples) {
+  if (!isWantedExampleKey(exampleKey)) continue;
   const example = Examples[exampleKey];
   if (!isVNode(example)) continue;
   const name = getExampleNameFromKey(exampleKey);

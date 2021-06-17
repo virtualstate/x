@@ -2,6 +2,34 @@ import {VNode} from "@virtualstate/fringe";
 // import {createHook} from "async_hooks";
 // import {performance} from "perf_hooks";
 
+function getEnv(): Record<string, string | undefined> {
+  if (typeof process === "undefined") {
+    return getImportEnv();
+  }
+  return process.env;
+
+  function getImportEnv() {
+    const meta = import.meta;
+    return isEnv(meta) ? meta.env : {};
+
+    function isEnv(meta: unknown): meta is { env: ReturnType<typeof getEnv> } {
+      function isLike(meta: unknown): meta is { env: unknown } {
+        return !!meta;
+      }
+      return isLike(meta) && !!meta.env;
+    }
+  }
+}
+
+export function isWantedExampleKey(exampleKey: string) {
+  const {
+    EXAMPLES_MATCH: match
+  } = getEnv();
+  if (!match) return true;
+  const regex = new RegExp(match);
+  return regex.test(exampleKey);
+}
+
 export function getExampleNameFromKey(exampleKey: string) {
   return exampleKey
     .split("_")

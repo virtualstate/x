@@ -29,7 +29,7 @@ export type CreateNodeChildren<C extends unknown[]> =
     undefined :
     CreateNodeChildrenWithSourceType<C>;
 
-type Options = Record<string, unknown> | undefined;
+type Options = Record<string, unknown> | object | undefined;
 
 export type CreateNodeResultOp3<
   T extends VNode,
@@ -46,7 +46,7 @@ export type CreateNodeResultOp3<
 export type CreateNodeResultOp6<T extends CreateNodeOp6SourceReference, O extends Options, C extends unknown[]> =
   | Omit<VNode, "source" | "scalar" | "options" | "children"> & {
   source: T;
-  scalar: CreateNodeChildren<C> extends AsyncIterable<unknown> ? false : true;
+  scalar: undefined extends CreateNodeChildren<C> ? true : false;
   options: O;
   children: CreateNodeChildren<C>;
 }
@@ -54,7 +54,7 @@ export type CreateNodeResultOp6<T extends CreateNodeOp6SourceReference, O extend
 /**
  * @experimental Use this type directly at your own risk.
  */
-export type CreateNodeResult<T, O extends Options = Options, C extends unknown[] = []> =
+export type CreateNodeResultCore<T, O extends Options = Options, C extends unknown[] = []> =
   T extends CreateNodeOp1Function ? Omit<FragmentVNode, "source"> & { source: T } :
     T extends CreateNodeOp2Promise ? Omit<FragmentVNode, "source"> & { source: T extends Promise<infer I> ? CreateNodeResult<I> : unknown } :
       T extends CreateNodeOp3Fragment ? CreateNodeResult<FragmentVNode, O, C> :
@@ -69,6 +69,12 @@ export type CreateNodeResult<T, O extends Options = Options, C extends unknown[]
                     T extends CreateNodeOp9000ExplicitExceptionCaseForObject ? never :
                       // All other types we do not know how to resolve, and they will throw an error
                       never;
+
+/**
+ * @experimental Use this type directly at your own risk.
+ */
+export type CreateNodeResult<T, O extends Options = Options, C extends unknown[] = []> =
+  Omit<CreateNodeResultCore<T, O, C>, "children"> & Pick<VNodeWithChildrenFromSource<CreateNodeResultCore<T, O, C>>, "children">
 
 export type CreateNodeOp1Function = (options?: unknown, children?: VNode) => unknown;
 export type CreateNodeOp2Promise = Promise<unknown>;
@@ -110,14 +116,17 @@ type ChildrenResult<CValue> =
 
 type ArrayItems<T extends unknown[]> = T extends Array<infer I> ? I : never;
 
-type ChildrenResultFromSource<C extends unknown[]> = ChildrenResult<ArrayItems<C>> & VNode;
+type ChildrenResultFromSource<C extends VNode[]> = unknown extends ChildrenResult<ArrayItems<C>> ? VNode : VNode;
 
 /**
  * @experimental This type may be removed if found to be not performant
  */
-export type VNodeWithChildrenFromSource<V extends VNode> = Omit<V, "children"> & {
-  children: CreateNodeChildrenWithSourceType<InferChildrenSource<V>, ChildrenResultFromSource<InferChildrenSource<V>>[]>
-};
+export type VNodeWithChildrenFromSource<V> = V extends VNode ? Omit<V, "children"> & {
+  children:
+    unknown[] extends InferChildrenSource<V> ?
+      never :
+      CreateNodeChildrenWithSourceType<ChildrenResultFromSource<InferChildrenSource<V>>[], InferChildrenSource<V>>
+} : V;
 
 type ChildrenOp1Undefined = undefined;
 type ChildrenOp2Promise = Promise<unknown>;

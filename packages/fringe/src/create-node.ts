@@ -69,17 +69,17 @@ export interface CreateNodeFn {
  */
 export function createNode<
   T extends Source,
-  O extends Record<string, unknown>,
+  O extends Record<string, unknown> | object,
   C extends unknown[]
   >(source: T, options: O, ...children: C): CreateNodeResult<T, O, C>;
 export function createNode<
   T extends Source,
-  O extends Record<string, unknown>
+  O extends Record<string, unknown> | object
   >(source: T, options: O): CreateNodeResult<T, O>;
 export function createNode<T extends Source>(source: T): CreateNodeResult<T>;
-export function createNode(source: Source, options?: Record<string, unknown>, ...children: unknown[]): VNode;
-export function createNode(source: unknown, options?: Record<string, unknown>, ...children: unknown[]): VNode;
-export function createNode(source: Source, options?: Record<string, unknown>, ...children: VNodeRepresentationSource[]): VNode {
+export function createNode(source: Source, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
+export function createNode(source: unknown, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
+export function createNode(source: Source, options?: Record<string, unknown> | object, ...children: VNodeRepresentationSource[]): VNode {
   /**
    * Shortcut a functional token, this will allow the node to be directly created here
    */

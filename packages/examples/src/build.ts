@@ -10,6 +10,14 @@ import {getExampleNameFromKey} from "./log.util";
 // });
 // obs.observe({ entryTypes: ['measure'] });
 
+async function isFile(file: string): Promise<boolean> {
+  try {
+    return (await fs.stat(file)).isFile();
+  } catch {
+    return false;
+  }
+}
+
 async function build(exampleKey: string) {
   const id = exampleKey.split("_").find(Boolean);
   const urlString = Examples[`_${id}_URL`];
@@ -18,12 +26,22 @@ async function build(exampleKey: string) {
   }
   const url = new URL(urlString);
   const output = await fs.readFile(url.pathname, "utf8");
+
+  let sourceFile =
+    url.pathname
+      .replace(/(packages\/[^\/]+\/)lib/, "$1src")
+  const sourceTsxFile = sourceFile.replace(/\.js$/, ".tsx");
+  if (await isFile(sourceTsxFile)) {
+    sourceFile = sourceTsxFile;
+  } else {
+    sourceFile = sourceFile.replace(/\.js$/, ".ts");
+  }
+
   const source = (
     await fs.readFile(
-      url.pathname
-        .replace(/(packages\/[^\/]+\/)lib/, "$1src")
-        .replace(/\.js$/, ".tsx"),
-      "utf8")
+      sourceFile,
+      "utf8"
+    )
   );
 
   let cleanerSource = source;
