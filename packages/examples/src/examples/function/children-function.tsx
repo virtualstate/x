@@ -1,5 +1,4 @@
-import { h } from "../../jsx";
-import {VNode} from "@virtualstate/fringe";
+import { h, VNode } from "@virtualstate/fringe";
 
 
 function Component(o: unknown, child: VNode) {

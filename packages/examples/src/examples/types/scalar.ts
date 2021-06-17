@@ -1,4 +1,4 @@
-import { h } from "@virtualstate/x";
+import { h } from "@virtualstate/fringe";
 
 const node = h("🐸");
 const source: "🐸" = node.source;

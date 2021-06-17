@@ -1,4 +1,4 @@
-import {createToken, h, TokenVNodeBase, TokenVNodeFn} from "@virtualstate/fringe";
+import { createToken, h } from "@virtualstate/fringe";
 
 const BoxSymbol = Symbol("📦");
 const Box = createToken(BoxSymbol);
@@ -26,7 +26,7 @@ function SecretContents() {
     <WrappedBox>
       <Bomb />
     </WrappedBox>
-  )
+  );
 }
 
 export const _702_TokenChildren = (
@@ -39,4 +39,5 @@ export const _702_TokenChildren = (
       <SecretContents />
     </Box>
   </Box>
-)
+);
+export const _702_URL = import.meta.url;

@@ -1,4 +1,4 @@
-import {VNode} from "@virtualstate/fringe";
+import { VNode } from "@virtualstate/fringe";
 
 export interface VNodeSource extends VNode {
   source: unknown

@@ -1,5 +1,4 @@
-import {createToken, TokenVNodeBase, TokenVNodeFn} from "@virtualstate/fringe";
-import {create} from "domain";
+import { createToken, TokenVNodeBase, TokenVNodeFn } from "@virtualstate/fringe";
 
 export const FarmSymbol = Symbol("🚜");
 export interface FarmOptions {

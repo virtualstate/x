@@ -1,4 +1,4 @@
-import {h, VNode} from "@virtualstate/x";
+import { h, VNode } from "@virtualstate/fringe";
 
 interface SoccerBallOptions {
   pressure: "pumped" | "flat"

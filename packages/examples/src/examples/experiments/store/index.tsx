@@ -1,7 +1,7 @@
-import {h, VNode} from "@virtualstate/fringe";
-import {Store} from "./store";
-import {Domain, Cactus, Scroll, TestTube, Thread, DomainToken} from "./domain";
-import {Instance} from "@virtualstate/fringe";
+import { h, VNode } from "@virtualstate/fringe";
+import { Store } from "./store";
+import { Domain, Cactus, Scroll, TestTube, Thread, DomainToken } from "./domain";
+import { Instance } from "@virtualstate/fringe";
 
 export * from "./store";
 export * from "./read";

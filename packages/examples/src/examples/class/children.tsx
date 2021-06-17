@@ -1,5 +1,5 @@
-import { h, createFragment } from "../../jsx";
-import {VNode} from "@virtualstate/fringe";
+import { h } from "../../jsx";
+import { VNode } from "@virtualstate/fringe";
 
 class Component {
 

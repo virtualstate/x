@@ -1,4 +1,4 @@
-import {createToken, Fragment, TokenVNodeBase, TokenVNodeFn, VNode} from "@virtualstate/fringe";
+import { createToken, Fragment, TokenVNodeBase, TokenVNodeFn, VNode } from "@virtualstate/fringe";
 
 export function isTrue(value?: VNode): value is VNode {
   if (value.reference === Fragment) {

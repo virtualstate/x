@@ -1,13 +1,5 @@
-import {
-  createFragment,
-  isSourceReference, isTokenVNode, isVNode,
-  SourceReference,
-  TokenVNodeBase,
-  TokenVNodeFn,
-  VNode
-} from "@virtualstate/fringe";
-import {extendedIterable} from "iterable";
-import {read, ReadOptions, VNodeSource} from "./read";
+import { createFragment, isTokenVNode, isVNode, VNode } from "@virtualstate/fringe";
+import { read, ReadOptions, VNodeSource } from "./read";
 
 type DomainMap<T extends VNodeSource> = Map<T["source"], Set<T>>;
 

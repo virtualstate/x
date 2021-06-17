@@ -1,4 +1,4 @@
-import {createFragment, isScalarVNode, ScalarVNode, SourceReference, VNode} from "@virtualstate/fringe";
+import { createFragment, isScalarVNode, ScalarVNode, SourceReference, VNode } from "@virtualstate/fringe";
 import { h } from "../../jsx";
 
 type VectorMap = Map<SourceReference, VectorMap>;

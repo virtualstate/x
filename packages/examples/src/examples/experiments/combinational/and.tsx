@@ -1,4 +1,4 @@
-import {h, Fragment, VNode, createFragment} from "@virtualstate/fringe";
+import { h, Fragment, VNode } from "@virtualstate/fringe";
 import { isTrue } from "./truth";
 import { True, False } from "./truth";
 

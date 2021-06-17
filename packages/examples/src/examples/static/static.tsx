@@ -1,5 +1,5 @@
-import {Cactus, Scroll, TestTube, Thread} from "./domain";
-import {h} from "@virtualstate/fringe";
+import { h } from "@virtualstate/fringe";
+import { Cactus, Scroll, TestTube, Thread } from "./domain";
 
 export const _501_Static = (
   <TestTube>

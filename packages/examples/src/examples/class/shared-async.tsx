@@ -1,5 +1,5 @@
 import { h } from "../../jsx";
-import {And} from "../experiments/combinational/and";
+import { And } from "../experiments/combinational/and";
 
 class Component {
 

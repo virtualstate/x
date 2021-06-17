@@ -1,4 +1,4 @@
-import { h } from "../../jsx";
+import { h } from "@virtualstate/fringe";
 
 interface ComponentOptions {
   meta: string

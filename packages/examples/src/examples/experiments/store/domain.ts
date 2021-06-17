@@ -1,5 +1,4 @@
-import {createToken, TokenVNodeBase, TokenVNodeFn} from "@virtualstate/fringe";
-
+import { createToken, TokenVNodeBase, TokenVNodeFn } from "@virtualstate/fringe";
 
 export const CactusSymbol = Symbol("🌵");
 export interface CactusOptions {

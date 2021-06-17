@@ -7,7 +7,7 @@
   "type": "module",
   "sideEffects": false,
   "description": "Concurrent union",
-  "gitHead": "977615927c3af8c16324a3ab8cb0ea343b3e2d6d",
+  "gitHead": "f2abd3c12d9bf28cf9fe32e879822679d86d2ade",
   "license": "MIT",
   "keywords": [
     "virtual-state",

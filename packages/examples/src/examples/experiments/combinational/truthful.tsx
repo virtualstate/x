@@ -1,4 +1,4 @@
-import {createFragment, h, VNode} from "@virtualstate/fringe";
+import { createFragment, h, VNode } from "@virtualstate/fringe";
 import { isTrue } from "./truth";
 
 // This is like an AND, but only cares about if we _finish_ with an AND

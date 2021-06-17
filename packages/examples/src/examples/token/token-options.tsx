@@ -1,7 +1,7 @@
 import { createToken, h, createFragment } from "@virtualstate/fringe";
 
 interface BoxOptions extends Record<string, unknown> {
-  size: "1" | "2" | "3"
+  size: "1" | "2" | "3";
 }
 
 const BoxSymbol = Symbol("📦");
@@ -9,7 +9,7 @@ const Box = createToken<typeof BoxSymbol, BoxOptions>(BoxSymbol);
 
 const defaultOptions: BoxOptions = {
   size: "1"
-}
+};
 const BoxSized = createToken(BoxSymbol, defaultOptions);
 
 export const _703_TokenOptions = (
@@ -18,4 +18,5 @@ export const _703_TokenOptions = (
     <BoxSized />
     <BoxSized size="2" />
   </>
-)
+);
+export const _703_URL = import.meta.url;

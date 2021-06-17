@@ -1,4 +1,4 @@
-import { h } from "../../jsx";
+import { h } from "@virtualstate/fringe";
 
 export const _105_ChildrenScalar = (
   <example meta="value">

@@ -1,4 +1,4 @@
-import {VNode} from "@virtualstate/fringe";
+import { VNode } from "@virtualstate/fringe";
 
 export async function Void(o: unknown, state?: VNode) {
   if (!state) return;

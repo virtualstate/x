@@ -1,6 +1,6 @@
 import { h } from "../../jsx";
-import {And} from "../experiments/combinational/and";
-import {Collector} from "microtask-collector";
+import { And } from "../experiments/combinational/and";
+import { Collector } from "microtask-collector";
 
 class Component {
 

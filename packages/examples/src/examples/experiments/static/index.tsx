@@ -1,6 +1,6 @@
 import { createStaticNode } from "./static";
-import {Cactus, Scroll, TestTube, Thread} from "../store/domain";
-import {h} from "@virtualstate/fringe";
+import { Cactus, Scroll, TestTube, Thread } from "../store/domain";
+import { h } from "@virtualstate/fringe";
 
 export * from "./static";
 

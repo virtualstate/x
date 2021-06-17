@@ -1,5 +1,4 @@
-import {ChildrenSource, isVNode, VNode} from "@virtualstate/fringe";
-import {stat} from "fs";
+import { ChildrenSource, isVNode, VNode } from "@virtualstate/fringe";
 
 export function createStaticNode(node: VNode) {
   const children = node.children?.[ChildrenSource]
