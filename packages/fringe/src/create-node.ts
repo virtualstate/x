@@ -84,7 +84,7 @@ export function createNode(source: Source, options?: Record<string, unknown> | o
    * Shortcut a functional token, this will allow the node to be directly created here
    */
   if (isTokenVNodeFn(source)) {
-    return source(options,  createFragment({}, ...children));
+    return source(options, children.length ? createFragment({}, ...children) : undefined);
   }
 
   /**
