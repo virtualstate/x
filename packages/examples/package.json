@@ -6,6 +6,9 @@
   "types": "./lib/index.d.ts",
   "type": "module",
   "sideEffects": false,
+  "files": [
+    "lib"
+  ],
   "keywords": [
     "jsx",
     "vsx",
