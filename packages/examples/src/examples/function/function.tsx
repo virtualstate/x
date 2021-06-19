@@ -1,7 +1,10 @@
 import { h } from "@virtualstate/fringe";
 
+const moduleScoped = "🐦";
+
 function Component() {
-  return "🔑";
+  const functionScoped = "💡";
+  return `${moduleScoped} ${functionScoped} 🔑`;
 }
 
 export const _201_Function = <Component />
