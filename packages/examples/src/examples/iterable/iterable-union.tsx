@@ -2,34 +2,34 @@ import {h, a, createFragment, VNode, createToken} from "@virtualstate/x";
 import { read } from "./read";
 import {union} from "@virtualstate/union";
 
-async function *ThingA() {
+async function *Horse() {
   yield "🐴";
   yield "💪";
 }
 
-async function *ThingB() {
+async function *Bird() {
   yield "🐦";
   yield "❤️";
 }
 
-async function *ThingC() {
+async function *Robot() {
   yield "🤖";
   yield "🤳";
 }
 
-async function *Union() {
-  for await (const [a, b, c] of union([
-    ThingA(),
-    ThingB(),
-    ThingC()
+async function *Component() {
+  for await (const [horse, bird, robot] of union([
+    Horse(),
+    Bird(),
+    Robot()
   ])) {
-    console.log({ a, b, c })
-    yield [a, b, c];
+    console.log({ horse, bird, robot })
+    yield [horse, bird, robot];
   }
 }
 
 export const _804_IterableUnion = (
-  <Union />
+  <Component />
 )
 export const _804_URL = import.meta.url;
 export const _804_Info = {
