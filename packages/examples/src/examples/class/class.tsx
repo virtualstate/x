@@ -3,7 +3,7 @@ import { h } from "@virtualstate/fringe";
 class Component {
 
   async *[Symbol.asyncIterator]() {
-    yield "🪁";
+    yield "🐸";
     yield "💡";
   }
 

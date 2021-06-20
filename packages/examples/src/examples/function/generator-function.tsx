@@ -2,7 +2,7 @@ import { h } from "@virtualstate/fringe";
 
 function *Component() {
   yield "🔑";
-  yield "🪁";
+  yield "🐸";
 }
 
 export const _203_GeneratorFunction = <Component />

@@ -2,7 +2,7 @@ import { h } from "@virtualstate/fringe";
 import { read } from "./read";
 
 function *Component() {
-  console.log("🪁");
+  console.log("🐸");
   yield "💿";
   console.log("💎");
   yield "🔑";
@@ -10,7 +10,7 @@ function *Component() {
 }
 
 async function Log() {
-  console.log("🟢️\n");
+  console.log("🎾️\n");
   for await (const node of read(<Component />)) {
     console.log(node.source);
     console.log("\n⏭️\n");
