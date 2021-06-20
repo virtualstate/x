@@ -16,6 +16,6 @@ class Component {
 }
 
 export const _402_ClassWithOptions = (
-  <Component meta="🟢" />
+  <Component meta="🦆" />
 );
 export const _402_URL = import.meta.url;
