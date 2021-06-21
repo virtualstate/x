@@ -2,6 +2,10 @@
 
 _In depth documentation coming soon!_
 
+> If you want to get started, fork or clone the 
+> [virtualstate.dev](https://github.com/virtualstate/virtualstate.dev)
+> repository for an already set up project. 
+
 ## [`h`](http://npmjs.com/package/@virtualstate/fringe)
 
 [Demo Usage](https://github.com/fabiancook/fabiancook.dev)
