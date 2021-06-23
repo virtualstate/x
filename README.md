@@ -12,10 +12,11 @@ To run the examples located at [packages/examples](https://github.com/virtualsta
 
 - [Deno](#running-examples-with-deno)
 - [Node](#running-examples-with-node)
+- [npx](#running-examples-with-npx)
 
 ### Running examples with Deno 
 
-``` bash 
+```bash 
 deno run \                                                                                                                                                                                             *[main] 
   --import-map=https://cdn.skypack.dev/@virtualstate/deno/import-map.json \
   --allow-net \
@@ -24,11 +25,18 @@ deno run \                                                                      
 
 ### Running examples with Node
 
-``` bash 
+```bash 
 git clone https://github.com/virtualstate/x.git 
 cd x 
 yarn
+yarn build
 yarn examples:log
+```
+
+### Running examples with npx
+
+```bash
+npx @virtualstate/examples@^2.14.10 
 ```
 
 ## [`h`](http://npmjs.com/package/@virtualstate/fringe)
