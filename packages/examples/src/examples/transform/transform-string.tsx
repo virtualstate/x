@@ -1,15 +1,15 @@
 import {Source, VNode, h, createToken, createFragment, Fragment} from "@virtualstate/fringe";
 import { Hook, Mutation } from "@virtualstate/hooks-extended";
 
-function FnComponent() {
-  return "📜";
+function FnComponent({ meta }) {
+  return `${meta} 📜`;
 }
 
-const ComponentSymbol = Symbol(FnComponent.name);
-const Component = createToken(ComponentSymbol);
+const ComponentString = FnComponent.name;
+const Component = createToken(ComponentString);
 
 const functions = new Map<unknown, Source>();
-functions.set(ComponentSymbol, FnComponent);
+functions.set(ComponentString, FnComponent);
 
 interface TransformOptions {
   map: Map<unknown, Source>
@@ -37,9 +37,9 @@ function Transform({ map }: TransformOptions, state: VNode) {
   }
 }
 
-export const _901_Transform = (
+export const _902_TransformString = (
   <Transform map={functions}>
-    <Component />
+    <ComponentString meta="🌵" />
   </Transform>
 )
-export const _901_URL = import.meta.url;
+export const _902_URL = import.meta.url;
