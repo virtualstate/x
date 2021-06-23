@@ -39,7 +39,7 @@ function Transform({ map }: TransformOptions, state: VNode) {
 
 export const _902_TransformString = (
   <Transform map={functions}>
-    <ComponentString meta="🌵" />
+    <Component meta="🌵" />
   </Transform>
 )
 export const _902_URL = import.meta.url;
