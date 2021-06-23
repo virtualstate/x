@@ -6,6 +6,9 @@
   "types": "./lib/index.d.ts",
   "type": "module",
   "sideEffects": false,
+  "bin": {
+    "vsx-examples": "./cli.js"
+  },
   "files": [
     "lib"
   ],
@@ -17,6 +20,7 @@
   "dependencies": {
     "@virtualstate/fringe": "^2.14.8",
     "@virtualstate/hooks": "^2.14.8",
+    "@virtualstate/hooks-extended": "^2.14.8",
     "@virtualstate/union": "^2.14.8",
     "@virtualstate/x": "^2.14.8",
     "iterable": "^5.6.0",

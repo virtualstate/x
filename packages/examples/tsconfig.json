@@ -17,6 +17,12 @@
   ],
   "references": [
     {
+      "path": "../hooks-extended"
+    },
+    {
+      "path": "../hooks"
+    },
+    {
       "path": "../union"
     },
     {
