@@ -1,6 +1,7 @@
 import {
   SourceReference,
   TokenVNodeBase,
+  TokenVNodeFn,
   VNode,
   createToken
 } from "@virtualstate/fringe";
@@ -17,4 +18,5 @@ export interface MutationOptions<ReferencedVNode extends VNode = VNode, MutatedV
   mutate: MutationOn<ReferencedVNode, MutatedVNode>;
 }
 export type MutationToken<ReferencedVNode extends VNode = VNode, MutatedVNode extends VNode = VNode> = TokenVNodeBase<typeof MutationSymbol, MutationOptions<ReferencedVNode, MutatedVNode>>;
-export const Mutation: MutationToken = createToken(MutationSymbol);
+export type MutationTokenFn<ReferencedVNode extends VNode = VNode, MutatedVNode extends VNode = VNode> = TokenVNodeFn<typeof MutationSymbol, MutationOptions<ReferencedVNode, MutatedVNode>>;
+export const Mutation: MutationTokenFn = createToken(MutationSymbol);

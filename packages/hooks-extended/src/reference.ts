@@ -2,7 +2,8 @@ import {
   SourceReference,
   VNode,
   createToken,
-  TokenVNodeBase
+  TokenVNodeBase,
+  TokenVNodeFn
 } from "@virtualstate/fringe";
 import { IsFunction } from "./is";
 
@@ -17,4 +18,5 @@ export interface ReferenceOptions<ReferencedVNode extends VNode = VNode> {
   on: ReferenceOn<ReferencedVNode>;
 }
 export type ReferenceToken<ReferencedVNode extends VNode = VNode> = TokenVNodeBase<typeof ReferenceSymbol, ReferenceOptions<ReferencedVNode>>;
-export const Reference: ReferenceToken = createToken(ReferenceSymbol);
+export type ReferenceTokenFn<ReferencedVNode extends VNode = VNode> = TokenVNodeFn<typeof ReferenceSymbol, ReferenceOptions<ReferencedVNode>>;
+export const Reference: ReferenceTokenFn = createToken(ReferenceSymbol);
