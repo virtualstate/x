@@ -11,6 +11,7 @@ _In depth documentation coming soon!_
 To run the examples located at [packages/examples](https://github.com/virtualstate/x/tree/main/packages/examples) see:
 
 - [Deno](#running-examples-with-deno)
+- [Node](#running-examples-with-node)
 
 ### Running examples with Deno 
 

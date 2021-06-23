@@ -6,6 +6,30 @@ _In depth documentation coming soon!_
 > [virtualstate.dev](https://github.com/virtualstate/virtualstate.dev)
 > repository for an already set up project. 
 
+## Running Examples
+
+To run the examples located at [packages/examples](https://github.com/virtualstate/x/tree/main/packages/examples) see:
+
+- [Deno](#running-examples-with-deno)
+
+### Running examples with Deno 
+
+``` bash 
+deno run \                                                                                                                                                                                             *[main] 
+  --import-map=https://cdn.skypack.dev/@virtualstate/deno/import-map.json \
+  --allow-net \
+  https://cdn.skypack.dev/@virtualstate/examples/lib/log.js
+```
+
+### Running examples with Node
+
+``` bash 
+git clone https://github.com/virtualstate/x.git 
+cd x 
+yarn
+yarn examples:log
+```
+
 ## [`h`](http://npmjs.com/package/@virtualstate/fringe)
 
 [Demo Usage](https://github.com/fabiancook/fabiancook.dev)

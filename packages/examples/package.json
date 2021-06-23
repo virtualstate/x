@@ -10,7 +10,8 @@
     "vsx-examples": "./cli.js"
   },
   "files": [
-    "lib"
+    "lib",
+    "cli.js"
   ],
   "keywords": [
     "jsx",
