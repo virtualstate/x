@@ -78,8 +78,8 @@ export function createNode<
   >(source: T, options: O): CreateNodeResult<T, O>;
 export function createNode<T extends Source>(source: T): CreateNodeResult<T>;
 export function createNode(source: Source, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
-export function createNode(source: unknown, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
-export function createNode(source: Source, options?: Record<string, unknown> | object, ...children: VNodeRepresentationSource[]): VNode {
+export function createNode(source?: unknown, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
+export function createNode(source?: Source, options?: Record<string, unknown> | object, ...children: VNodeRepresentationSource[]): VNode {
   /**
    * Shortcut a functional token, this will allow the node to be directly created here
    */
