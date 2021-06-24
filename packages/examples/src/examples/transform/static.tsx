@@ -53,6 +53,8 @@ export class Static {
 
     yield mutate(this.#state);
 
+    // We have a static copy of this.#state from here on
+
     function mutate(value: VNode): VNode {
       const existing = getExisting(value);
       if (existing) return existing;
