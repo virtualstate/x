@@ -158,7 +158,7 @@ await readAllDrain(instance);
 await readAllDrain(instance); // We are static now
 
 export const _903_TransformStatic = (
-  <container>
+  <container class="example">
     {instance}
   </container>
 )

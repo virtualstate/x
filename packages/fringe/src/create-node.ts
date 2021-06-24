@@ -144,6 +144,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
         children: replay(() => childrenGenerator(childrenContext, ...children), children)
       };
     }
+
     return nextSource;
   }
 
@@ -178,12 +179,15 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * See {@link generator} for details
    */
   if (source && isIterableIterator(source)) {
-    return {
+    const node: VNode = {
       source,
       reference: Fragment,
-      options,
       children: generator(Symbol("Iterable Iterator"), source)
     };
+    if (options) {
+      node.options = options;
+    }
+    return node;
   }
 
   /**
@@ -193,12 +197,15 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    */
   if (source && (isIterable(source) || isAsyncIterable(source))) {
     const childrenInstance = childrenGenerator(childrenContext, ...children);
-    return {
+    const node: VNode = {
       source,
       reference: Fragment,
-      options,
       children: replay(() => childrenGenerator(childrenContext, asyncExtendedIterable(source).map(value => createNode(value, options, childrenInstance))))
     };
+    if (options) {
+      node.options = options;
+    }
+    return node;
   }
 
   /**
@@ -378,22 +385,31 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     if (isSourceReference(source)) {
       return sourceReferenceVNode(getReference(), source);
     }
-    return {
-      ...source,
+    const { children, ...rest } = source;
+    const node: VNode = {
+      ...rest,
       // Replace our reference if required
-      reference: isSourceReference(source.reference) ? getMarshalledReference(source.reference) : getReference(source.options),
-      children: source.children ? replay(() => asyncExtendedIterable(source.children).map(children => [...children].map(unmarshal))) : undefined
+      reference: isSourceReference(source.reference) ? getMarshalledReference(source.reference) : getReference(source.options)
     };
+    if (children) {
+      node.children = replay(() => asyncExtendedIterable(children).map(children => [...children].map(unmarshal)))
+    }
+    return node;
   }
 
   function sourceReferenceVNode(reference: SourceReference, source: SourceReference, options?: object, ...children: VNodeRepresentationSource[]): VNode {
-    return {
+    const node: VNode = {
       reference: reference ?? getReference(options),
-      scalar: !children.length,
-      source,
-      options,
-      children: children.length ? replay(() => childrenGenerator(childrenContext, ...children), children) : undefined
     };
+    if (options) {
+      node.options = options;
+    }
+    if (children.length) {
+      node.children = replay(() => childrenGenerator(childrenContext, ...children), children);
+    } else {
+      node.scalar = true;
+    }
+    return node;
   }
 
   function replay<T>(fn: () => AsyncIterable<T>, source?: unknown): AsyncIterable<T> & { [ChildrenSource]?: unknown } {

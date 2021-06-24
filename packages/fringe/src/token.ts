@@ -71,7 +71,7 @@ export function createToken<T extends SourceReference, O extends object = object
 
   let frozen: Token | undefined = undefined;
   const isOptionsFrozen = !!options && Object.isFrozen(options);
-  const optionsKeyLength = isOptionsFrozen ? Object.keys(options).length : 0;
+  const optionsKeyLength = options ? isOptionsFrozen ? Object.keys(options).length : 0 : 0;
 
   function token<I extends O & Partial<TokenOptionsRecord>>(this: unknown, partialOptions?: I, child?: VNode): Token {
     const node: Token = isTokenVNode<T, TokenInitialOptions<O, P>>(this) ? this : tokenized;
@@ -139,7 +139,7 @@ export function createToken<T extends SourceReference, O extends object = object
       options: {
         ...accessOnly,
         value: options,
-        enumerable: !(isOptionsFrozen && optionsKeyLength === 0)
+        enumerable: isOptionsFrozen ? optionsKeyLength !== 0 : !!options
       },
       isTokenSource: {
         ...accessOnly,
