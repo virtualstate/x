@@ -18,6 +18,6 @@ export async function * read(node, seen = new WeakSet()): AsyncIterable<VNode> {
 
 export async function readAllDrain<T>(input: AsyncIterable<T>): Promise<void> {
   for await (const node of read(input)) {
-    console.log({ node });
+    // console.log({ node });
   }
 }

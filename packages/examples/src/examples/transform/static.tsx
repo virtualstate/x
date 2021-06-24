@@ -10,6 +10,7 @@ import {
   VNode
 } from "@virtualstate/fringe";
 import { readAllDrain } from "./read";
+import {source} from "iterable";
 
 type VNodeWithChildren = VNode & { children: AsyncIterable<VNode[]> }
 
@@ -17,6 +18,12 @@ type VNodeWithChildren = VNode & { children: AsyncIterable<VNode[]> }
  * @experimental
  */
 export const IsStaticSymbol = Symbol("Is Static");
+
+export interface StaticOptions {
+  reference?: boolean;
+  source?: boolean;
+  yieldAllChildren?: boolean
+}
 
 /**
  * @experimental
@@ -29,9 +36,11 @@ export class Static {
   readonly #weakChildrenRecording = new WeakMap<VNode, VNode[][]>();
   readonly #weakChildrenRecordingInProgress = new WeakSet<VNode>();
   readonly #state: VNode = createNode(undefined);
+  readonly #options: StaticOptions = {};
 
-  constructor(options: unknown, state: VNode) {
+  constructor(options: StaticOptions, state: VNode) {
     this.#state = state;
+    this.#options = options;
   }
 
   async *[Symbol.asyncIterator]() {
@@ -40,6 +49,7 @@ export class Static {
     const sourceTree = this.#sourceTree;
     const weakChildrenRecording = this.#weakChildrenRecording;
     const weakChildrenRecordingInProgress = this.#weakChildrenRecordingInProgress;
+    const options = this.#options;
 
     yield mutate(this.#state);
 
@@ -55,6 +65,9 @@ export class Static {
       }
       const proxied = new Proxy(value, {
         get(target: VNode, p: keyof VNode) {
+          if (typeof p === "symbol" && p === IsStaticSymbol) {
+            return true;
+          }
           if (p !== "children") {
             return target[p];
           }
@@ -70,6 +83,12 @@ export class Static {
         }
       });
       weakTree.set(value, proxied);
+      if (options.reference) {
+        referenceTree.set(value.reference, proxied);
+      }
+      if (options.source) {
+        sourceTree.set(value.source, proxied);
+      }
       return proxied;
     }
 
@@ -90,7 +109,11 @@ export class Static {
       for await (const children of node.children) {
         const mapped = children.map(mutate)
         yield mapped;
-        recording.push(mapped);
+        if (!options.yieldAllChildren) {
+          recording[0] = mapped;
+        } else {
+          recording.push(mapped);
+        }
       }
       weakChildrenRecording.set(node, recording);
       weakChildrenRecordingInProgress.delete(node);
@@ -101,21 +124,26 @@ export class Static {
       if (weakExisting) {
         return weakExisting;
       }
-      const referenceExisting = referenceTree.get(value.reference);
+      const referenceExisting = options.reference && referenceTree.get(value.reference);
       if (referenceExisting) {
         return referenceExisting;
       }
-      const sourceExisting = sourceTree.get(value.source);
+      const sourceExisting = options.source && sourceTree.get(value.source);
       if (sourceExisting) {
         return sourceExisting;
       }
+      return undefined;
     }
   }
 
 }
 
 function Component({ meta }) {
-  return `${meta} ❤️`;
+  return (
+    <innerContainer>
+      {meta} ❤️
+    </innerContainer>
+  );
 }
 
 const instance = (

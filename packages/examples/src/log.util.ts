@@ -1,4 +1,5 @@
 import {VNode} from "@virtualstate/fringe";
+import {IsStaticSymbol} from "./examples";
 // import {createHook} from "async_hooks";
 // import {performance} from "perf_hooks";
 
@@ -59,6 +60,9 @@ export async function log(node: VNode, looping = false, main = false) {
   // }
 
   console.log(node);
+  if (node[IsStaticSymbol]) {
+    console.log("Static Node");
+  }
   const children = node.children;
   if (!children) return;
   console.group("Starting Logging children:");
