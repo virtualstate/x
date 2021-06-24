@@ -35,7 +35,7 @@ export class Static {
   readonly #sourceTree = new Map<unknown, VNode>();
   readonly #weakChildrenRecording = new WeakMap<VNode, VNode[][]>();
   readonly #weakChildrenRecordingInProgress = new WeakSet<VNode>();
-  readonly #state: VNode = createNode(undefined);
+  readonly #state: VNode = createNode();
   readonly #options: StaticOptions = {};
 
   constructor(options: StaticOptions, state: VNode) {
