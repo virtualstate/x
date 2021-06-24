@@ -11,12 +11,14 @@ const Component = createToken(ComponentSymbol);
 const functions = new Map<unknown, Source>();
 functions.set(ComponentSymbol, FnComponent);
 
-interface TransformOptions {
+export interface TransformOptions {
   map: Map<unknown, Source>
 }
 
-
-function Transform({ map }: TransformOptions, state: VNode) {
+/**
+ * @experimental
+ */
+export function Transform({ map }: TransformOptions, state: VNode) {
   return (
     <Hook>
       <Mutation is={is} mutate={mutate}>
