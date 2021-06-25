@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/astro",
-  "version": "2.15.0",
+  "version": "2.15.1-alpha.0",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -18,13 +18,13 @@
     "./lib/client": "./lib/client.js"
   },
   "peerDependencies": {
-    "jsdom": "^16.6.0",
     "@virtualstate/dom": "^2.15.0",
     "@virtualstate/fringe": "^2.15.0",
     "@virtualstate/hooks": "^2.15.0",
     "@virtualstate/union": "^2.15.0",
     "@virtualstate/x": "^2.15.0",
     "iterable": "^5.6.0",
+    "jsdom": "^16.6.0",
     "microtask-collector": "^3.1.0"
   },
   "devDependencies": {
