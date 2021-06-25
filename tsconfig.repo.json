@@ -26,7 +26,7 @@
       "path": "./packages/x"
     },
     {
-      "path": "./packages/astro"
+      "path": "./packages/astro-renderer"
     },
     {
       "path": "./packages/examples"
