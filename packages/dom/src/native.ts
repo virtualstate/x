@@ -29,7 +29,6 @@ export function Native(options: Partial<NativeOptions>, node: VNode): NativeVNod
     return node;
   }
   const nativeOptions = getNativeOptions(node);
-  console.log({ node, nativeOptions });
   if (nativeOptions && isDOMNativeCompatibleVNode(node)) {
     return createNode(
       isNativeOptions(node.options) ? node : {
