@@ -400,6 +400,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
   function sourceReferenceVNode(reference: SourceReference, source: SourceReference, options?: object, ...children: VNodeRepresentationSource[]): VNode {
     const node: VNode = {
       reference: reference ?? getReference(options),
+      source
     };
     if (options) {
       node.options = options;
