@@ -26,6 +26,9 @@
       "path": "./packages/x"
     },
     {
+      "path": "./packages/astro"
+    },
+    {
       "path": "./packages/examples"
     }
   ]
