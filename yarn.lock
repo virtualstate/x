@@ -3513,6 +3513,13 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
+dom-lite@^20.2.0:
+  version "20.2.0"
+  resolved "https://registry.npmjs.org/dom-lite/-/dom-lite-20.2.0.tgz#5bd1fbcacaf9135ca8ceb90e373e0c2310976314"
+  integrity sha512-jkpXKQTEPXN9yXuNtOG5SoYB5Fa2IuNuJASgFqh5E0zrNR1P7JfGkI2oBfBT8RMURwb5pdGNzxOmLHTagc0thA==
+  dependencies:
+    selector-lite "20.2.0"
+
 domexception@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/domexception/-/domexception-1.0.1.tgz"
@@ -7496,6 +7503,11 @@ saxes@^5.0.1:
   integrity sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw==
   dependencies:
     xmlchars "^2.2.0"
+
+selector-lite@20.2.0:
+  version "20.2.0"
+  resolved "https://registry.npmjs.org/selector-lite/-/selector-lite-20.2.0.tgz#86fc2c5d9fd6e8c7b42384302241deedd4b9e610"
+  integrity sha512-wCg7RJZtBZi70ikeV+TM2aoC1NPMo4TRYY7/1Gp6yFYS1PddUlpcCi1FWbI4pWXwVWnh1el4UU6m/9xLdcZC7A==
 
 "semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.5.0, semver@^5.6.0, semver@^5.7.1:
   version "5.7.1"

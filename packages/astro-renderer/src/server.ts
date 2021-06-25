@@ -1,6 +1,6 @@
-import { createNode } from "@virtualstate/fringe";
+import {createNode, VNodeRepresentationSource} from "@virtualstate/fringe";
 import { isElement, isText, NativeOptionsVNode, render } from "@virtualstate/dom";
-import { JSDOM } from "jsdom";
+import { document } from "dom-lite";
 import { h } from "./h";
 
 /**
@@ -9,48 +9,40 @@ import { h } from "./h";
 async function renderToStaticMarkup(...args: Parameters<typeof createNode>): Promise<string> {
   const [source, options, innerHTML, ...ignoredChildren] = args;
   if (ignoredChildren.length) throw new Error("Expected only one innerHTML to be provided");
-  const dom = new JSDOM();
-  const { window: { document } } = dom;
   const root = document.createElement("astro-root");
-  document.body.append(root);
-  const template = document.createElement("template");
   const children: NativeOptionsVNode[] = [];
-  if (typeof innerHTML === "string" && innerHTML.length) {
-    template.innerHTML = innerHTML;
-    for (let index = 0; index < template.content.childNodes.length; index += 1) {
-      const child = template.content.childNodes.item(index);
-      const node = getNode(child);
-      if (node) {
+  if (typeof innerHTML === "string" && innerHTML) {
+    const substitute = document.createElement("astro-substitute");
+    substitute.innerHTML = innerHTML;
+    if (isElement(substitute) && substitute.hasChildNodes()) {
+      for (let index = 0; index < substitute.childNodes.length; index += 1) {
+        const child = getItem(substitute.childNodes, index);
+        if (!child) continue;
+        const node = getNode(child);
         children.push(node);
       }
     }
   }
-  function getNode(input: ChildNode): NativeOptionsVNode | undefined {
-    if (isText(input)) {
-      return {
-        reference: Symbol("Text"),
-        source: "",
-        options: {
-          type: "Node",
-          getDocumentNode() {
-            return input.cloneNode();
-          }
-        }
-      };
+
+  function getItem(input: NodeListOf<ChildNode> | ChildNode[], index: number): ChildNode | undefined {
+    if (Array.isArray(input)) {
+      return input[index];
+    } else {
+      return input.item(index);
     }
-    if (isElement(input)) {
-      return {
-        reference: Symbol("Element"),
-        source: "",
-        options: {
-          type: "Node",
-          getDocumentNode() {
-            return input.cloneNode(true);
-          }
+  }
+
+  function getNode(input: ChildNode): NativeOptionsVNode {
+    return {
+      reference: Symbol("Astro Child"),
+      source: "",
+      options: {
+        type: "Node",
+        getDocumentNode() {
+          return input;
         }
       }
     }
-    return undefined
   }
   const node = h(
     source,

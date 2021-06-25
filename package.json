@@ -34,6 +34,7 @@
     "babel-jest": "^27.0.2",
     "commander": "^7.2.0",
     "csv-parser": "^3.0.0",
+    "dom-lite": "^20.2.0",
     "domexception": "^2.0.1",
     "eslint": "^7.27.0",
     "filehound": "^1.17.4",
