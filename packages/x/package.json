@@ -26,7 +26,8 @@
   },
   "scripts": {
     "test": "yarn jest",
-    "prepublish": "cp ../../README.md ./README.md"
+    "prepublish": "cp ../../README.md ./README.md",
+    "clean": "rm -rf lib && rm tsconfig.tsbuildinfo"
   },
   "dependencies": {
     "@virtualstate/fringe": "^2.20.3",

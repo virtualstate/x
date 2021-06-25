@@ -62,7 +62,9 @@
   "homepage": "https://github.com/virtualstate/x#readme",
   "author": "Fabian Cook <hello@fabiancook.dev>",
   "scripts": {
-    "test": "yarn jest"
+    "test": "yarn jest",
+    "clean": "rm -rf lib && rm tsconfig.tsbuildinfo && yarn clean:examples",
+    "clean:examples": "rm src/information.built.ts && echo 'export {}' >> src/information.built.ts"
   },
   "gitHead": "9852e8fa95cf827f787e8135e571da4d49b42193"
 }

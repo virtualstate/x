@@ -20,6 +20,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "clean": "yarn workspaces run clean",
     "test": "yarn jest",
     "build": "tsc -b ./tsconfig.repo.json && yarn build:post",
     "build:post": "node correct-import-extensions.js",

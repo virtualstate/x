@@ -59,5 +59,8 @@
   },
   "homepage": "https://github.com/virtualstate/x#readme",
   "author": "Fabian Cook <hello@fabiancook.dev>",
-  "gitHead": "f2abd3c12d9bf28cf9fe32e879822679d86d2ade"
+  "gitHead": "f2abd3c12d9bf28cf9fe32e879822679d86d2ade",
+  "scripts": {
+    "clean": "rm -rf lib && rm tsconfig.tsbuildinfo"
+  }
 }
