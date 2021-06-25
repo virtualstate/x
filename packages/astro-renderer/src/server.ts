@@ -3,9 +3,6 @@ import { isElement, isText, NativeOptionsVNode, render } from "@virtualstate/dom
 import { document } from "dom-lite";
 import { h } from "./h";
 
-/**
- * @experimental
- */
 async function renderToStaticMarkup(...args: Parameters<typeof createNode>): Promise<string> {
   const [source, options, innerHTML, ...ignoredChildren] = args;
   if (ignoredChildren.length) throw new Error("Expected only one innerHTML to be provided");
@@ -54,13 +51,7 @@ async function renderToStaticMarkup(...args: Parameters<typeof createNode>): Pro
   return root.innerHTML;
 }
 
-/**
- * @experimental
- */
 export default {
-  /**
-   * @experimental
-   */
   check() {
     return true;
   },
