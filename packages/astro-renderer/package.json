@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/astro-renderer",
-  "version": "2.18.2",
+  "version": "2.19.0",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -25,8 +25,8 @@
     "@virtualstate/hooks": "^2.15.0",
     "@virtualstate/union": "^2.15.0",
     "@virtualstate/x": "^2.15.0",
-    "iterable": "^5.6.0",
     "dom-lite": "^20.2.0",
+    "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
   "devDependencies": {
