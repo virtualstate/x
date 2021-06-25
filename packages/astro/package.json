@@ -13,8 +13,10 @@
   "exports": {
     ".": "./lib/index.js",
     "./server": "./lib/server.js",
+    "./server.js": "./lib/server.js",
     "./lib/server": "./lib/server.js",
     "./client": "./lib/client.js",
+    "./client.js": "./lib/client.js",
     "./lib/client": "./lib/client.js"
   },
   "peerDependencies": {
