@@ -29,8 +29,8 @@ import {
   getNext
 } from "iterable";
 import { children as childrenGenerator, ChildrenContext } from "./children";
-import {createFragment, Fragment} from "./fragment";
-import {isTokenVNodeFn} from "./token";
+import { createFragment, Fragment } from "./fragment";
+import { isTokenVNodeFn } from "./token";
 
 const nonConstructable = new WeakSet();
 

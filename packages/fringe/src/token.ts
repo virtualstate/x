@@ -1,7 +1,7 @@
 import { isSourceReference, SourceReference } from "./source-reference";
 import { isVNode, VNode, VNodeRepresentationSource } from "./vnode";
 import { assert } from "./assert";
-import { createFragment, Fragment } from "./fragment";
+import { createFragment } from "./fragment";
 
 export const Token = Symbol.for("@virtualstate/fringe/token");
 

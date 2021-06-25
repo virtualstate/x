@@ -1,4 +1,4 @@
-import {isVNode, VNode, VNodeRepresentationSource} from "./vnode";
+import { VNode, VNodeRepresentationSource } from "./vnode";
 import { createNode } from "./create-node";
 
 /**
