@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/fringe",
-  "version": "2.20.2",
+  "version": "2.20.3",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -21,7 +21,7 @@
     "microtask-collector": "^3.1.0"
   },
   "devDependencies": {
-    "@virtualstate/union": "^2.20.2",
+    "@virtualstate/union": "^2.20.3",
     "babel-jest": "^27.0.2",
     "ts-jest": "^27.0.3",
     "ts-node": "^10.0.0"
