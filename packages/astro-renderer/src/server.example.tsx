@@ -5,8 +5,7 @@ import { h } from "./h";
 export const { renderToStaticMarkup } = Server;
 
 export function Inner(options?: unknown, child?: VNode) {
-  console.log("Inner", options, child);
-  const node = (
+  return (
     <div
       class="inner"
     >
@@ -22,14 +21,11 @@ export function Inner(options?: unknown, child?: VNode) {
       </p>
     </div>
   );
-  console.log({ inner: node });
-  return node;
 }
 
 export const innerStatic = await renderToStaticMarkup(Inner, {}, "");
 
 export function Layout(options?: unknown, child?: VNode) {
-  console.log("Layout", options, child);
   return (
     <div
       class="layout"

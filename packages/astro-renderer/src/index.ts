@@ -1,6 +1,3 @@
-/**
- * @experimental
- */
 export default {
   name: "@virtualstate/astro-renderer",
   client: "./client.js",
