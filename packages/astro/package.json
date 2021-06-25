@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/astro",
-  "version": "2.16.0",
+  "version": "2.16.1-alpha.0",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
