@@ -2,7 +2,7 @@
  * @experimental
  */
 export default {
-  name: "@virtualstate/astro",
+  name: "@virtualstate/astro-renderer",
   client: "./client.js",
   server: "./server.js",
   knownEntrypoint: [
