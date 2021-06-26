@@ -6,7 +6,7 @@ export const _H1001_HTML = (
       <title>My Website</title>
     </head>
     <body>
-      <main>
+      <main class="main">
         Example!
       </main>
     </body>
