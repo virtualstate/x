@@ -45,18 +45,25 @@ async function recreate(node: VNode, known = new WeakMap<object, Promise<string>
         console.warn("Expected single iteration static input");
         parts.length = 0;
       }
+      const almost = await Promise.all(
+        children.map(child => {
+
+          if (known.has(child) || (typeof child.source === "function" && known.has(child.source))) {
+            return `<${getChildrenHeaderStart(child)} />`
+          }
+
+          return recreate(child, known);
+        })
+      )
+      if (!almost.length) {
+        continue;
+      }
       parts.push(
-        ...await Promise.all(
-          children.map(child => {
-
-            if (known.has(child) || (typeof child.source === "function" && known.has(child.source))) {
-              return `<${getChildrenHeaderStart(child)} />`
-            }
-
-            return recreate(child, known);
-          })
-        )
+        ...almost
       );
+    }
+    if (!parts.length) {
+      return `<${getChildrenHeaderStart(node)} />`
     }
     return [
       `<${getChildrenHeaderStart(node)}>`,
@@ -117,7 +124,12 @@ async function recreate(node: VNode, known = new WeakMap<object, Promise<string>
       if (key) {
         return key;
       } else {
-        return String(node.source);
+        const string = String(node.source);
+        const matched = string.match(/^Symbol\(([^)]+)\)$/);
+        if (matched && matched[1]) {
+          return matched[1];
+        }
+        return string;
       }
     }
     if (typeof node.source === "object") {
