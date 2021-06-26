@@ -1,6 +1,6 @@
 import {VNode} from "@virtualstate/fringe";
 
-export async function * read(node, seen = new WeakSet()): AsyncIterable<VNode> {
+export async function * read(node: VNode, seen = new WeakSet()): AsyncIterable<VNode> {
   if (!node.children) return;
   // console.log("children", node);
   for await (const children of node.children) {
@@ -16,7 +16,7 @@ export async function * read(node, seen = new WeakSet()): AsyncIterable<VNode> {
   // console.log("done", node);
 }
 
-export async function readAllDrain<T>(input: AsyncIterable<T>): Promise<void> {
+export async function readAllDrain(input: VNode): Promise<void> {
   for await (const node of read(input)) {
     // console.log({ node });
   }

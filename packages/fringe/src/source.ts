@@ -76,7 +76,10 @@ export type CreateNodeResultCore<T, O extends Options = Options, C extends unkno
 export type CreateNodeResult<T, O extends Options = Options, C extends unknown[] = []> =
   Omit<CreateNodeResultCore<T, O, C>, "children"> & Pick<VNodeWithChildrenFromSource<CreateNodeResultCore<T, O, C>>, "children">
 
-export type CreateNodeOp1Function = (options?: unknown, children?: VNode) => unknown;
+
+export interface CreateNodeOp1Function {
+  (options?: unknown, children?: VNode): unknown
+}
 export type CreateNodeOp2Promise = Promise<unknown>;
 export type CreateNodeOp3Fragment = typeof Fragment;
 export type CreateNodeOp4VNode = VNode;
