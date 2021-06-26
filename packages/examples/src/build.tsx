@@ -1,5 +1,5 @@
 import * as Examples from "./examples";
-import {isVNode, h, VNode} from "@virtualstate/fringe";
+import {isVNode, h, VNode, Fragment} from "@virtualstate/fringe";
 import {dirname, join, relative, basename} from "path";
 import {promises as fs} from "fs";
 import {getExampleNameFromKey} from "./log.util";
@@ -20,24 +20,35 @@ async function isFile(file: string): Promise<boolean> {
   }
 }
 
-async function recreate(node: VNode, known = new WeakMap<object, Promise<string>>()): Promise<string> {
-  if (node.scalar) {
-    return `{${getSourceValue(node.source)}}`;
+async function recreate(node: VNode, root: boolean, known = new WeakMap<object, Promise<string>>(), injectStrings = true): Promise<string> {
+  if (node.scalar && !node.options) {
+    console.log({ injectStrings });
+    if (typeof node.source === "string" && !injectStrings) {
+      return node.source;
+    }
+    const value = getSourceValue(node.source);
+    if (root) {
+      return value;
+    }
+    return `{${value}}`;
   }
   const knownPromise = known.get(node) || (typeof node.source === "function" ? known.get(node.source) : undefined);
   if (knownPromise) {
     return knownPromise;
   }
-  const promise = doRecreate(node);
+  const promise = doRecreate(node, root);
   known.set(node, promise);
   if (typeof node.source === "function") {
     known.set(node.source, promise);
   }
   return promise;
 
-  async function doRecreate(node: VNode) {
+  async function doRecreate(node: VNode, root: boolean) {
     if (!node.children) {
-      return `<${getChildrenHeaderStart(node)} />`
+      if (root) {
+        return `"No output"`;
+      }
+      return `<${getChildrenHeaderStart(node)}/>`
     }
     const parts = [];
     for await (const children of node.children) {
@@ -49,21 +60,34 @@ async function recreate(node: VNode, known = new WeakMap<object, Promise<string>
         children.map(child => {
 
           if (known.has(child) || (typeof child.source === "function" && known.has(child.source))) {
-            return `<${getChildrenHeaderStart(child)} />`
+            return `<${getChildrenHeaderStart(child)}/>`
           }
 
-          return recreate(child, known);
+          return recreate(child, false, known, injectStrings);
         })
       )
-      if (!almost.length) {
-        continue;
-      }
       parts.push(
-        ...almost
+        ...almost.filter(Boolean)
       );
     }
+    if (root) {
+      if (!parts.length) {
+        return `"No output"`;
+      }
+      if (parts.length === 1) {
+        return parts[0].replace(/^{(.+)}$/, "$1");
+      }
+      return [
+        "<>",
+        ...parts.map(indent),
+        "</>"
+      ].join("\n");
+    }
     if (!parts.length) {
-      return `<${getChildrenHeaderStart(node)} />`
+      return `<${getChildrenHeaderStart(node)}/>`
+    }
+    if (node.reference === Fragment) {
+      return parts.join("\n");
     }
     return [
       `<${getChildrenHeaderStart(node)}>`,
@@ -86,7 +110,7 @@ async function recreate(node: VNode, known = new WeakMap<object, Promise<string>
     if (options.length) {
       return `${source} ${options.join(" ")} `
     }
-    return `${source}`;
+    return `${source} `;
   }
 
   function indent(part: string): string {
@@ -117,17 +141,21 @@ async function recreate(node: VNode, known = new WeakMap<object, Promise<string>
       return node.source;
     }
     if (typeof node.source === "undefined") {
+      console.log(node);
       return "";
     }
     if (typeof node.source === "symbol") {
       const key = Symbol.keyFor(node.source);
       if (key) {
-        return key;
+        if (!key.includes(" ")) {
+          return key;
+        }
+        return `Symbol.for(${JSON.stringify(key)})`
       } else {
         const string = String(node.source);
-        const matched = string.match(/^Symbol\(([^)]+)\)$/);
-        if (matched && matched[1]) {
-          return matched[1];
+        const stringKey = getSymbolKey(node.source);
+        if (stringKey && !stringKey.includes(" ")) {
+          return stringKey;
         }
         return string;
       }
@@ -138,10 +166,23 @@ async function recreate(node: VNode, known = new WeakMap<object, Promise<string>
     throw new Error(`Unimplemented non scalar source type ${typeof node.source}`)
   }
 
+  function getSymbolKey(symbol: symbol): string {
+    const string = String(symbol);
+    const matched = string.match(/^Symbol\(([^)]+)\)$/);
+    if (matched && matched[1]) {
+      return matched[1];
+    }
+    return undefined;
+  }
+
   function getSourceValue(value: unknown): string {
+    if (typeof value === "string" && !injectStrings) {
+      return value;
+    }
     return typeof value === "symbol" ?
-      //
-      Symbol.keyFor(value) ? `Symbol.for(${JSON.stringify(Symbol.keyFor(value))})` : "Symbol()" :
+      Symbol.keyFor(value) ? `Symbol.for(${JSON.stringify(Symbol.keyFor(value))})` : `Symbol(${JSON.stringify(getSymbolKey(value))})` :
+      typeof value === "undefined" ?
+        "undefined" :
       typeof value === "bigint" ?
         `${value}n` :
         JSON.stringify(value)
@@ -211,7 +252,7 @@ async function build(exampleKey: string) {
     source: ${JSON.stringify(source)},
     output: ${JSON.stringify(output)},
     cleanerSource: ${JSON.stringify(cleanerSource)},
-    structure: ${looping ? `""` : JSON.stringify(await recreate(staticNode))},
+    structure: ${looping ? `""` : JSON.stringify(await recreate(staticNode, true, new WeakMap(), !exampleKey.includes("HTML")))},
     import: async (): Promise<VNode> => {
       ${
       process.env.INCLUDE_IMPORT && !/[A-Z]/.test(id) ? `
