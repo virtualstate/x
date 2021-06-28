@@ -21,8 +21,7 @@ async function isFile(file: string): Promise<boolean> {
 }
 
 async function recreate(node: VNode, root: boolean, known = new WeakMap<object, Promise<string>>(), injectStrings = true): Promise<string> {
-  if (node.scalar && !node.options) {
-    console.log({ injectStrings });
+  if (!node.options && !node.children) {
     if (typeof node.source === "string" && !injectStrings) {
       return node.source;
     }
@@ -32,15 +31,12 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
     }
     return `{${value}}`;
   }
-  const knownPromise = known.get(node) || (typeof node.source === "function" ? known.get(node.source) : undefined);
+  const knownPromise = known.get(node);
   if (knownPromise) {
     return knownPromise;
   }
   const promise = doRecreate(node, root);
   known.set(node, promise);
-  if (typeof node.source === "function") {
-    known.set(node.source, promise);
-  }
   return promise;
 
   async function doRecreate(node: VNode, root: boolean) {
@@ -58,11 +54,6 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
       }
       const almost = await Promise.all(
         children.map(child => {
-
-          if (known.has(child) || (typeof child.source === "function" && known.has(child.source))) {
-            return `<${getChildrenHeaderStart(child)}/>`
-          }
-
           return recreate(child, false, known, injectStrings);
         })
       )
