@@ -7,6 +7,6 @@ import { createNode } from "./create-node";
  */
 export const Fragment = Symbol.for("@virtualstate/fringe/fragment");
 
-export function createFragment(options: Record<string, unknown>, ...children: VNodeRepresentationSource[]): VNode {
+export function createFragment(options?: Record<string, unknown>, ...children: VNodeRepresentationSource[]): VNode {
   return createNode(Fragment, options, ...children);
 }
