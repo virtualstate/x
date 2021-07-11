@@ -1,34 +1,43 @@
 // @abstract
 import {hmm} from "./hmm";
+import {VNode} from "@virtualstate/fringe";
 
-export interface Context {
+const ReferencesSymbol = Symbol("References");
+const ReferenceIndexSymbol = Symbol("Reference Index");
+
+export interface Context extends Record<string, unknown>  {
   globalThing: unknown;
 }
 
-export interface State {
+export const DefaultContext: Context = {
+  globalThing: 0
+};
+
+export interface State extends Record<string, unknown> {
   currentThing: number;
 }
 
-
-export function useStateSelector(defaultState?: State): State {
-  return defaultState ?? hmm["👀"]();
+export interface SourceVNode<Source> extends VNode {
+  source: Source;
 }
 
-export function useStateSetter(): (state: State) => Promise<void> {
-  return () => Promise.resolve();
+function noop(): void {
+  return undefined;
 }
 
-export function useState(defaultState?: State): [State, ReturnType<typeof useStateSetter>] {
+export function useState<S>(defaultState: S, state?: SourceVNode<S>): [S, (state: S) => void] {
+  if (state) {
+    return [state.source, noop];
+  }
   return [
-    useStateSelector(defaultState),
-    useStateSetter()
+    defaultState ?? hmm["👀"](),
+    noop
   ];
 }
 
 export interface AsyncFunction<T, Args extends unknown[] = never[]> {
   (...Args): Promise<T>
 }
-
 
 export type MaybeAsyncFunction<T, Args extends unknown[] = never[]> = ((...Args) => T) | AsyncFunction<T, Args>;
 
@@ -38,10 +47,27 @@ export function useEffect(): void {
 }
 
 export function useContext(): Context {
-  return hmm["👀"]();
+  return DefaultContext ?? hmm["👀"]();
+}
+
+export interface ReferenceState {
+  references: { current: unknown }[];
+  index: number;
 }
 
 export function useRef<T>(value: T): { current: T } {
-  return { current: value };
+  const [state] = useState<ReferenceState>({
+    references: [],
+    index: -1
+  });
+  const index = state.index = state.index + 1;
+  const references = state.references;
+  if (isIndexedReference(references)) {
+    return references[index];
+  } else {
+    return references[index] = { current: value };
+  }
+  function isIndexedReference(value: object): value is Record<typeof index, { current: T }> {
+    return !!value[index];
+  }
 }
-

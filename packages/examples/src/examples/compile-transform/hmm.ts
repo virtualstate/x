@@ -1,13 +1,9 @@
 export const hmm = {
-  "👀"<No>(): No {
-    return hmm["😢"]() as No;
+  "👀"<No>(value?: unknown): No {
+    return (value ?? hmm["😢"]()) as No;
   },
   "😢"(): unknown {
-    return new Proxy({}, {
-      get() {
-        return undefined;
-      }
-    });
+    return {};
   },
   "🕵️"<Huh>(): Huh {
     return this["👀"]()

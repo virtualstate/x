@@ -5,6 +5,7 @@ import {promises as fs} from "fs";
 import {getExampleNameFromKey} from "./log.util";
 import {Static} from "./examples";
 import {readAllDrain} from "./examples/transform/read";
+import {EngineURLSymbol} from "./examples/compile-transform/source.engine";
 
 // const obs = new PerformanceObserver((items) => {
 //   console.log(items.getEntries());
@@ -221,10 +222,9 @@ async function build(exampleKey: string) {
 
   const buildUrl = new URL(import.meta.url);
   const buildDirectory = dirname(buildUrl.pathname);
-  const sourceImport = relative(buildDirectory, url.pathname);
-  const targetImport = `${dirname(sourceImport)}/${basename(sourceImport, ".js")}`
+  const targetImport = relative(buildDirectory, url.pathname);
 
-  const module = await import(`./${sourceImport}`);
+  const module = await import(`./${targetImport}`);
 
   const staticNode = (
     <Static>
@@ -236,22 +236,48 @@ async function build(exampleKey: string) {
     await readAllDrain(staticNode);
   }
 
+  const info: Record<string | symbol | typeof EngineURLSymbol, unknown> | undefined = module[`_${id}_Info`];
+  const engine = hasEngine(info) ? info[EngineURLSymbol] : undefined;
+  const engineImport = engine ? relative(buildDirectory, new URL(engine).pathname) : undefined;
+
   return `export const _${id}_ExampleInformation: ExampleInformation = {
     name: ${JSON.stringify(getExampleNameFromKey(exampleKey))},
     id: ${JSON.stringify(id)},
     exportedAs: ${JSON.stringify(exampleKey)},
     source: ${JSON.stringify(source)},
+    sourceURL: ${JSON.stringify(url.toString())},
     output: ${JSON.stringify(output)},
     cleanerSource: ${JSON.stringify(cleanerSource)},
     structure: ${looping ? `""` : JSON.stringify(await recreate(staticNode, true, new WeakMap(), !exampleKey.includes("HTML")))},
-    import: async (): Promise<VNode> => {
+    info: ${module[`_${id}_Info`] ? JSON.stringify(module[`_${id}_Info`]) : "undefined"},
+    engineURL: ${engine ? JSON.stringify(engine) : "undefined"},
+    import: async (context?: Record<string, unknown>, state?: VNode): Promise<VNode> => {
       ${
-      process.env.INCLUDE_IMPORT && !/[A-Z]/.test(id) ? `
+      engineImport ? (`
+      const { Engine, SourceURLSymbol, EngineURLSymbol, SourceSymbol } = await import("./${engineImport}");
+      return h(
+        Engine,
+        {
+          ..._${id}_ExampleInformation.info,
+          ...context,
+          [SourceURLSymbol]: _${id}_ExampleInformation.sourceURL,
+          [EngineURLSymbol]: _${id}_ExampleInformation.engineURL,
+          [SourceSymbol]: _${id}_ExampleInformation.source,
+        },
+        state
+      );`.trim()
+        ) : (
+        process.env.INCLUDE_IMPORT && !/[A-Z]/.test(id) ? `
       const module = await import("./${targetImport}");
       return module.${exampleKey};`.trim() : "throw new Error(`Not available`);"
-      }
+      )
     }
-  }`;
+    }
+}`;
+
+  function hasEngine(value?: Record<typeof EngineURLSymbol, unknown>): value is { [EngineURLSymbol]: string } {
+    return !!value && typeof value[EngineURLSymbol] === "string";
+  }
 }
 
 const parts: string[] = [];
@@ -265,17 +291,20 @@ for (const exampleKey in Examples) {
 }
 
 const information = `
-import { VNode } from "@virtualstate/fringe";
+import { VNode, h, createFragment } from "@virtualstate/fringe";
 
 export interface ExampleInformation {
   name: string;
   id: string;
   exportedAs: string;
   source: string;
+  sourceURL: string;
+  engineURL?: string;
   output: string;
   cleanerSource: string;
   structure: string;
-  import?(): Promise<VNode>
+  info?: Record<string, unknown>;
+  import?(context?: Record<string, unknown>, state?: VNode): Promise<VNode>
 }
 
 ${parts.join("\n")}
