@@ -1,6 +1,13 @@
 import { h } from "../h";
 import { childrenFiltered } from "../filter";
-import { createToken, isTokenVNode, TokenInitialOptions, TokenVNode, TokenVNodeBase, TokenVNodeFn } from "../token";
+import {
+    createToken,
+    isTokenVNode,
+    TokenOptionsRecord,
+    TokenVNode,
+    TokenVNodeBase,
+    TokenVNodeFn
+} from "../token";
 import { createFragment } from "../fragment";
 import { createNode } from "../create-node";
 import { URL } from "url";
@@ -35,7 +42,7 @@ describe("Tokens", () => {
         LastNameInput.assert(lastName);
     });
 
-    interface InputChildrenOptions {
+    interface InputChildrenOptions extends TokenOptionsRecord {
         option?: number | string;
     }
 
@@ -43,7 +50,7 @@ describe("Tokens", () => {
     type InputChildrenNode = TokenVNodeFn<typeof InputChildrenSymbol, InputChildrenOptions>;
     const InputChildren: InputChildrenNode = createToken(InputChildrenSymbol);
 
-    interface InputOptions {
+    interface InputOptions extends TokenOptionsRecord {
         type: string;
     }
 
@@ -54,7 +61,7 @@ describe("Tokens", () => {
     const defaultInputOptions = {
         type: "text"
     };
-    type InputNodeFn = TokenVNodeFn<typeof InputSymbol, TokenInitialOptions<InputOptions, typeof defaultInputOptions>>;
+    type InputNodeFn = TokenVNodeFn<typeof InputSymbol, InputOptions>;
     const Input: InputNodeFn = createToken<typeof InputSymbol, InputOptions, typeof defaultInputOptions>(
         InputSymbol,
         defaultInputOptions,
@@ -167,7 +174,7 @@ describe("Tokens", () => {
     describe("models", () => {
 
         const ThingSymbol = Symbol("Thing");
-        interface ThingOptions {
+        interface ThingOptions extends TokenOptionsRecord {
             url: URL;
             sameAs?: URL | Iterable<URL>;
             name?: string;
@@ -274,6 +281,9 @@ describe("Tokens", () => {
 
             expect(tokens).toHaveLength(5);
             const [, person, , organization] = tokens;
+
+            Person.assert(person);
+            Organization.assert(organization);
 
             const members: PartyToken[] = isIterable<PartyToken>(organization.options.member) ?
                 Array.from<PartyToken>(organization.options.member) :
