@@ -1,7 +1,7 @@
 import {Domain, Graph, MainGraph, DomainToken} from "./main";
 import {Store} from "../../examples/experiments/store";
 import {h, VNode, Instance, createFragment} from "@virtualstate/fringe"
-import {Quad, QuadToken} from "./tokens";
+import {BlankNode, DefaultGraph, Literal, NamedNode, Quad, QuadToken, Variable} from "./tokens";
 import * as rdf from "@opennetwork/rdf-data-model";
 import {
   DefaultDataFactory,
@@ -64,6 +64,25 @@ async function parse(state: VNode[]): Promise<Parsed[]> {
       async (node): Promise<Parsed> => {
         if (Quad.is(node)) {
           return quad(node, await parse(await getState(node)))
+        }
+        if (NamedNode.is(node)) {
+          return DefaultDataFactory.namedNode(node.options.value);
+        }
+        if (BlankNode.is(node)) {
+          return DefaultDataFactory.blankNode();
+        }
+        if (DefaultGraph.is(node)) {
+          return DefaultDataFactory.defaultGraph();
+        }
+        if (Literal.is(node)) {
+          return new rdf.Literal(
+            node.options.value,
+            node.options.language,
+            DefaultDataFactory.fromTerm(node.options.datatype)
+          );
+        }
+        if (Variable.is(node)) {
+          return DefaultDataFactory.variable(node.options.value);
         }
         return rdf.DefaultDataFactory.fromTerm(node.options);
       }
