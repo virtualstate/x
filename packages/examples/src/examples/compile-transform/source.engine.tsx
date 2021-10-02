@@ -1,10 +1,19 @@
-import { DefaultContext, SourceVNode, State } from "./source.interface";
-import {Transform, SourceURLSymbol, isStateVNode, SourceSymbol} from "./source.transform";
+import {DefaultContext, DoneSymbol, SourceVNode, State} from "./source.interface";
+import {
+  Transform,
+  SourceURLSymbol,
+  isStateVNode,
+  SourceSymbol,
+  SourceInterfaceURLSymbol,
+  SourceInterfaceSymbol
+} from "./source.transform";
 import {h, VNode} from "@virtualstate/fringe";
 
 export {
   SourceURLSymbol,
-  SourceSymbol
+  SourceSymbol,
+  SourceInterfaceSymbol,
+  SourceInterfaceURLSymbol
 }
 
 export const AbortSignalSymbol = Symbol("Abort Signal");
@@ -13,22 +22,30 @@ export const EngineURL = import.meta.url;
 
 export interface EngineOptions {
   [SourceURLSymbol]: string;
-  [SourceSymbol]: string;
+  [SourceInterfaceURLSymbol]: string;
   [EngineURLSymbol]: string;
+  [SourceSymbol]: string;
+  [SourceInterfaceSymbol]: string;
   [AbortSignalSymbol]?: AbortSignal
+  signal?: AbortSignal
 }
 
 export async function *Engine(options: EngineOptions, defaultState?: VNode) {
+
   let state: SourceVNode<State> | undefined = isStateVNode(defaultState) ? defaultState : undefined;
-  const abortSignal = options[AbortSignalSymbol];
+  const abortSignal = options[AbortSignalSymbol] ?? options.signal;
   let transformState: VNode,
     transformStateIterator,
     transformStateIteratorPromise,
     transformStateValue,
     transformStateYielded = false;
+  console.log({ abortSignal });
 
   const onAborted = abortSignal ? new Promise(resolve => {
-    abortSignal.addEventListener("abort", () => resolve(abortSignal), { once: true });
+    abortSignal.addEventListener("abort", () => {
+      console.log("Abort Signal!", { abortSignal });
+      resolve(abortSignal);
+    }, { once: true });
   }) : undefined;
 
   do {
@@ -78,15 +95,29 @@ export async function *Engine(options: EngineOptions, defaultState?: VNode) {
 
     yield nextState;
 
+    // This creates a container that can be referenced, yet it is mutating across yields
     state = Object.assign(state || {}, nextState);
+
     transformStateYielded = true;
 
-  } while (abortSignal && !abortSignal.aborted || transformStateValue?.done === false);
+    if (state.source[DoneSymbol]) {
+      break;
+    }
+
+    await new Promise<void>(queueMicrotask);
+  } while (
+    abortSignal ?
+      !abortSignal.aborted :
+      transformStateValue ?
+        transformStateValue.done === false : true
+  );
+
+  console.log({ abortSignal });
 
   await transformStateIterator?.return();
-
-  console.log("Engine complete", {
-    state: state?.source,
-    yielded: transformStateYielded
-  });
+//
+//   console.log("Engine complete", {
+//     state: state?.source,
+//     yielded: transformStateYielded
+//   });
 }

@@ -2,8 +2,7 @@
 import {hmm} from "./hmm";
 import {VNode} from "@virtualstate/fringe";
 
-const ReferencesSymbol = Symbol("References");
-const ReferenceIndexSymbol = Symbol("Reference Index");
+export const DoneSymbol = Symbol("Done");
 
 export interface Context extends Record<string, unknown>  {
   globalThing: unknown;
@@ -15,6 +14,8 @@ export const DefaultContext: Context = {
 
 export interface State extends Record<string, unknown> {
   currentThing: number;
+  updatedAt: number;
+  [DoneSymbol]?: boolean;
 }
 
 export interface SourceVNode<Source> extends VNode {

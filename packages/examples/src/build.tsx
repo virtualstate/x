@@ -6,6 +6,7 @@ import {getExampleNameFromKey} from "./log.util";
 import {Static} from "./examples";
 import {readAllDrain} from "./examples/transform/read";
 import {EngineURLSymbol} from "./examples/compile-transform/source.engine";
+import {SourceInterfaceURLSymbol} from "./examples/compile-transform/source.transform";
 
 // const obs = new PerformanceObserver((items) => {
 //   console.log(items.getEntries());
@@ -236,9 +237,16 @@ async function build(exampleKey: string) {
     await readAllDrain(staticNode);
   }
 
-  const info: Record<string | symbol | typeof EngineURLSymbol, unknown> | undefined = module[`_${id}_Info`];
-  const engine = hasEngine(info) ? info[EngineURLSymbol] : undefined;
-  const engineImport = engine ? relative(buildDirectory, new URL(engine).pathname) : undefined;
+  const info: Record<string | symbol, unknown> | undefined = module[`_${id}_Info`];
+  const engineURL = hasEngine(info) ? info[EngineURLSymbol] : undefined;
+  const sourceInterfaceURL = hasInterface(info) ? info[SourceInterfaceURLSymbol] : undefined;
+  const engineImport = engineURL ? relative(buildDirectory, new URL(engineURL).pathname) : undefined;
+  const sourceInterface = sourceInterfaceURL && (
+    await fs.readFile(
+      new URL(sourceInterfaceURL).pathname,
+      "utf8"
+    )
+  );
 
   return `export const _${id}_ExampleInformation: ExampleInformation = {
     name: ${JSON.stringify(getExampleNameFromKey(exampleKey))},
@@ -250,11 +258,13 @@ async function build(exampleKey: string) {
     cleanerSource: ${JSON.stringify(cleanerSource)},
     structure: ${looping ? `""` : JSON.stringify(await recreate(staticNode, true, new WeakMap(), !exampleKey.includes("HTML")))},
     info: ${module[`_${id}_Info`] ? JSON.stringify(module[`_${id}_Info`]) : "undefined"},
-    engineURL: ${engine ? JSON.stringify(engine) : "undefined"},
+    engineURL: ${engineURL ? JSON.stringify(engineURL) : "undefined"},
+    sourceInterfaceURL: ${sourceInterfaceURL ? JSON.stringify(sourceInterfaceURL) : "undefined"},
+    sourceInterface: ${sourceInterface ? JSON.stringify(sourceInterface) : "undefined"},
     import: async (context?: Record<string, unknown>, state?: VNode): Promise<VNode> => {
       ${
       engineImport ? (`
-      const { Engine, SourceURLSymbol, EngineURLSymbol, SourceSymbol } = await import("./${engineImport}");
+      const { Engine, SourceURLSymbol, EngineURLSymbol, SourceSymbol, SourceInterfaceURLSymbol, SourceInterfaceSymbol } = await import("./${engineImport}");
       return h(
         Engine,
         {
@@ -262,6 +272,8 @@ async function build(exampleKey: string) {
           ...context,
           [SourceURLSymbol]: _${id}_ExampleInformation.sourceURL,
           [EngineURLSymbol]: _${id}_ExampleInformation.engineURL,
+          [SourceInterfaceURLSymbol]: _${id}_ExampleInformation.sourceInterfaceURL,
+          [SourceInterfaceSymbol]: _${id}_ExampleInformation.sourceInterface,
           [SourceSymbol]: _${id}_ExampleInformation.source,
         },
         state
@@ -269,7 +281,7 @@ async function build(exampleKey: string) {
         ) : (
         process.env.INCLUDE_IMPORT && !/[A-Z]/.test(id) ? `
       const module = await import("./${targetImport}");
-      return module.${exampleKey};`.trim() : "throw new Error(`Not available`);"
+      return module.${exampleKey};`.trim() : `throw new Error("Not available");`
       )
     }
     }
@@ -277,6 +289,10 @@ async function build(exampleKey: string) {
 
   function hasEngine(value?: Record<typeof EngineURLSymbol, unknown>): value is { [EngineURLSymbol]: string } {
     return !!value && typeof value[EngineURLSymbol] === "string";
+  }
+
+  function hasInterface(value?: Record<typeof SourceInterfaceURLSymbol, unknown>): value is { [SourceInterfaceURLSymbol]: string } {
+    return !!value && typeof value[SourceInterfaceURLSymbol] === "string";
   }
 }
 
@@ -300,6 +316,8 @@ export interface ExampleInformation {
   source: string;
   sourceURL: string;
   engineURL?: string;
+  sourceInterfaceURL?: string;
+  sourceInterface?: string;
   output: string;
   cleanerSource: string;
   structure: string;
