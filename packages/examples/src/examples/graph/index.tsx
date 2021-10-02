@@ -1,7 +1,17 @@
 import {Domain, Graph, MainGraph, DomainToken} from "./main";
 import {Store} from "../../examples/experiments/store";
 import {h, VNode, Instance, createFragment} from "@virtualstate/fringe"
-import {BlankNode, DefaultGraph, Literal, NamedNode, Quad, QuadToken, Variable} from "./tokens";
+import {
+  assertQuadInstanceToken,
+  BlankNode,
+  DefaultGraph,
+  Literal,
+  NamedNode,
+  Quad,
+  QuadInstanceToken,
+  QuadToken,
+  Variable
+} from "./tokens";
 import * as rdf from "@opennetwork/rdf-data-model";
 import {
   DefaultDataFactory,
@@ -16,9 +26,7 @@ import {
 export const _G0001_Graph = MainGraph;
 export const _G0001_URL = import.meta.url;
 
-export async function *_G0002_GraphStoreRead() {
-
-
+export async function *_G0002_GraphStoreRead(): AsyncIterable<QuadInstanceToken[]> {
   const store: VNode & { [Instance]?: Store<DomainToken> } = (
     <Store domain={Domain} visit={[Graph, Quad]}>
       {MainGraph}
@@ -30,15 +38,14 @@ export async function *_G0002_GraphStoreRead() {
   yield await Promise.all(
     [...store[Instance]?.get(Quad)]
       .filter(Quad.is)
-      .map(async token => (
-        <>
-          {JSON.stringify({
-            ...(await quad(token, await parse(await getState(token))))
-          })}
-        </>
-      ))
+      .map(async (input): Promise<QuadInstanceToken> => {
+        const instance: rdf.Quad = await quad(input, await parse(await getState(input)));
+        const frozen: Readonly<rdf.Quad> = Object.freeze(instance);
+        const token = Quad(frozen);
+        assertQuadInstanceToken(token);
+        return token;
+      })
   );
-
 }
 export const _G0002_GraphStore = <_G0002_GraphStoreRead />
 export const _G0002_URL = import.meta.url;

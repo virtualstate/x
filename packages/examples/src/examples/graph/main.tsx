@@ -31,15 +31,15 @@ export const Domain: DomainToken[] = [
 
 export const MainGraph = (
   <Graph>
-    <Triple>
+    <Quad>
       <NamedNode value="value" />
       <NamedNode value="name" />
       <Literal value="main" />
-    </Triple>
-    <Triple>
+    </Quad>
+    <Quad>
       <NamedNode value="value" />
       <NamedNode value="version" />
       <Literal value="1.0.0" />
-    </Triple>
+    </Quad>
   </Graph>
 )

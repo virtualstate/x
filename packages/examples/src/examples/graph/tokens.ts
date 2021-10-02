@@ -5,8 +5,10 @@ import {
   LiteralLike,
   QuadLike,
   DefaultGraphLike,
-  VariableLike, DefaultDataFactory
+  VariableLike,
+  DefaultDataFactory, isQuad
 } from "@opennetwork/rdf-data-model";
+import * as rdf from "@opennetwork/rdf-data-model";
 
 export const NamedNodeSymbol = Symbol.for("@virtualstate/examples/NamedNode");
 export type NamedNodeTokenFn = TokenVNodeFn<typeof NamedNodeSymbol, NamedNodeLike, Pick<NamedNodeLike, "termType">>;
@@ -33,11 +35,22 @@ export const Literal: LiteralTokenFn = createToken(LiteralSymbol, {
 export const QuadSymbol = Symbol.for("@virtualstate/examples/Quad");
 export type QuadTokenFn = TokenVNodeFn<typeof QuadSymbol, QuadLike>;
 export type QuadToken = TokenVNodeBase<typeof QuadSymbol, QuadLike>;
+export type QuadInstanceToken = QuadToken & TokenVNodeBase<typeof QuadSymbol, rdf.Quad>;
 export const Quad: QuadTokenFn = createToken(QuadSymbol, {});
 export const Triple: QuadTokenFn = createToken(QuadSymbol, {
   termType: "Quad",
   value: "",
 });
+
+export function isQuadInstanceToken(token: QuadToken): token is QuadInstanceToken {
+  return isQuad(token.options);
+}
+
+export function assertQuadInstanceToken(token: QuadToken): asserts token is QuadInstanceToken {
+  if (!isQuadInstanceToken(token)) {
+    throw new Error("Expected QuadInstanceToken");
+  }
+}
 
 export const DefaultGraphSymbol = Symbol.for("@virtualstate/examples/DefaultGraph");
 export type DefaultGraphTokenFn = TokenVNodeFn<typeof DefaultGraphSymbol, DefaultGraphLike, Pick<DefaultGraphLike, "termType" | "value">>;
