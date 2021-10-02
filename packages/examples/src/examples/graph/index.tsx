@@ -69,7 +69,7 @@ async function parse(state: VNode[]): Promise<Parsed[]> {
           return DefaultDataFactory.namedNode(node.options.value);
         }
         if (BlankNode.is(node)) {
-          return DefaultDataFactory.blankNode();
+          return DefaultDataFactory.blankNode(node.options.value);
         }
         if (DefaultGraph.is(node)) {
           return DefaultDataFactory.defaultGraph();

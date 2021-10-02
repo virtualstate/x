@@ -18,7 +18,7 @@ export const NamedNode: NamedNodeTokenFn = createToken(NamedNodeSymbol, {
 export const BlankNodeSymbol = Symbol.for("@virtualstate/examples/BlankNode");
 export type BlankNodeTokenFn = TokenVNodeFn<typeof BlankNodeSymbol, BlankNodeLike, Pick<BlankNodeLike, "termType">>;
 export type BlankNodeToken = TokenVNodeBase<typeof BlankNodeSymbol, BlankNodeLike>;
-export const BlankNode = createToken(BlankNodeSymbol, {
+export const BlankNode: BlankNodeTokenFn = createToken(BlankNodeSymbol, {
   termType: "BlankNode"
 });
 
