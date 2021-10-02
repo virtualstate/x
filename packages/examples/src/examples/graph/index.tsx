@@ -5,11 +5,11 @@ import {Quad, QuadToken} from "./tokens";
 import * as rdf from "@opennetwork/rdf-data-model";
 import {
   DefaultDataFactory,
-  isQuadGraph, isQuadGraphLike,
+  isQuadGraphLike,
+  isQuadLike,
   isQuadObjectLike,
   isQuadPredicateLike,
-  isQuadSubject,
-  isQuadSubjectLike, NamedNode,
+  isQuadSubjectLike,
   QuadLike
 } from "@opennetwork/rdf-data-model";
 
@@ -77,7 +77,9 @@ async function quad(token: QuadToken, terms: Parsed[]): Promise<rdf.Quad> {
     object,
     graph
   ] = terms;
-  const options: Partial<QuadLike> = {
+  const options: Partial<Record<keyof QuadLike, unknown>> = {
+    termType: "Quad",
+    value: "",
     graph: new rdf.DefaultGraph(),
     ...token.options
   };
@@ -101,5 +103,8 @@ async function quad(token: QuadToken, terms: Parsed[]): Promise<rdf.Quad> {
   } else if (subject) {
     throw new Error("Subject is not valid");
   }
-  return DefaultDataFactory.fromQuad(options);
+  if (!isQuadLike(options)) {
+    throw new Error("Quad is not valid");
+  }
+  return DefaultDataFactory.fromTerm(options);
 }

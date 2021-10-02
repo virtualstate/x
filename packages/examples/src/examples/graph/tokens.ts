@@ -34,7 +34,10 @@ export const QuadSymbol = Symbol.for("@virtualstate/examples/Quad");
 export type QuadTokenFn = TokenVNodeFn<typeof QuadSymbol, QuadLike>;
 export type QuadToken = TokenVNodeBase<typeof QuadSymbol, QuadLike>;
 export const Quad: QuadTokenFn = createToken(QuadSymbol, {});
-export const Triple: QuadTokenFn = createToken(QuadSymbol, {});
+export const Triple: QuadTokenFn = createToken(QuadSymbol, {
+  termType: "Quad",
+  value: "",
+});
 
 export const DefaultGraphSymbol = Symbol.for("@virtualstate/examples/DefaultGraph");
 export type DefaultGraphTokenFn = TokenVNodeFn<typeof DefaultGraphSymbol, DefaultGraphLike, Pick<DefaultGraphLike, "termType" | "value">>;
