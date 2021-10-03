@@ -3,15 +3,25 @@ import {assertPromiseVNode, ChildrenSource, h, then} from "@virtualstate/fringe"
 async function *Whatever() {
   yield (
     <p>
-      <z>A</z>
-      <z>B</z>
+      <z>
+        <a />
+      </z>
+      <z>
+        <b />
+      </z>
     </p>
   )
   yield (
     <p>
-      <z>A</z>
-      <z>B</z>
-      <z>C</z>
+      <z>
+        <a />
+      </z>
+      <z>
+        <b />
+      </z>
+      <z>
+        <c />
+      </z>
     </p>
   )
 }
@@ -24,8 +34,6 @@ async function Example() {
   assertPromiseVNode(node);
 
   const [p] = await node;
-
-  console.log({ node, p });
 
   p.then = then;
   assertPromiseVNode(p);
