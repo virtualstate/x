@@ -1,4 +1,4 @@
-import { createFragment, isTokenVNode, isVNode, VNode } from "@virtualstate/fringe";
+import {createFragment, isTokenVNode, isVNode, PromiseVNodeThenFn, then, VNode} from "@virtualstate/fringe";
 import { read, ReadOptions, VNodeSource } from "./read";
 
 type DomainMap<T extends VNodeSource> = Map<T["source"], Set<T>>;

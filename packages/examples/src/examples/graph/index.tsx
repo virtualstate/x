@@ -1,6 +1,6 @@
 import {Domain, Graph, MainGraph, DomainToken} from "./main";
 import {Store} from "../../examples/experiments/store";
-import {h, VNode, Instance} from "@virtualstate/fringe"
+import {h, VNode, Instance, PromiseVNode} from "@virtualstate/fringe"
 import {
   assertQuadInstanceToken,
   BlankNode,
