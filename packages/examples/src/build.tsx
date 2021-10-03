@@ -77,7 +77,7 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
       ].join("\n");
     }
     if (!parts.length) {
-      return `<${getChildrenHeaderStart(node)}/>`
+      return `<${getChildrenHeaderStart(node)} />`
     }
     if (node.reference === Fragment) {
       return parts.join("\n");
@@ -100,10 +100,10 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
         ""
       ].join("\n");
     }
-    if (options.length) {
-      return `${source} ${options.join(" ")} `
+    if (options.length) { 
+      return `${source} ${options.join(" ")}`
     }
-    return `${source} `;
+    return `${source}`;
   }
 
   function indent(part: string): string {

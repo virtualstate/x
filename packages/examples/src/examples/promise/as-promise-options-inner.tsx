@@ -27,5 +27,5 @@ async function Example() {
   return result.map(node => node.children[ChildrenSource]);
 }
 
-export const _305_AsPromiseOptions = <Example />
+export const _305_AsPromiseWithGenerator = <Example />
 export const _305_URL = import.meta.url;
