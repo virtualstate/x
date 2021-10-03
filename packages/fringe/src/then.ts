@@ -7,8 +7,8 @@ export interface VNodeWithThenOptions extends VNode {
   [Then](this: VNode, previous: VNode[], result: IteratorResult<VNode[]>): Promise<VNode[]>
 }
 
-export interface PromiseVNode {
-  then(resolve?: (children: VNode[]) => unknown, reject?: (error: unknown) => unknown): Promise<unknown>
+export interface PromiseVNodeThenFn {
+  (resolve?: (children: VNode[]) => unknown, reject?: (error: unknown) => unknown): Promise<unknown>
 }
 
 function isVNodeWithThenOptions(node: VNode): node is VNodeWithThenOptions {

@@ -13,4 +13,5 @@ export * from "./source-reference";
 export * from "./h";
 export * from "./f";
 export * from "./token";
+export * from "./then";
 export { asyncExtendedIterable as a, extendedIterable as i } from "iterable";

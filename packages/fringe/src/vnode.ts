@@ -1,7 +1,7 @@
 import { isSourceReference, SourceReference, MarshalledSourceReference } from "./source-reference";
 import { isAsyncIterable, AsyncIterableLike, isIterable } from "iterable";
 import { Fragment } from "./fragment";
-import type { PromiseVNode as PromiseVNodeProto } from "./then";
+import type { PromiseVNodeThenFn } from "./then";
 
 /**
  * Generic VNode, represents a virtual node within a state tree
@@ -42,8 +42,8 @@ export interface VNode {
   then?: unknown;
 }
 
-export interface PromiseVNode extends PromiseVNodeProto, VNode {
-  then: PromiseVNodeProto["then"];
+export interface PromiseVNode extends VNode {
+  then: PromiseVNodeThenFn;
 }
 
 /**

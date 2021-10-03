@@ -1,6 +1,6 @@
 import {Domain, Graph, MainGraph, DomainToken} from "./main";
 import {Store} from "../../examples/experiments/store";
-import {h, VNode, Instance, createFragment} from "@virtualstate/fringe"
+import {h, VNode, Instance} from "@virtualstate/fringe"
 import {
   assertQuadInstanceToken,
   BlankNode,
@@ -22,6 +22,7 @@ import {
   isQuadSubjectLike,
   QuadLike
 } from "@opennetwork/rdf-data-model";
+import {then} from "@virtualstate/fringe";
 
 export const _G0001_Graph = MainGraph;
 export const _G0001_URL = import.meta.url;
@@ -51,15 +52,7 @@ export const _G0002_GraphStore = <_G0002_GraphStoreRead />
 export const _G0002_URL = import.meta.url;
 
 async function getState(node: VNode) {
-  // Assume a node will complete and provide state as its final
-  const iterator = node.children?.[Symbol.asyncIterator]?.();
-  let final: VNode[] = [];
-  let result: IteratorResult<VNode[]>;
-  do {
-    result = await iterator.next();
-    final = result.value ?? final;
-  } while(!result.done);
-  return final;
+  return new Promise<VNode[]>(then.bind(node));
 }
 
 type Parsed = (rdf.Quad | ReturnType<rdf.DataFactory["fromTerm"]>);
