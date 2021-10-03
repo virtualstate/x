@@ -1,4 +1,4 @@
-import {createFragment, isTokenVNode, isVNode, PromiseVNodeThenFn, then, VNode} from "@virtualstate/fringe";
+import {createFragment, EnableThen, isTokenVNode, isVNode, PromiseVNodeThenFn, then, VNode} from "@virtualstate/fringe";
 import { read, ReadOptions, VNodeSource } from "./read";
 
 type DomainMap<T extends VNodeSource> = Map<T["source"], Set<T>>;
@@ -10,6 +10,8 @@ export interface StoreOptions<T extends VNodeSource> extends ReadOptions<T> {
 export const Delivery = Symbol("📦");
 
 export class Store<T extends VNodeSource> {
+
+  static [EnableThen] = true;
 
   #options: StoreOptions<T>;
   #domainSources: unknown[];

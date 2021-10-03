@@ -28,13 +28,11 @@ export const _G0001_Graph = MainGraph;
 export const _G0001_URL = import.meta.url;
 
 export async function *_G0002_GraphStoreRead(): AsyncIterable<QuadInstanceToken[]> {
-  const store: VNode & { [Instance]?: Store<DomainToken> } = (
+  const store: PromiseVNode & { [Instance]?: Store<DomainToken> } = (
     <Store domain={Domain} visit={[Graph, Quad]}>
       {MainGraph}
     </Store>
   );
-  store.then = then;
-  assertPromiseVNode(store);
   await store;
 
   yield await Promise.all(

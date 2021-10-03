@@ -1,16 +1,42 @@
 import type {VNode} from "./vnode";
 
 // Access to re-assign promise functionality
+/**
+ * @experimental
+ */
 export const Then = Symbol("Function VNode Then");
+/**
+ * @experimental
+ */
+export const EnableThen = Symbol("VNode Enable Then");
 
+/**
+ * @experimental
+ */
+export function isEnableThen(node: unknown): node is { [EnableThen]: true } {
+  function isEnableThenLike(node: unknown): node is { [EnableThen]: unknown } {
+    return !!node;
+  }
+  return isEnableThenLike(node) && node[EnableThen] === true;
+}
+
+/**
+ * @experimental
+ */
 export interface VNodeWithThenOptions extends VNode {
   [Then](this: VNode, previous: VNode[], result: IteratorResult<VNode[]>): Promise<VNode[]>
 }
 
+/**
+ * @experimental
+ */
 export interface PromiseVNodeThenFn {
   (resolve?: (children: VNode[]) => unknown, reject?: (error: unknown) => unknown): Promise<unknown>
 }
 
+/**
+ * @experimental
+ */
 function isVNodeWithThenOptions(node: VNode): node is VNodeWithThenOptions {
   return typeof node[Then] === "function";
 }

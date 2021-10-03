@@ -31,6 +31,7 @@ import {
 import { children as childrenGenerator, ChildrenContext } from "./children";
 import { createFragment, Fragment } from "./fragment";
 import { isTokenVNodeFn } from "./token";
+import {isEnableThen, then} from "./then";
 
 const nonConstructable = new WeakSet();
 
@@ -253,6 +254,17 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     ];
   }
 
+  function enableThen(node: VNode, source: unknown) {
+    if (isEnableThen(source)) {
+      Object.defineProperty(node, "then", {
+        value: then,
+        enumerable: false,
+        configurable: true,
+        writable: true
+      })
+    }
+  }
+
   function functionVNode(source: CreateNodeOp1Function): VNode {
     let forceConstruction = false;
 
@@ -271,7 +283,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       children: replay(childrenFn),
       [Instance]: undefined
     };
-
+    enableThen(node, source);
     return node;
 
     function construct(source: unknown) {
