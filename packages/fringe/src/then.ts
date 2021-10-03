@@ -1,4 +1,5 @@
 import type {VNode} from "./vnode";
+import {createToken} from "./token";
 
 // Access to re-assign promise functionality
 /**
