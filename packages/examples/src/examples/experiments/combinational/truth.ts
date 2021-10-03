@@ -23,7 +23,7 @@ export type TrueTokenFn = TokenVNodeFn<typeof TrueSymbol, TrueOptions>;
 export const True: TrueTokenFn = createToken(TrueSymbol, Object.freeze({}));
 
 // Used as a defined false, where non existences is ambiguous
-export const FalseSymbol = Symbol("Not Truth");
+export const FalseSymbol = Symbol("NotTruth");
 export type FalseOptions = Record<string, never>;
 export type FalseToken = TokenVNodeBase<typeof FalseSymbol, FalseOptions>;
 export type FalseTokenFn = TokenVNodeFn<typeof FalseSymbol, FalseOptions>;

@@ -1,6 +1,6 @@
 import * as Examples from "./examples";
 import {isVNode, h, VNode, Fragment} from "@virtualstate/fringe";
-import {dirname, join, relative, basename} from "path";
+import {dirname, join, relative} from "path";
 import {promises as fs} from "fs";
 import {getExampleNameFromKey} from "./log.util";
 import {Static} from "./examples";
@@ -27,7 +27,7 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
     if (typeof node.source === "string" && !injectStrings) {
       return node.source;
     }
-    const value = getSourceValue(node.source);
+    const value = getSourceValue(node);
     if (root) {
       return value;
     }
@@ -134,29 +134,32 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
       return node.source;
     }
     if (typeof node.source === "undefined") {
-      console.log(node);
-      return "";
+      return typeof node.reference === "symbol" ? symbol(node.reference) : node.reference.toString();
     }
     if (typeof node.source === "symbol") {
-      const key = Symbol.keyFor(node.source);
+      return symbol(node.source);
+    }
+    if (typeof node.source === "object") {
+      return "";
+    }
+    throw new Error(`Unimplemented non scalar source type ${typeof node.source}`)
+
+    function symbol(value: symbol): string {
+      const key = Symbol.keyFor(value);
       if (key) {
         if (!key.includes(" ")) {
           return key;
         }
         return `Symbol.for(${JSON.stringify(key)})`
       } else {
-        const string = String(node.source);
-        const stringKey = getSymbolKey(node.source);
+        const string = String(value);
+        const stringKey = getSymbolKey(value);
         if (stringKey && !stringKey.includes(" ")) {
           return stringKey;
         }
         return string;
       }
     }
-    if (typeof node.source === "object") {
-      return "";
-    }
-    throw new Error(`Unimplemented non scalar source type ${typeof node.source}`)
   }
 
   function getSymbolKey(symbol: symbol): string {
@@ -168,17 +171,30 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
     return undefined;
   }
 
-  function getSourceValue(value: unknown): string {
-    if (typeof value === "string" && !injectStrings) {
-      return value;
+  function getSourceValue(node: VNode): string {
+    if (typeof node.source === "undefined") {
+      return getString(node.reference);
     }
-    return typeof value === "symbol" ?
-      Symbol.keyFor(value) ? `Symbol.for(${JSON.stringify(Symbol.keyFor(value))})` : `Symbol(${JSON.stringify(getSymbolKey(value))})` :
-      typeof value === "undefined" ?
-        "undefined" :
-      typeof value === "bigint" ?
-        `${value}n` :
-        JSON.stringify(value)
+    return getString(node.source);
+
+    function getString(value: unknown) {
+      if (typeof value === "string" && !injectStrings) {
+        return value;
+      }
+      if (value instanceof Set) {
+        return `new Set()`
+      }
+      if (value instanceof Map) {
+        return `new Map()`
+      }
+      return typeof value === "symbol" ?
+        Symbol.keyFor(value) ? `Symbol.for(${JSON.stringify(Symbol.keyFor(value))})` : `Symbol(${JSON.stringify(getSymbolKey(value))})` :
+        typeof value === "undefined" ?
+          "undefined" :
+        typeof value === "bigint" ?
+          `${value}n` :
+          JSON.stringify(value)
+    }
   }
 }
 

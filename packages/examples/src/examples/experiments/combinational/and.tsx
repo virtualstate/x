@@ -30,7 +30,7 @@ export async function *And({ size, self }: AndOptions, state: VNode) {
 
   function result(values: VNode[]) {
     return {
-      reference: Symbol("Truthful AND"),
+      reference: Symbol("TruthfulAND"),
       children: {
         async *[Symbol.asyncIterator]() {
           yield values;
