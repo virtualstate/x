@@ -27,10 +27,6 @@ export async function *children(context: ChildrenContext, ...source: VNodeRepres
       return;
     }
 
-    if (isPromise(source)) {
-      return yield* eachSource(await source);
-    }
-
     if (isFragmentVNode(source)) {
       if (!source.children) {
         return;
@@ -53,6 +49,10 @@ export async function *children(context: ChildrenContext, ...source: VNodeRepres
     // These need further processing through createVNodeWithContext
     if (isSourceReference(source) || isMarshalledVNode(source) || isIterableIterator(source)) {
       return yield* eachSource(context.createNode(source));
+    }
+
+    if (isPromise(source)) {
+      return yield* eachSource(await source);
     }
 
     return yield* childrenUnion(

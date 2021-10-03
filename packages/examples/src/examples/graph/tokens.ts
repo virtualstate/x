@@ -10,21 +10,21 @@ import {
 } from "@opennetwork/rdf-data-model";
 import * as rdf from "@opennetwork/rdf-data-model";
 
-export const NamedNodeSymbol = Symbol.for("@virtualstate/examples/NamedNode");
+export const NamedNodeSymbol = Symbol.for("NamedNode");
 export type NamedNodeTokenFn = TokenVNodeFn<typeof NamedNodeSymbol, NamedNodeLike, Pick<NamedNodeLike, "termType">>;
 export type NamedNodeToken = TokenVNodeBase<typeof NamedNodeSymbol, NamedNodeLike>;
 export const NamedNode: NamedNodeTokenFn = createToken(NamedNodeSymbol, {
   termType: "NamedNode"
 });
 
-export const BlankNodeSymbol = Symbol.for("@virtualstate/examples/BlankNode");
+export const BlankNodeSymbol = Symbol.for("BlankNode");
 export type BlankNodeTokenFn = TokenVNodeFn<typeof BlankNodeSymbol, BlankNodeLike, Pick<BlankNodeLike, "termType">>;
 export type BlankNodeToken = TokenVNodeBase<typeof BlankNodeSymbol, BlankNodeLike>;
 export const BlankNode: BlankNodeTokenFn = createToken(BlankNodeSymbol, {
   termType: "BlankNode"
 });
 
-export const LiteralSymbol = Symbol.for("@virtualstate/examples/Literal");
+export const LiteralSymbol = Symbol.for("Literal");
 export type LiteralTokenFn = TokenVNodeFn<typeof LiteralSymbol, LiteralLike, Pick<LiteralLike, "termType" | "language" | "datatype">>;
 export type LiteralToken = TokenVNodeBase<typeof LiteralSymbol, LiteralLike>;
 export const Literal: LiteralTokenFn = createToken(LiteralSymbol, {
@@ -32,7 +32,7 @@ export const Literal: LiteralTokenFn = createToken(LiteralSymbol, {
   ...DefaultDataFactory.literal("")
 });
 
-export const QuadSymbol = Symbol.for("@virtualstate/examples/Quad");
+export const QuadSymbol = Symbol.for("Quad");
 export type QuadTokenFn = TokenVNodeFn<typeof QuadSymbol, QuadLike>;
 export type QuadToken = TokenVNodeBase<typeof QuadSymbol, QuadLike>;
 export type QuadInstanceToken = QuadToken & TokenVNodeBase<typeof QuadSymbol, rdf.Quad>;

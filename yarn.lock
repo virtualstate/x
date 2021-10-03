@@ -2074,10 +2074,10 @@
   resolved "https://registry.npmjs.org/@opennetwork/linked-list/-/linked-list-4.0.0.tgz"
   integrity sha512-aMEXPA0y3FZd5IlPPNVLHf5jxwNE9bo6d+5OgCsqZhRilftUuaytEnAS+7ggjiPekAtVDFl2okYROqtL3f02+g==
 
-"@opennetwork/rdf-data-model@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.npmjs.org/@opennetwork/rdf-data-model/-/rdf-data-model-6.0.0.tgz#e73fa81ff87ff24b331bf7f1b7c8ce53cc936778"
-  integrity sha512-srgS8EPJ9Lv7UmjQlkj+hQFCNuHRAzozrUlrfKrwDfSe2KK2T+ER10/CF2Vm5xUZIaz+nM86JjMIrlxOW2d3NQ==
+"@opennetwork/rdf-data-model@^6.1.1":
+  version "6.1.1"
+  resolved "https://registry.npmjs.org/@opennetwork/rdf-data-model/-/rdf-data-model-6.1.1.tgz#4e390616683d1300377ebf55709127602affba92"
+  integrity sha512-pX26/LSP8fkhQJts8V4CtZ9JBMZ8KE9Zbi+x39+agrYLJolyXF8B4vwZkZSj0Ugj5GzSRZsFte5PgJH60XmhcQ==
   dependencies:
     pure-uuid "^1.6.0"
 

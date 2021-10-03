@@ -97,20 +97,6 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
   }
 
   /**
-   * Only if the source is a promise we want to await it
-   *
-   * This may be wasteful, but the idea is that we wouldn't cause a next tick for no reason
-   * Maybe this isn't the case if the value isn't a promise to start with ¯\_(ツ)_/¯
-   */
-  if (source && isPromise(source)) {
-    return {
-      source,
-      reference: Fragment,
-      children: replay(() => promiseGenerator(source))
-    };
-  }
-
-  /**
    * If we have a fragment then we want to pass it back through our function so the next
    * statement is invoked to handle fragments with children
    */
@@ -146,6 +132,20 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     }
 
     return nextSource;
+  }
+
+  /**
+   * Only if the source is a promise we want to await it
+   *
+   * This may be wasteful, but the idea is that we wouldn't cause a next tick for no reason
+   * Maybe this isn't the case if the value isn't a promise to start with ¯\_(ツ)_/¯
+   */
+  if (source && isPromise(source)) {
+    return {
+      source,
+      reference: Fragment,
+      children: replay(() => promiseGenerator(source))
+    };
   }
 
   /**

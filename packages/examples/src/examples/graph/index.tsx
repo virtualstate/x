@@ -50,7 +50,6 @@ export async function *_G0002_GraphStoreRead(): AsyncIterable<QuadInstanceToken[
 export const _G0002_GraphStore = <_G0002_GraphStoreRead />
 export const _G0002_URL = import.meta.url;
 
-
 async function getState(node: VNode) {
   // Assume a node will complete and provide state as its final
   const iterator = node.children?.[Symbol.asyncIterator]?.();

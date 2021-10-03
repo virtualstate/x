@@ -1,6 +1,7 @@
 import { isSourceReference, SourceReference, MarshalledSourceReference } from "./source-reference";
 import { isAsyncIterable, AsyncIterableLike, isIterable } from "iterable";
 import { Fragment } from "./fragment";
+import type { PromiseVNode as PromiseVNodeProto } from "./then";
 
 /**
  * Generic VNode, represents a virtual node within a state tree
@@ -35,6 +36,14 @@ export interface VNode {
    * See {@link NativeVNode}
    */
   native?: boolean;
+  /**
+   * See {@link PromiseVNode}
+   */
+  then?: unknown;
+}
+
+export interface PromiseVNode extends PromiseVNodeProto, VNode {
+  then: PromiseVNodeProto["then"];
 }
 
 /**
@@ -128,6 +137,17 @@ export function isVNode(value: unknown): value is VNode {
   );
 }
 
+
+/**
+ * Asserts a value is a {@link VNode}
+ * @param value
+ */
+export function assertVNode(value: unknown): asserts value is VNode {
+  if (!isVNode(value)) {
+    throw new Error("Expected VNode");
+  }
+}
+
 /**
  * Indicates if a value is a {@link NativeVNode}
  * @param value
@@ -140,6 +160,17 @@ export function isNativeVNode(value: unknown): value is NativeVNode {
     isNativeVNodeLike(value) &&
     value.native === true
   );
+}
+
+
+/**
+ * Asserts a value is a {@link NativeVNode}
+ * @param value
+ */
+export function assertNativeVNode(value: unknown): asserts value is NativeVNode {
+  if (!isNativeVNode(value)) {
+    throw new Error("Expected NativeVNode");
+  }
 }
 
 /**
@@ -163,6 +194,18 @@ export function isScalarVNode<T extends SourceReference = SourceReference>(value
 }
 
 /**
+ * Asserts a value is a {@link ScalarVNode}
+ * @param value
+ */
+export function assertScalarVNode(value: unknown): asserts value is ScalarVNode;
+export function assertScalarVNode<T extends SourceReference = SourceReference>(value: unknown, isSource: (value: SourceReference) => value is T): asserts value is ScalarVNode<T>;
+export function assertScalarVNode<T extends SourceReference = SourceReference>(value: unknown, isSource?: (value: SourceReference) => value is T): asserts value is ScalarVNode<T> {
+  if (!isScalarVNode(value, isSource)) {
+    throw new Error("Expected ScalarVNode");
+  }
+}
+
+/**
  * Indicates if a value is a {@link FragmentVNode}
  * @param value
  */
@@ -174,7 +217,17 @@ export function isFragmentVNode(value: unknown): value is FragmentVNode {
 }
 
 /**
- * Indicates if a valid is a {@link MarshalledVNode}
+ * Asserts a value is a {@link FragmentVNode}
+ * @param value
+ */
+export function assertFragmentVNode(value: unknown): asserts value is FragmentVNode {
+  if (!isFragmentVNode(value)) {
+    throw new Error("Expected FragmentVNode");
+  }
+}
+
+/**
+ * Indicates if a value is a {@link MarshalledVNode}
  * @param value
  */
 export function isMarshalledVNode(value: unknown): value is MarshalledVNode {
@@ -191,4 +244,35 @@ export function isMarshalledVNode(value: unknown): value is MarshalledVNode {
       typeof value.options === "object"
     )
   );
+}
+
+/**
+ * Asserts a value is a {@link MarshalledVNode}
+ * @param value
+ */
+export function assertMarshalledVNode(value: unknown): asserts value is MarshalledVNode {
+  if (!isMarshalledVNode(value)) {
+    throw new Error("Expected MarshalledVNode");
+  }
+}
+
+/**
+ * Indicates if a value is a {@link PromiseVNode}
+ * @param value
+ */
+export function isPromiseVNode(value: unknown): value is PromiseVNode {
+  return (
+    isVNode(value) &&
+    typeof value.then === "function"
+  );
+}
+
+/**
+ * Asserts a value is a {@link PromiseVNode}
+ * @param value
+ */
+export function assertPromiseVNode(value: unknown): asserts value is PromiseVNode {
+  if (!isPromiseVNode(value)) {
+    throw new Error("Expected PromiseVNode");
+  }
 }
