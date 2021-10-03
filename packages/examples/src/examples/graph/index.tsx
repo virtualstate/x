@@ -28,15 +28,14 @@ export const _G0001_Graph = MainGraph;
 export const _G0001_URL = import.meta.url;
 
 export async function *_G0002_GraphStoreRead(): AsyncIterable<QuadInstanceToken[]> {
-  const store: PromiseVNode & { [Instance]?: Store<DomainToken> } = (
+  const store = (
     <Store domain={Domain} visit={[Graph, Quad]}>
       {MainGraph}
     </Store>
   );
   await store;
-
   yield await Promise.all(
-    [...store[Instance]?.get(Quad)]
+    [...store[Instance].get(Quad)]
       .filter(Quad.is)
       .map(async (input): Promise<QuadInstanceToken> => {
         const instance: rdf.Quad = await quad(input, await parse(await getState(input)));

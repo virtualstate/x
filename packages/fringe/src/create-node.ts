@@ -85,7 +85,9 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * Shortcut a functional token, this will allow the node to be directly created here
    */
   if (isTokenVNodeFn(source)) {
-    return source(options, children.length ? createFragment({}, ...children) : undefined);
+    const node = source(options, children.length ? createFragment({}, ...children) : undefined);
+    enableThen(node, source);
+    return node;
   }
 
   /**
@@ -131,7 +133,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
         children: replay(() => childrenGenerator(childrenContext, ...children), children)
       };
     }
-
+    enableThen(nextSource, source);
     return nextSource;
   }
 
@@ -142,11 +144,13 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * Maybe this isn't the case if the value isn't a promise to start with ¯\_(ツ)_/¯
    */
   if (source && isPromise(source)) {
-    return {
+    const node = {
       source,
       reference: Fragment,
       children: replay(() => promiseGenerator(source))
     };
+    enableThen(node, source);
+    return node;
   }
 
   /**
@@ -188,6 +192,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     if (options) {
       node.options = options;
     }
+    enableThen(node, source);
     return node;
   }
 
@@ -206,6 +211,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     if (options) {
       node.options = options;
     }
+    enableThen(node, source);
     return node;
   }
 
@@ -255,13 +261,18 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
   }
 
   function enableThen(node: VNode, source: unknown) {
-    if (isEnableThen(source)) {
-      Object.defineProperty(node, "then", {
-        value: then,
-        enumerable: false,
-        configurable: true,
-        writable: true
-      })
+    inner(source);
+    inner(node.options);
+
+    function inner(source: unknown) {
+      if (isEnableThen(source)) {
+        Object.defineProperty(node, "then", {
+          value: then,
+          enumerable: false,
+          configurable: true,
+          writable: true
+        })
+      }
     }
   }
 
