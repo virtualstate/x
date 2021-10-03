@@ -46,17 +46,15 @@ function isVNodeWithThenOptions(node: VNode): node is VNodeWithThenOptions {
 // This functionality can be replaced by end user by re-assigning this function
 // If no state found, an empty array will be returned
 export async function then(this: VNode, resolve?: (children: VNode[]) => unknown, reject?: (error: unknown) => unknown): Promise<unknown> {
-  return await resolve(await getStateCaught.call(this));
-
-  async function getStateCaught(this: VNode) {
-    try {
-      return await getState.call(this)
-    } catch (error) {
-      return await resolve(error);
-    }
+  let resolved
+  try {
+    resolved = await getResolved.call(this)
+  } catch (error) {
+    return await reject(error);
   }
+  return await resolve(resolved);
 
-  async function getState(this: VNode) {
+  async function getResolved(this: VNode) {
     const iterator = this.children?.[Symbol.asyncIterator]?.()
     let children: VNode[] = [];
     if (!iterator?.next) {
