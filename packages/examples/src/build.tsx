@@ -248,6 +248,12 @@ async function build(exampleKey: string) {
     )
   );
 
+  const nonLoopingStructure = !looping ? await recreate(staticNode, true, new WeakMap(), !exampleKey.includes("HTML")) : undefined;
+
+  if (nonLoopingStructure) {
+    console.log(nonLoopingStructure);
+  }
+
   return `export const _${id}_ExampleInformation: ExampleInformation = {
     name: ${JSON.stringify(getExampleNameFromKey(exampleKey))},
     id: ${JSON.stringify(id)},
@@ -256,7 +262,7 @@ async function build(exampleKey: string) {
     sourceURL: ${JSON.stringify(url.toString().replace(process.cwd(), "/workspaces/x"))},
     output: ${JSON.stringify(output)},
     cleanerSource: ${JSON.stringify(cleanerSource)},
-    structure: ${looping ? `""` : JSON.stringify(await recreate(staticNode, true, new WeakMap(), !exampleKey.includes("HTML")))},
+    structure: ${looping ? '""' : JSON.stringify(nonLoopingStructure)},
     info: ${module[`_${id}_Info`] ? JSON.stringify(module[`_${id}_Info`]) : "undefined"},
     engineURL: ${engineURL ? JSON.stringify(engineURL.toString().replace(process.cwd(), "/workspaces/x")) : "undefined"},
     sourceInterfaceURL: ${sourceInterfaceURL ? JSON.stringify(sourceInterfaceURL) : "undefined"},
