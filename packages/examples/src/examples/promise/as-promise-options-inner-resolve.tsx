@@ -1,5 +1,5 @@
 import { Resolve } from "@virtualstate/fringe";
-import {ChildrenSource, EnableThen, h, createFragment} from "@virtualstate/fringe";
+import {ChildrenSource, h, createFragment} from "@virtualstate/fringe";
 
 async function *Inner() {
   yield (

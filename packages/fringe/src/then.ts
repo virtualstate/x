@@ -42,12 +42,30 @@ function isVNodeWithThenOptions(node: VNode): node is VNodeWithThenOptions {
   return typeof node[Then] === "function";
 }
 
+// Assume a node will complete and provide state as its final
+// This functionality can be replaced by end user by re-assigning this function
+// If no state found, an empty array will be returned
 export async function then(this: VNode, resolve?: (children: VNode[]) => unknown, reject?: (error: unknown) => unknown): Promise<unknown> {
-  let children: VNode[] = [];
-  try {
-    // Assume a node will complete and provide state as its final
-    // This functionality can be replaced by end user by re-assigning this function
-    const iterator = this.children?.[Symbol.asyncIterator]?.();
+  return await resolve(await getStateCaught.call(this));
+
+  async function getStateCaught(this: VNode) {
+    try {
+      return await getState.call(this)
+    } catch (error) {
+      return await resolve(error);
+    }
+  }
+
+  async function getState(this: VNode) {
+    const iterator = this.children?.[Symbol.asyncIterator]?.()
+    let children: VNode[] = [];
+    if (!iterator?.next) {
+      if (isVNodeWithThenOptions(this)) {
+        return await this[Then]([], {value: undefined, done: true});
+      } else {
+        return [];
+      }
+    }
     let result: IteratorResult<VNode[]>;
     do {
       result = await iterator.next();
@@ -57,8 +75,6 @@ export async function then(this: VNode, resolve?: (children: VNode[]) => unknown
         children = result.value ?? children;
       }
     } while(!result.done);
-  } catch (error) {
-    return await reject(error);
+    return children;
   }
-  return await resolve(children);
 }
