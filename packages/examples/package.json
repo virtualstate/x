@@ -19,7 +19,7 @@
     "virtual-state"
   ],
   "dependencies": {
-    "@opennetwork/rdf-data-model": "^6.1.1",
+    "@opennetwork/rdf-data-model": "^6.2.0",
     "@virtualstate/fringe": "^2.22.1",
     "@virtualstate/hooks": "^2.22.1",
     "@virtualstate/hooks-extended": "^2.22.1",

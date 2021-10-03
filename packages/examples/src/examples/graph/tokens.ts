@@ -6,7 +6,7 @@ import {
   QuadLike,
   DefaultGraphLike,
   VariableLike,
-  DefaultDataFactory, isQuad
+  DefaultDataFactory, isQuad, isQuadLike
 } from "@opennetwork/rdf-data-model";
 import * as rdf from "@opennetwork/rdf-data-model";
 
@@ -35,7 +35,7 @@ export const Literal: LiteralTokenFn = createToken(LiteralSymbol, {
 export const QuadSymbol = Symbol.for("Quad");
 export type QuadTokenFn = TokenVNodeFn<typeof QuadSymbol, QuadLike>;
 export type QuadToken = TokenVNodeBase<typeof QuadSymbol, QuadLike>;
-export type QuadInstanceToken = QuadToken & TokenVNodeBase<typeof QuadSymbol, rdf.Quad>;
+export type QuadInstanceToken = TokenVNodeBase<typeof QuadSymbol, QuadLike, QuadLike>;
 export const Quad: QuadTokenFn = createToken(QuadSymbol, {});
 export const Triple: QuadTokenFn = createToken(QuadSymbol, {
   termType: "Quad",
@@ -43,7 +43,7 @@ export const Triple: QuadTokenFn = createToken(QuadSymbol, {
 });
 
 export function isQuadInstanceToken(token: QuadToken): token is QuadInstanceToken {
-  return isQuad(token.options);
+  return isQuadLike(token.options);
 }
 
 export function assertQuadInstanceToken(token: QuadToken): asserts token is QuadInstanceToken {
