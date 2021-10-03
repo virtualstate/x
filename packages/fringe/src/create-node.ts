@@ -172,7 +172,9 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * Either way, if we have a source reference, we have a primitive value that we can look up later on
    */
   if (isSourceReference(source)) {
-    return sourceReferenceVNode(reference, source, options, ...children);
+    const node = sourceReferenceVNode(reference, source, options, ...children);
+    enableThen(node, source);
+    return node;
   }
 
   /**
