@@ -1,6 +1,6 @@
 import {Domain, Graph, MainGraph, DomainToken} from "./main";
 import {Store} from "../../examples/experiments/store";
-import {h, VNode, Instance, PromiseVNode} from "@virtualstate/fringe"
+import {h, VNode, Instance, PromiseVNode, assertPromiseVNode} from "@virtualstate/fringe"
 import {
   assertQuadInstanceToken,
   BlankNode,
@@ -33,8 +33,9 @@ export async function *_G0002_GraphStoreRead(): AsyncIterable<QuadInstanceToken[
       {MainGraph}
     </Store>
   );
-
-  await getState(store);
+  store.then = then;
+  assertPromiseVNode(store);
+  await store;
 
   yield await Promise.all(
     [...store[Instance]?.get(Quad)]
