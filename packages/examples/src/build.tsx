@@ -46,7 +46,7 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
       if (root) {
         return `"No output"`;
       }
-      return `<${getChildrenHeaderStart(node)}/>`
+      return `<${getChildrenHeaderStart(node)} />`
     }
     const parts = [];
     for await (const children of node.children) {
