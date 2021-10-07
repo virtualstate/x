@@ -37,7 +37,7 @@ export interface AssertTokenVNodeFnFn<T extends SourceReference = SourceReferenc
   (value: unknown): value is TokenVNodeFn<T, O, Initial>;
 }
 
-export interface TokenVNodeBase<T extends SourceReference, O extends object, Initial extends Partial<O> = Partial<O>> extends VNode {
+export interface TokenVNodeBase<T extends SourceReference = SourceReference, O extends object = TokenOptionsRecord, Initial extends Partial<O> = Partial<O>> extends VNode {
   options: Initial & Partial<O & TokenOptions & TokenOptionsRecord>;
   source: T;
   reference: typeof Token;
@@ -88,7 +88,13 @@ export function createToken<T extends SourceReference, O extends object, Initial
     }
     // Terminates the node, will no longer be a function if it still was one
     function instance(this: unknown, innerPartialOptions?: I, innerChild?: VNode) {
-      return token.call(this, innerPartialOptions ?? partialOptions, innerChild ?? child);
+      return token.call(
+        this,
+        innerPartialOptions ?
+         (partialOptions ? { ...partialOptions, ...innerPartialOptions } : innerPartialOptions) :
+          partialOptions,
+        innerChild ?? child
+      );
     }
     const almost: object = instance;
     defineProperties(almost, nextOptions, nextChildren, isTokenSource, isTokenOptions);
