@@ -30,7 +30,14 @@ import {
 } from "iterable";
 import { children as childrenGenerator, ChildrenContext } from "./children";
 import { createFragment, Fragment } from "./fragment";
-import {isTokenVNodeFn, TokenOptionsRecord, TokenRequiredOptions, TokenResolvedOptions, TokenVNodeFn} from "./token";
+import {
+  createToken,
+  isTokenVNodeFn,
+  TokenOptionsRecord,
+  TokenRequiredOptions,
+  TokenResolvedOptions,
+  TokenVNodeFn
+} from "./token";
 import {isEnableThen, then} from "./then";
 
 const nonConstructable = new WeakSet();
@@ -185,7 +192,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * Either way, if we have a source reference, we have a primitive value that we can look up later on
    */
   if (isSourceReference(source)) {
-    const node = sourceReferenceVNode(reference, source, options, ...children);
+    const node = createToken(source, options, ...children);
     enableThen(node, source);
     return node;
   }
@@ -421,7 +428,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
 
   function unmarshal(source: MarshalledVNode): VNode {
     if (isSourceReference(source)) {
-      return sourceReferenceVNode(getReference(), source);
+      return createToken(source);
     }
     const { children, ...rest } = source;
     const node: VNode = {
@@ -436,6 +443,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
   }
 
   function sourceReferenceVNode(reference: SourceReference, source: SourceReference, options?: object, ...children: VNodeRepresentationSource[]): VNode {
+
     const node: VNode = {
       reference: reference ?? getReference(options),
       source
