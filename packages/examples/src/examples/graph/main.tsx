@@ -29,17 +29,19 @@ export const Domain: DomainToken[] = [
   ...Object.values(domainMap)
 ];
 
+const MainGraphQuad = <Quad graph={{ termType: "NamedNode", value: "mainGraph" }} />
+
 export const MainGraph = (
   <Graph>
-    <Quad>
+    <MainGraphQuad>
       <NamedNode value="value" />
       <NamedNode value="name" />
       <Literal value="main" />
-    </Quad>
-    <Quad>
+    </MainGraphQuad>
+    <MainGraphQuad>
       <NamedNode value="value" />
       <NamedNode value="version" />
       <Literal value="1.0.0" />
-    </Quad>
+    </MainGraphQuad>
   </Graph>
 )

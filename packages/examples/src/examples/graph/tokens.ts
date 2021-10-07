@@ -1,4 +1,4 @@
-import {createToken, TokenVNodeBase, TokenVNodeFn} from "@virtualstate/fringe";
+import {createToken, TokenVNodeBase, TokenVNodeFn, createToken as h} from "@virtualstate/fringe";
 import {
   NamedNodeLike,
   BlankNodeLike,

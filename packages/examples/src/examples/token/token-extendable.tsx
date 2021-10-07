@@ -8,7 +8,7 @@ import {
   createFragment, createToken
 } from "@virtualstate/fringe";
 
-const Token = createToken("Token", {
+const Token = createToken("implementation-name", {
   root: false
 });
 
