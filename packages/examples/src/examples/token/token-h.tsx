@@ -10,7 +10,6 @@ import {
 } from "@virtualstate/fringe";
 
 function define() {
-
   return {
     Token: <token-name />,
     Button: <button />
@@ -18,7 +17,6 @@ function define() {
 }
 
 const { Token, Button } = define();
-
 export const _708_TokenDefine= (
   <Token new={false}>
     <Token value={true} type="boolean" />

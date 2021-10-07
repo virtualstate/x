@@ -16,7 +16,6 @@ async function fakeImport() {
 }
 
 async function define(importPromise = fakeImport()) {
-  const h = createToken;
   const imported = await importPromise;
   return {
     Token: <token-name />,
