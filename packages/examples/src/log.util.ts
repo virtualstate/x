@@ -3,7 +3,7 @@ import {IsStaticSymbol} from "./examples";
 // import {createHook} from "async_hooks";
 // import {performance} from "perf_hooks";
 
-function getEnv(): Record<string, string | undefined> {
+export function getEnv(): Record<string, string | undefined> {
   if (typeof process === "undefined") {
     return getImportEnv();
   }

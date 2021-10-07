@@ -2,7 +2,7 @@ import * as Examples from "./examples";
 import {isVNode, h, VNode, Fragment} from "@virtualstate/fringe";
 import {dirname, join, relative} from "path";
 import {promises as fs} from "fs";
-import {getExampleNameFromKey} from "./log.util";
+import {getEnv, getExampleNameFromKey, isWantedExampleKey} from "./log.util";
 import {Static} from "./examples";
 import {readAllDrain} from "./examples/transform/read";
 import {EngineURLSymbol} from "./examples/compile-transform/source.engine";
@@ -13,6 +13,8 @@ import {SourceInterfaceURLSymbol} from "./examples/compile-transform/source.tran
 //   performance.clearMarks();
 // });
 // obs.observe({ entryTypes: ['measure'] });
+
+let finalLog: string | undefined;
 
 async function isFile(file: string): Promise<boolean> {
   try {
@@ -266,8 +268,14 @@ async function build(exampleKey: string) {
 
   const nonLoopingStructure = !looping ? await recreate(staticNode, true, new WeakMap(), !exampleKey.includes("HTML")) : undefined;
 
-  if (nonLoopingStructure) {
+  if (nonLoopingStructure && isWantedExampleKey(exampleKey)) {
     console.log(nonLoopingStructure);
+    const {
+      EXAMPLES_MATCH: match
+    } = getEnv();
+    if (match) {
+      finalLog = nonLoopingStructure;
+    }
   }
 
   return `export const _${id}_ExampleInformation: ExampleInformation = {
@@ -323,7 +331,9 @@ for (const exampleKey in Examples) {
   const example = Examples[exampleKey];
   if (!isVNode(example)) continue;
   const name = getExampleNameFromKey(exampleKey);
-  console.log(`Building: ${name}`);
+  if (isWantedExampleKey(exampleKey)) {
+    console.log(`Building: ${name}`);
+  }
   const part = await build(exampleKey);
   parts.push(part);
 }
@@ -354,6 +364,10 @@ await fs.writeFile(
   join(dirname(new URL(import.meta.url).pathname), "../src/information.built.ts"),
   information
 );
+
+if (finalLog) {
+  console.log(finalLog);
+}
 
 export default 2;
 export const isBuild = 1;

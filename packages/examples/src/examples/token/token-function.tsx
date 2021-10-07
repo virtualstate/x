@@ -38,11 +38,7 @@ const node = (
   <Resolve>
     <Inner />
   </Resolve>
-)
+);
 
-async function Example() {
-  return node;
-}
-
-export const _704_TokenFunction = <Example />
+export const _704_TokenFunction = node
 export const _704_URL = import.meta.url;
