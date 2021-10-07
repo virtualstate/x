@@ -663,6 +663,23 @@ export const _709_ExampleInformation: ExampleInformation = {
       throw new Error("Not available");
     }
 }
+export const _710_ExampleInformation: ExampleInformation = {
+    name: "Token",
+    id: "710",
+    exportedAs: "_710_Token",
+    source: "import { h } from \"@virtualstate/fringe\";\n\nconst Token = (\n  <test class=\"default-class\">\n    <inner>Hello!</inner>\n  </test>\n);\n\nconst output = (\n  <hello class=\"main\">\n    <Token first={true} />\n    <Token class=\"content\">\n      This is the content for this middle one\n    </Token>\n    <Token last={true} class=\"footer\">\n      This is the content for the last one\n    </Token>\n  </hello>\n)\n\nexport const _710_Token = output;\nexport const _710_URL = import.meta.url;\n",
+    sourceURL: "file:///workspaces/x/packages/examples/lib/examples/token/token-extendable-top-level.js",
+    output: "import { h } from \"@virtualstate/fringe\";\nconst Token = (h(\"test\", { class: \"default-class\" },\n    h(\"inner\", null, \"Hello!\")));\nconst output = (h(\"hello\", { class: \"main\" },\n    h(Token, { first: true }),\n    h(Token, { class: \"content\" }, \"This is the content for this middle one\"),\n    h(Token, { last: true, class: \"footer\" }, \"This is the content for the last one\")));\nexport const _710_Token = output;\nexport const _710_URL = import.meta.url;\n//# sourceMappingURL=token-extendable-top-level.js.map",
+    cleanerSource: "import { h } from \"@virtualstate/fringe\";\n\nconst Token = (\n  <test class=\"default-class\">\n    <inner>Hello!</inner>\n  </test>\n);\n\nconst output = (\n  <hello class=\"main\">\n    <Token first={true} />\n    <Token class=\"content\">\n      This is the content for this middle one\n    </Token>\n    <Token last={true} class=\"footer\">\n      This is the content for the last one\n    </Token>\n  </hello>\n)\n\nexport const Example = output;",
+    structure: "<hello class=\"main\">\n  <test class=\"default-class\" first={true}>\n    <inner>\n      {\"Hello!\"}\n    </inner>\n  </test>\n  <test class=\"content\">\n    {\"This is the content for this middle one\"}\n  </test>\n  <test class=\"footer\" last={true}>\n    {\"This is the content for the last one\"}\n  </test>\n</hello>",
+    info: undefined,
+    engineURL: undefined,
+    sourceInterfaceURL: undefined,
+    sourceInterface: undefined,
+    import: async (context?: Record<string, unknown>, state?: VNode): Promise<VNode> => {
+      throw new Error("Not available");
+    }
+}
 export const _801_ExampleInformation: ExampleInformation = {
     name: "Iterable",
     id: "801",

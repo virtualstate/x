@@ -5,3 +5,4 @@ export * from "./token-function";
 export * from "./token-extendable";
 export * from "./token-h";
 export * from "./token-h-children";
+export * from "./token-extendable-top-level";
