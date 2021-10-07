@@ -30,7 +30,7 @@ import {
 } from "iterable";
 import { children as childrenGenerator, ChildrenContext } from "./children";
 import { createFragment, Fragment } from "./fragment";
-import { isTokenVNodeFn } from "./token";
+import {isTokenVNodeFn, TokenOptionsRecord, TokenRequiredOptions, TokenResolvedOptions, TokenVNodeFn} from "./token";
 import {isEnableThen, then} from "./then";
 
 const nonConstructable = new WeakSet();
@@ -68,6 +68,19 @@ export interface CreateNodeFn {
  * The special case to point out here is if the source is an `IterableIterator` (see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#Is_a_generator_object_an_iterator_or_an_iterable})
  * then each iteration will result in a new {@link VNode} being created
  */
+export function createNode<
+  TT extends SourceReference,
+  O extends object,
+  InitialOptions extends Partial<O>,
+  T extends TokenVNodeFn<TT, O, InitialOptions>
+>(source: T): TokenVNodeFn<TT, O, InitialOptions>;
+export function createNode<
+  TT extends SourceReference,
+  O extends object,
+  InitialOptions extends Partial<O>,
+  T extends TokenVNodeFn<TT, O, InitialOptions>,
+  PassedOptions extends TokenRequiredOptions<O, InitialOptions>,
+>(source: T, options: PassedOptions, ...children: unknown[]): TokenVNodeFn<TT, O, TokenResolvedOptions<O, InitialOptions, PassedOptions>>;
 export function createNode<
   T extends Source,
   O extends Record<string, unknown> | object,

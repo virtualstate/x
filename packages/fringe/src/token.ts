@@ -37,7 +37,7 @@ export interface AssertTokenVNodeFnFn<T extends SourceReference = SourceReferenc
   (value: unknown): value is TokenVNodeFn<T, O, Initial>;
 }
 
-export interface TokenVNodeBase<T extends SourceReference = SourceReference, O extends object = TokenOptionsRecord, Initial extends Partial<O> = Partial<O>> extends VNode {
+export interface TokenVNodeBase<T extends SourceReference, O extends object, Initial extends Partial<O> = Partial<O>> extends VNode {
   options: Initial & Partial<O & TokenOptions & TokenOptionsRecord>;
   source: T;
   reference: typeof Token;

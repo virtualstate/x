@@ -1,5 +1,6 @@
-import {createToken} from "./token";
+import {createToken, TokenVNodeFn} from "./token";
 import {EnableThen} from "./then";
+import {createNode} from "./create-node";
 
 
 /**
@@ -10,6 +11,11 @@ export const ResolveSymbol = Symbol("Resolve");
 /**
  * @experimental
  */
-export const Resolve = createToken(ResolveSymbol, {
+export type ResolveTokenFn = TokenVNodeFn<typeof ResolveSymbol>;
+
+/**
+ * @experimental
+ */
+export const Resolve: ResolveTokenFn = createToken(ResolveSymbol, {
   [EnableThen]: true
 });
