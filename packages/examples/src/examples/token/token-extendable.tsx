@@ -8,13 +8,13 @@ import {
   createFragment, createToken
 } from "@virtualstate/fringe";
 
-const Token = createToken("k", {
+const Token = createToken("Token", {
   root: false
 });
 
 const Referenced = <Token value={3} />
 
-const node = (
+const Node = (
   <Token root={true}>
     <Token />
     <Token value={1} />
@@ -23,5 +23,15 @@ const node = (
   </Token>
 )
 
-export const _705_TokenExtendable = node;
+export const _705_TokenExtendable = Node;
 export const _705_URL = import.meta.url;
+
+export const _706_TokenExtendableAgain = <Node new={true} />;
+export const _706_URL = import.meta.url;
+
+export const _707_TokenExtendableChildren = (
+  <Node new={false}>
+    <Token value={true} type="boolean" />
+  </Node>
+) ;
+export const _707_URL = import.meta.url;

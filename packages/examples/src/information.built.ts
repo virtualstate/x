@@ -582,11 +582,45 @@ export const _705_ExampleInformation: ExampleInformation = {
     name: "TokenExtendable",
     id: "705",
     exportedAs: "_705_TokenExtendable",
-    source: "import {\n  createNode,\n  Resolve,\n  ResolveSymbol,\n  ResolveTokenFn,\n  h,\n  ChildrenSource,\n  createFragment, createToken\n} from \"@virtualstate/fringe\";\n\nconst Token = createToken(\"z\", {\n  root: false\n});\n\nconst Referenced = <Token value={3} />\n\nconst node = (\n  <Token root={true}>\n    <Token />\n    <Token value={1} />\n    <Token value={2} />\n    <Referenced type=\"number\" />\n  </Token>\n)\n\nexport const _705_TokenExtendable = node;\nexport const _705_URL = import.meta.url;\n",
+    source: "import {\n  createNode,\n  Resolve,\n  ResolveSymbol,\n  ResolveTokenFn,\n  h,\n  ChildrenSource,\n  createFragment, createToken\n} from \"@virtualstate/fringe\";\n\nconst Token = createToken(\"Token\", {\n  root: false\n});\n\nconst Referenced = <Token value={3} />\n\nconst Node = (\n  <Token root={true}>\n    <Token />\n    <Token value={1} />\n    <Token value={2} />\n    <Referenced type=\"number\" />\n  </Token>\n)\n\nexport const _705_TokenExtendable = Node;\nexport const _705_URL = import.meta.url;\n\nexport const _706_TokenExtendableAgain = <Node new={true} />;\nexport const _706_URL = import.meta.url;\n\nexport const _707_TokenExtendableChildren = (\n  <Node new={false}>\n    <Token value={true} type=\"boolean\" />\n  </Node>\n) ;\nexport const _707_URL = import.meta.url;\n",
     sourceURL: "file:///workspaces/x/packages/examples/lib/examples/token/token-extendable.js",
-    output: "import { h, createToken } from \"@virtualstate/fringe\";\nconst Token = createToken(\"z\", {\n    root: false\n});\nconst Referenced = h(Token, { value: 3 });\nconst node = (h(Token, { root: true },\n    h(Token, null),\n    h(Token, { value: 1 }),\n    h(Token, { value: 2 }),\n    h(Referenced, { type: \"number\" })));\nexport const _705_TokenExtendable = node;\nexport const _705_URL = import.meta.url;\n//# sourceMappingURL=token-extendable.js.map",
-    cleanerSource: "import {\n  createNode,\n  Resolve,\n  ResolveSymbol,\n  ResolveTokenFn,\n  h,\n  ChildrenSource,\n  createFragment, createToken\n} from \"@virtualstate/fringe\";\n\nconst Token = createToken(\"z\", {\n  root: false\n});\n\nconst Referenced = <Token value={3} />\n\nconst node = (\n  <Token root={true}>\n    <Token />\n    <Token value={1} />\n    <Token value={2} />\n    <Referenced type=\"number\" />\n  </Token>\n)\n\nexport const Example = node;",
-    structure: "<z root={true}>\n  <z root={false} />\n  <z root={false} value={1} />\n  <z root={false} value={2} />\n  <z\n    root={false}\n    value={3}\n    type=\"number\"\n   />\n</z>",
+    output: "import { h, createToken } from \"@virtualstate/fringe\";\nconst Token = createToken(\"Token\", {\n    root: false\n});\nconst Referenced = h(Token, { value: 3 });\nconst Node = (h(Token, { root: true },\n    h(Token, null),\n    h(Token, { value: 1 }),\n    h(Token, { value: 2 }),\n    h(Referenced, { type: \"number\" })));\nexport const _705_TokenExtendable = Node;\nexport const _705_URL = import.meta.url;\nexport const _706_TokenExtendableAgain = h(Node, { new: true });\nexport const _706_URL = import.meta.url;\nexport const _707_TokenExtendableChildren = (h(Node, { new: false },\n    h(Token, { value: true, type: \"boolean\" })));\nexport const _707_URL = import.meta.url;\n//# sourceMappingURL=token-extendable.js.map",
+    cleanerSource: "import {\n  createNode,\n  Resolve,\n  ResolveSymbol,\n  ResolveTokenFn,\n  h,\n  ChildrenSource,\n  createFragment, createToken\n} from \"@virtualstate/fringe\";\n\nconst Token = createToken(\"Token\", {\n  root: false\n});\n\nconst Referenced = <Token value={3} />\n\nconst Node = (\n  <Token root={true}>\n    <Token />\n    <Token value={1} />\n    <Token value={2} />\n    <Referenced type=\"number\" />\n  </Token>\n)\n\nexport const Example = Node;",
+    structure: "<Token root={true}>\n  <Token root={false} />\n  <Token root={false} value={1} />\n  <Token root={false} value={2} />\n  <Token\n    root={false}\n    value={3}\n    type=\"number\"\n   />\n</Token>",
+    info: undefined,
+    engineURL: undefined,
+    sourceInterfaceURL: undefined,
+    sourceInterface: undefined,
+    import: async (context?: Record<string, unknown>, state?: VNode): Promise<VNode> => {
+      throw new Error("Not available");
+    }
+}
+export const _706_ExampleInformation: ExampleInformation = {
+    name: "TokenExtendableAgain",
+    id: "706",
+    exportedAs: "_706_TokenExtendableAgain",
+    source: "import {\n  createNode,\n  Resolve,\n  ResolveSymbol,\n  ResolveTokenFn,\n  h,\n  ChildrenSource,\n  createFragment, createToken\n} from \"@virtualstate/fringe\";\n\nconst Token = createToken(\"Token\", {\n  root: false\n});\n\nconst Referenced = <Token value={3} />\n\nconst Node = (\n  <Token root={true}>\n    <Token />\n    <Token value={1} />\n    <Token value={2} />\n    <Referenced type=\"number\" />\n  </Token>\n)\n\nexport const _705_TokenExtendable = Node;\nexport const _705_URL = import.meta.url;\n\nexport const _706_TokenExtendableAgain = <Node new={true} />;\nexport const _706_URL = import.meta.url;\n\nexport const _707_TokenExtendableChildren = (\n  <Node new={false}>\n    <Token value={true} type=\"boolean\" />\n  </Node>\n) ;\nexport const _707_URL = import.meta.url;\n",
+    sourceURL: "file:///workspaces/x/packages/examples/lib/examples/token/token-extendable.js",
+    output: "import { h, createToken } from \"@virtualstate/fringe\";\nconst Token = createToken(\"Token\", {\n    root: false\n});\nconst Referenced = h(Token, { value: 3 });\nconst Node = (h(Token, { root: true },\n    h(Token, null),\n    h(Token, { value: 1 }),\n    h(Token, { value: 2 }),\n    h(Referenced, { type: \"number\" })));\nexport const _705_TokenExtendable = Node;\nexport const _705_URL = import.meta.url;\nexport const _706_TokenExtendableAgain = h(Node, { new: true });\nexport const _706_URL = import.meta.url;\nexport const _707_TokenExtendableChildren = (h(Node, { new: false },\n    h(Token, { value: true, type: \"boolean\" })));\nexport const _707_URL = import.meta.url;\n//# sourceMappingURL=token-extendable.js.map",
+    cleanerSource: "import {\n  createNode,\n  Resolve,\n  ResolveSymbol,\n  ResolveTokenFn,\n  h,\n  ChildrenSource,\n  createFragment, createToken\n} from \"@virtualstate/fringe\";\n\nconst Token = createToken(\"Token\", {\n  root: false\n});\n\nconst Referenced = <Token value={3} />\n\nconst Node = (\n  <Token root={true}>\n    <Token />\n    <Token value={1} />\n    <Token value={2} />\n    <Referenced type=\"number\" />\n  </Token>\n)\n\nexport const Example = Node;",
+    structure: "<Token root={true} new={true}>\n  <Token root={false} />\n  <Token root={false} value={1} />\n  <Token root={false} value={2} />\n  <Token\n    root={false}\n    value={3}\n    type=\"number\"\n   />\n</Token>",
+    info: undefined,
+    engineURL: undefined,
+    sourceInterfaceURL: undefined,
+    sourceInterface: undefined,
+    import: async (context?: Record<string, unknown>, state?: VNode): Promise<VNode> => {
+      throw new Error("Not available");
+    }
+}
+export const _707_ExampleInformation: ExampleInformation = {
+    name: "TokenExtendableChildren",
+    id: "707",
+    exportedAs: "_707_TokenExtendableChildren",
+    source: "import {\n  createNode,\n  Resolve,\n  ResolveSymbol,\n  ResolveTokenFn,\n  h,\n  ChildrenSource,\n  createFragment, createToken\n} from \"@virtualstate/fringe\";\n\nconst Token = createToken(\"Token\", {\n  root: false\n});\n\nconst Referenced = <Token value={3} />\n\nconst Node = (\n  <Token root={true}>\n    <Token />\n    <Token value={1} />\n    <Token value={2} />\n    <Referenced type=\"number\" />\n  </Token>\n)\n\nexport const _705_TokenExtendable = Node;\nexport const _705_URL = import.meta.url;\n\nexport const _706_TokenExtendableAgain = <Node new={true} />;\nexport const _706_URL = import.meta.url;\n\nexport const _707_TokenExtendableChildren = (\n  <Node new={false}>\n    <Token value={true} type=\"boolean\" />\n  </Node>\n) ;\nexport const _707_URL = import.meta.url;\n",
+    sourceURL: "file:///workspaces/x/packages/examples/lib/examples/token/token-extendable.js",
+    output: "import { h, createToken } from \"@virtualstate/fringe\";\nconst Token = createToken(\"Token\", {\n    root: false\n});\nconst Referenced = h(Token, { value: 3 });\nconst Node = (h(Token, { root: true },\n    h(Token, null),\n    h(Token, { value: 1 }),\n    h(Token, { value: 2 }),\n    h(Referenced, { type: \"number\" })));\nexport const _705_TokenExtendable = Node;\nexport const _705_URL = import.meta.url;\nexport const _706_TokenExtendableAgain = h(Node, { new: true });\nexport const _706_URL = import.meta.url;\nexport const _707_TokenExtendableChildren = (h(Node, { new: false },\n    h(Token, { value: true, type: \"boolean\" })));\nexport const _707_URL = import.meta.url;\n//# sourceMappingURL=token-extendable.js.map",
+    cleanerSource: "import {\n  createNode,\n  Resolve,\n  ResolveSymbol,\n  ResolveTokenFn,\n  h,\n  ChildrenSource,\n  createFragment, createToken\n} from \"@virtualstate/fringe\";\n\nconst Token = createToken(\"Token\", {\n  root: false\n});\n\nconst Referenced = <Token value={3} />\n\nconst Node = (\n  <Token root={true}>\n    <Token />\n    <Token value={1} />\n    <Token value={2} />\n    <Referenced type=\"number\" />\n  </Token>\n)\n\nexport const Example = Node;",
+    structure: "<Token root={true} new={false}>\n  <Token\n    root={false}\n    value={true}\n    type=\"boolean\"\n   />\n</Token>",
     info: undefined,
     engineURL: undefined,
     sourceInterfaceURL: undefined,
