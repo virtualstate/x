@@ -10,6 +10,7 @@ import {
 } from "@virtualstate/fringe";
 
 function define() {
+
   return {
     Token: <token-name />,
     Button: <button />

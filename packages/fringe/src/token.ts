@@ -6,6 +6,7 @@ import { createFragment } from "./fragment";
 export const Token = Symbol.for("@virtualstate/fringe/token");
 
 export const IsTokenOptions = Symbol.for("@virtualstate/fringe/token/isTokenOptions");
+export const Scalar = Symbol.for("@virtualstate/fringe/token/Scalar");
 
 export type TokenOptionsRecord = Record<string | symbol | number, unknown>;
 
@@ -166,9 +167,15 @@ export function createToken<T extends SourceReference, O extends object, Initial
       },
       children: {
         ...accessOnly,
-        value: children,
-        enumerable: !!children
-      }
+        value: isOptionsScalar(options) ? undefined : children,
+        enumerable: !isOptionsScalar(options) && !!children
+      },
+      ...(isOptionsScalar(options) ? {
+        scalar:  {
+          ...accessOnly,
+          value: true
+        }
+      } : {})
     });
     assertTokenVNodeFn<T, O, Initial>(token, isTokenSource, isTokenOptions);
   }
@@ -206,6 +213,13 @@ export function createToken<T extends SourceReference, O extends object, Initial
       return !!value;
     }
     return options === value && isOptionsIsOptionsLike(value) && typeof value[IsTokenOptions] === "function";
+  }
+
+  function isOptionsScalar(value: unknown): value is { [Scalar]: true } {
+    function isOptionsScalarLike(value: unknown): value is { [Scalar]: unknown } {
+      return !!value;
+    }
+    return options === value && isOptionsScalarLike(value) && value[Scalar] === true;
   }
 }
 

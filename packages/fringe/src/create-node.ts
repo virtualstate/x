@@ -33,6 +33,7 @@ import { createFragment, Fragment } from "./fragment";
 import {
   createToken,
   isTokenVNodeFn,
+  Scalar,
   TokenOptionsRecord,
   TokenRequiredOptions,
   TokenResolvedOptions,
@@ -192,9 +193,17 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * Either way, if we have a source reference, we have a primitive value that we can look up later on
    */
   if (isSourceReference(source)) {
-    const node = createToken(source, options, ...children);
-    enableThen(node, source);
-    return node;
+    if (!children.length) {
+      const node = createToken(source, options);
+      // Use direct write on the new node to avoid modifying options
+      node.scalar = true;
+      enableThen(node, source);
+      return node;
+    } else {
+      const node = createToken(source, options, ...children);
+      enableThen(node, source);
+      return node;
+    }
   }
 
   /**
@@ -428,9 +437,19 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
 
   function unmarshal(source: MarshalledVNode): VNode {
     if (isSourceReference(source)) {
-      return createToken(source);
+      return createToken(source, {
+        [Scalar]: true
+      });
     }
     const { children, ...rest } = source;
+    if (isSourceReference(rest.source)) {
+      const token = createToken(rest.source);
+      Object.assign(token, rest);
+      if (children && Array.isArray(children) && children.length) {
+        token.children = replay(() => asyncExtendedIterable(children).map(children => [...children].map(unmarshal)))
+      }
+      return token;
+    }
     const node: VNode = {
       ...rest,
       // Replace our reference if required
@@ -438,23 +457,6 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     };
     if (children) {
       node.children = replay(() => asyncExtendedIterable(children).map(children => [...children].map(unmarshal)))
-    }
-    return node;
-  }
-
-  function sourceReferenceVNode(reference: SourceReference, source: SourceReference, options?: object, ...children: VNodeRepresentationSource[]): VNode {
-
-    const node: VNode = {
-      reference: reference ?? getReference(options),
-      source
-    };
-    if (options) {
-      node.options = options;
-    }
-    if (children.length) {
-      node.children = replay(() => childrenGenerator(childrenContext, ...children), children);
-    } else {
-      node.scalar = true;
     }
     return node;
   }
