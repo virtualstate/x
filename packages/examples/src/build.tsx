@@ -121,7 +121,7 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
         if (typeof value === "string") {
           return `${key}=${JSON.stringify(value)}`;
         }
-        return `${key}={${getSourceValue({ source: value, reference: 1 })}}`;
+        return `${key}={${getSourceValue({ reference: "", source: value })}}`;
       });
 
   }
