@@ -6,7 +6,6 @@ async function SiteContents() {
 }
 
 async function Site() {
-  const { render } = await import("@virtualstate/dom");
   const root = document.createElement("div");
   await render(h(SiteContents), root);
   document.body.append(root);

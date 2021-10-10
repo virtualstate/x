@@ -71,7 +71,7 @@ type CreateNodeResultCoreOp8<T extends CreateNodeOp8Iterable, O extends Options,
 type CreateNodeResultCoreOp9<T extends CreateNodeOp9Falsy, O extends Options, C extends unknown[]> = Omit<FragmentVNode, "source"> & { source: undefined }
 
 /**
- * @experimental Use this type directly at your own risk.
+ * @experimental
  */
 export type CreateNodeResultCore<T, O extends Options = Options, C extends unknown[] = []> =
   T extends CreateNodeOp1Function ? CreateNodeResultCoreOp1<T, O, C> :
@@ -90,10 +90,9 @@ export type CreateNodeResultCore<T, O extends Options = Options, C extends unkno
                       never;
 
 /**
- * @experimental Use this type directly at your own risk.
+ * @experimental
  */
 export type CreateNodeResult<T, O extends Options = Options, C extends unknown[] = []> = VNode & CreateNodeResultCore<T, O, C>
-
 
 interface SoccerBallOptions {
   pressure: "pumped" | "flat"
@@ -219,7 +218,7 @@ type ArrayItems<T extends unknown[]> = T extends Array<infer I> ? I : never;
 export type VNodeChildrenFromSource<V extends { children?: AsyncIterable<VNode[]> }> = VNodeWithChildrenFromSource<V>["children"];
 
 /**
- * @experimental This type may be removed if found to be not performant
+ * @experimental This type may be removed
  */
 export type VNodeWithChildrenFromSource<V extends { children?: AsyncIterable<VNode[]> }> = Omit<V, "children"> & {
   children: V extends { children: AsyncIterable<infer Z> } ? Z extends VNode ? CreateNodeChildrenWithSourceType<InferChildrenSource<V>, Z[]> : never : never;
