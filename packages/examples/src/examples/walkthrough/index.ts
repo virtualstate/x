@@ -1,11 +1,15 @@
 import {h} from "@virtualstate/fringe";
 
-async function Import(url: string) {
-  const { default: contents } = await import(url);
-  return contents;
+async function Import(url: string, name: string) {
+  const { [name]: contents } = await import(url);
+  return h(contents);
 }
 
-export const _W0001_Start = h(Import.bind(undefined, "./start.js"));
+export const _W0001_Start = h(Import.bind(undefined, "./start.js", "default"));
 export const _W0001_URL = import.meta.url;
-export const _W0002_Button = h(Import.bind(undefined, "./button.js"));
+export const _W0002_Start = h(Import.bind(undefined, "./start.js", "SiteContents"));
 export const _W0002_URL = import.meta.url;
+export const _W0003_Button = h(Import.bind(undefined, "./button.js", "default"));
+export const _W0003_URL = import.meta.url;
+export const _W0004_Button = h(Import.bind(undefined, "./button.js", "SiteContents"));
+export const _W0004_URL = import.meta.url;

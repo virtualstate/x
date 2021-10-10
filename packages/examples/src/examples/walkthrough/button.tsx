@@ -8,10 +8,9 @@ async function SiteContents() {
     h(
       "button",
       {
-        attributes: {
-          onClick() {
-            alert("Button clicked!");
-          }
+        type: "button",
+        onClick() {
+          alert("Button clicked!");
         }
       },
       "Press me!!"
