@@ -2,6 +2,7 @@ import { isSourceReference, SourceReference, MarshalledSourceReference } from ".
 import { isAsyncIterable, AsyncIterableLike, isIterable } from "iterable";
 import { Fragment } from "./fragment";
 import type { PromiseVNodeThenFn } from "./then";
+import {CreateNodeResult} from "./source";
 
 /**
  * Generic VNode, represents a virtual node within a state tree
@@ -93,6 +94,10 @@ export interface FragmentVNodeWithChildren extends FragmentVNode {
   children: AsyncIterable<VNode[]>
 }
 
+export interface SourceReferenceVNode<S extends SourceReference = SourceReference> extends VNode {
+  source: S;
+}
+
 /**
  * A {@link VNode} that requires asynchronous resolution
  */
@@ -100,7 +105,7 @@ export type AsyncVNodeRepresentation = Promise<VNode> | AsyncIterable<VNode>;
 /**
  * A {@link VNode} that can be resolved synchronously
  */
-export type SyncVNodeRepresentation = MarshalledVNode | SourceReference | VNode | Iterable<VNode>;
+export type SyncVNodeRepresentation = SourceReference | VNode | Iterable<VNode>;
 /**
  * A {@link VNode} with requiring _either_ synchronous or asynchronous resolution
  */

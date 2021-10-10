@@ -184,10 +184,13 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
         return value;
       }
       if (value instanceof Set) {
-        return `new Set()`
+        return `new Set()`;
       }
       if (value instanceof Map) {
-        return `new Map()`
+        return `new Map()`;
+      }
+      if (typeof value === "function") {
+        return '() => undefined';
       }
       return typeof value === "symbol" ?
         Symbol.keyFor(value) ? `Symbol.for(${JSON.stringify(Symbol.keyFor(value))})` : `Symbol(${JSON.stringify(getSymbolKey(value))})` :
@@ -269,12 +272,13 @@ async function build(exampleKey: string) {
   const nonLoopingStructure = !looping ? await recreate(staticNode, true, new WeakMap(), !exampleKey.includes("HTML")) : undefined;
 
   if (nonLoopingStructure && isWantedExampleKey(exampleKey)) {
-    console.log(nonLoopingStructure);
     const {
       EXAMPLES_MATCH: match
     } = getEnv();
     if (match) {
       finalLog = nonLoopingStructure;
+    } else {
+      console.log(nonLoopingStructure);
     }
   }
 

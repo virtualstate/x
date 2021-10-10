@@ -1,4 +1,4 @@
-import { isFragmentVNode, isMarshalledVNode, isVNode, VNode, VNodeRepresentationSource } from "./vnode";
+import { isFragmentVNode, isVNode, VNode, VNodeRepresentationSource } from "./vnode";
 import { isSourceReference } from "./source-reference";
 import {
   asyncExtendedIterable,
@@ -47,7 +47,7 @@ export async function *children(context: ChildrenContext, ...source: VNodeRepres
     }
 
     // These need further processing through createVNodeWithContext
-    if (isSourceReference(source) || isMarshalledVNode(source) || isIterableIterator(source)) {
+    if (isSourceReference(source) || isIterableIterator(source)) {
       return yield* eachSource(context.createNode(source));
     }
 

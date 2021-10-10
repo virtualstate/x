@@ -2,7 +2,7 @@ import { Fragment } from "./fragment";
 import { createNode } from "./create-node";
 import { FragmentVNode, isFragmentVNode, isScalarVNode, ScalarVNode, VNode } from "./vnode";
 import { SourceReference } from "./source-reference";
-import {CreateNodeResult, CreateNodeResultOp6, Source} from "./source";
+import { Source } from "./source";
 
 describe("createNode", () => {
 

@@ -1,4 +1,4 @@
-import { VNode, VNodeRepresentationSource } from "./vnode";
+import {MarshalledVNode, VNode, VNodeRepresentationSource} from "./vnode";
 import { createNode } from "./create-node";
 
 /**
