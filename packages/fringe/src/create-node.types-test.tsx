@@ -58,10 +58,27 @@ const root: {
     source: "scxml",
     children: AsyncIterable<{
         source: "datamodel" | "state",
+        options: {
+            id?: "idle" | "dragging"
+        },
         children: AsyncIterable<{
             source: "transition" | "data",
+            options: {
+                id?: "rectX" | "rectY" | "dx" | "dy" | "eventStamp",
+                event?: "mousemove" | "mouseup" | "mousedown",
+                target?: "idle" | "dragging"
+            },
             children: AsyncIterable<{
-                source: "assign"
+                source: "assign",
+                options: {
+                    location: "rectX" | "rectY" | "dx" | "dy" | "eventStamp",
+                    expr:
+                        | "eventStamp.clientX - _event.data.clientX"
+                        | "eventStamp.clientY - _event.data.clientY"
+                        | "rectX - dx"
+                        | "rectY - dy"
+                        | "_event.data"
+                }
             }[]>
         }[]>
     }[]>
@@ -74,6 +91,8 @@ for await (const children of scxml.children) {
             for await (const transitions of node.children) {
                 for (const transition of transitions) {
                     if (transition.source === "transition") {
+                        const event: "mousedown" | "mouseup" | "mousemove" = transition.options.event;
+                        const target: "idle" | "dragging" = transition.options.target;
                         for await (const assigns of transition.children) {
                             for (const assign of assigns) {
                                 const assignSource: "assign" = assign.source;
