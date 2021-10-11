@@ -31,25 +31,25 @@ import { createNode as h } from "./create-node";
 
 const scxml = h("scxml", { },
     h("datamodel", {},
-        h("data", { id: "eventStamp" }),
-        h("data", { id: "rectX", expr: "0" }),
-        h("data", { id: "rectY", expr: "0" }),
-        h("data", { id: "dx" }),
-        h("data", { id: "dy" })
+        h("data", { id: "eventStamp" } as const),
+        h("data", { id: "rectX", expr: "0" } as const),
+        h("data", { id: "rectY", expr: "0" } as const),
+        h("data", { id: "dx" } as const),
+        h("data", { id: "dy" } as const)
     ),
-    h("state", { id: "idle" },
-        h("transition", { event: "mousedown", target: "dragging" },
-            h("assign", { location: "eventStamp", expr: "_event.data" })
+    h("state", { id: "idle" } as const,
+        h("transition", { event: "mousedown", target: "dragging" } as const,
+            h("assign", { location: "eventStamp", expr: "_event.data" } as const)
         )
     ),
-    h("state", { id: "dragging" },
-        h("transition", { event: "mouseup", target: "idle" }),
-        h("transition", { event: "mousemove", target: "dragging" },
-            h("assign", { location: "dx", expr: "eventStamp.clientX - _event.data.clientX" }),
-            h("assign", { location: "dy", expr: "eventStamp.clientY - _event.data.clientY" }),
-            h("assign", { location: "rectX", expr: "rectX - dx" }),
-            h("assign", { location: "rectY", expr: "rectY - dy" }),
-            h("assign", { location: "eventStamp", expr: "_event.data" })
+    h("state", { id: "dragging" } as const,
+        h("transition", { event: "mouseup", target: "idle" } as const),
+        h("transition", { event: "mousemove", target: "dragging" } as const,
+            h("assign", { location: "dx", expr: "eventStamp.clientX - _event.data.clientX" } as const),
+            h("assign", { location: "dy", expr: "eventStamp.clientY - _event.data.clientY" } as const),
+            h("assign", { location: "rectX", expr: "rectX - dx" } as const),
+            h("assign", { location: "rectY", expr: "rectY - dy" } as const),
+            h("assign", { location: "eventStamp", expr: "_event.data" } as const)
         )
     )
 );
@@ -70,6 +70,7 @@ const root: {
 for await (const children of scxml.children) {
     for (const node of children) {
         if (node.source === "state") {
+            const stateId: "idle" | "dragging" = node.options.id;
             for await (const transitions of node.children) {
                 for (const transition of transitions) {
                     if (transition.source === "transition") {
@@ -90,6 +91,10 @@ for await (const children of scxml.children) {
                     const dataSource: "data" = data.source;
                     const { id } = data.options;
                     const idString: string = id;
+                    if (data.options.id === "rectX" || data.options.id === "rectY") {
+                        const { expr } = data.options;
+                        const exprString = expr;
+                    }
                 }
             }
         }
