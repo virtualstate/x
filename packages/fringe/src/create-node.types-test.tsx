@@ -78,7 +78,8 @@ const root: {
                         | "rectX - dx"
                         | "rectY - dy"
                         | "_event.data"
-                }
+                },
+                children: never
             }[]>
         }[]>
     }[]>
