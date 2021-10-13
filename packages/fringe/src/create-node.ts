@@ -81,14 +81,14 @@ export function createNode<
   O extends object,
   InitialOptions extends Partial<O>,
   T extends TokenVNodeFn<TT, O, InitialOptions>
->(source: T): TokenVNodeFn<TT, O, InitialOptions>;
+>(source: T): T & TokenVNodeFn<TT, O, InitialOptions>;
 export function createNode<
   TT extends SourceReference,
   O extends object,
   InitialOptions extends Partial<O>,
   T extends TokenVNodeFn<TT, O, InitialOptions>,
   PassedOptions extends TokenRequiredOptions<O, InitialOptions>,
->(source: T, options: PassedOptions, ...children: unknown[]): TokenVNodeFn<TT, O, TokenResolvedOptions<O, InitialOptions, PassedOptions>>;
+>(source: T, options: PassedOptions, ...children: unknown[]): T & TokenVNodeFn<TT, O, TokenResolvedOptions<O, InitialOptions, PassedOptions>>;
 export function createNode<
   T extends Source,
   O extends Record<string, unknown> | object,

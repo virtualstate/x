@@ -1,4 +1,5 @@
 import { createNode as h } from "./create-node";
+import {createToken, isTokenVNodeFn} from "./token";
 
 // <scxml>
 //
@@ -56,43 +57,67 @@ const scxml = h("scxml", { },
 
 const root: {
     source: "scxml",
-    children: AsyncIterable<{
-        source: "datamodel" | "state",
-        options: {
-            id?: "idle" | "dragging"
-        },
-        children: AsyncIterable<{
-            source: "transition" | "data",
-            options: (
-                (
-                    {
-                        id: "rectX" | "rectY" | "dx" | "dy" | "eventStamp"
-                    } |
-                    {
+    options?: {
+        id?: string
+    },
+    children: AsyncIterable<(
+        {
+            source: "datamodel",
+            children: AsyncIterable<(
+                {
+                    source: "data",
+                    options: {
+                        id: "rectX" | "rectY" | "dx" | "dy" | "eventStamp",
+                        expr?: string;
+                    },
+                    children: AsyncIterable<{
+                        source: "assign",
+                        options: {
+                            location: "rectX" | "rectY" | "dx" | "dy" | "eventStamp",
+                            expr: string
+                        },
+                        children: never
+                    }[]>
+                }
+            )[]>
+        } |
+        {
+            source: "state",
+            options: {
+                id: "idle" | "dragging"
+            },
+            children: AsyncIterable<(
+                {
+                    source: "transition",
+                    options: {
                         event: "mousemove" | "mouseup" | "mousedown",
                         target: "idle" | "dragging"
-                    }
-                )
-            ),
-            children: AsyncIterable<{
-                source: "assign",
-                options: {
-                    location: "rectX" | "rectY" | "dx" | "dy" | "eventStamp",
-                    expr:
-                        | "eventStamp.clientX - _event.data.clientX"
-                        | "eventStamp.clientY - _event.data.clientY"
-                        | "rectX - dx"
-                        | "rectY - dy"
-                        | "_event.data"
-                },
-                children: never
-            }[]>
-        }[]>
-    }[]>
+                    },
+                    children: AsyncIterable<{
+                        source: "assign",
+                        options: {
+                            location: "rectX" | "rectY" | "dx" | "dy" | "eventStamp",
+                            expr: string
+                        },
+                        children: never
+                    }[]>
+                }
+            )[]>
+        }
+    )[]>
 } = scxml;
 
-async function doThing(root: typeof scxml) {
-    for await (const children of root.children) {
+async function doThing(givenRoot: { source: "scxml" }) {
+    function isLike(type: { source: string }): type is typeof root {
+        return type.source === "scxml";
+    }
+    if (!isLike(givenRoot)) {
+        throw new Error("Huh");
+    }
+    if (givenRoot.options?.id) {
+        console.log(`Id: ${givenRoot.options.id}`);
+    }
+    for await (const children of givenRoot.children) {
         for (const node of children) {
             if (node.source === "state") {
                 const stateId: "idle" | "dragging" = node.options.id;
@@ -193,3 +218,48 @@ for await (const [child] of j.children) {
         console.log({ meta });
     }
 }
+
+console.log("---------- token -------------");
+
+const SCXML = createToken<"scxml", { id?: string }>("scxml");
+const Data = createToken<"data", { id: "eventStamp" | "dx" | "dy" | "rectX" | "rectY", expr?: string }>("data");
+const State = createToken<"state", { id: "idle" | "dragging" }>("state");
+const Transition = createToken<"transition", { event: "mousedown" | "mouseup" | "mousemove", target: "idle" | "dragging" }>("transition");
+const Assign = createToken<"assign", { location: "eventStamp" | "dx" | "dy" | "rectX" | "rectY", expr: string }>("assign");
+
+const token = h(SCXML, { },
+    h("datamodel", {},
+        h(Data, { id: "eventStamp" } as const),
+        h(Data, { id: "rectX", expr: "0" } as const),
+        h(Data, { id: "rectY", expr: "0" } as const),
+        h(Data, { id: "dx" } as const),
+        h(Data, { id: "dy" } as const)
+    ),
+    h(State, { id: "idle" } as const,
+        h(Transition, { event: "mousedown", target: "dragging" } as const,
+            h(Assign, { location: "eventStamp", expr: "_event.data" } as const)
+        )
+    ),
+    h("state", { id: "dragging" } as const,
+        h(Transition, { event: "mouseup", target: "idle" } as const),
+        h(Transition, { event: "mousemove", target: "dragging" } as const,
+            h(Assign, { location: "dx", expr: "eventStamp.clientX - _event.data.clientX" } as const),
+            h(Assign, { location: "dy", expr: "eventStamp.clientY - _event.data.clientY" } as const),
+            h(Assign, { location: "rectX", expr: "rectX - dx" } as const),
+            h(Assign, { location: "rectY", expr: "rectY - dy" } as const),
+            h(Assign, { location: "eventStamp", expr: "_event.data" } as const)
+        )
+    )
+);
+
+console.log("---------- token default -------------");
+
+await doThing(token);
+
+console.log("---------- token with id -------------");
+
+await doThing(token({ id: "identifier" }));
+
+console.log("---------- token with id and no children -------------");
+
+await doThing(token({ id: "identifier" }, h()));

@@ -73,7 +73,7 @@ export function createToken<T extends SourceReference, O extends object, Initial
   const isOptionsFrozenStatic = !!options && Object.isFrozen(options);
   const optionsKeyLength = options ? isOptionsFrozenStatic ? Object.keys(options).length : 0 : 0;
 
-  function token<I extends Partial<TokenOptionsRecord>>(this: unknown, partialOptions?: I, child?: VNode): TokenVNodeFn<T, O, O> {
+  function TokenConstructor<I extends Partial<TokenOptionsRecord>>(this: unknown, partialOptions?: I, child?: VNode): TokenVNodeFn<T, O, O> {
     const node = isTokenVNode<T, O>(this) ? this : tokenized;
     const previousNode: Pick<Token, keyof Token> = node;
     let nextOptions: TokenOptionsRecord = node.options;
@@ -88,8 +88,8 @@ export function createToken<T extends SourceReference, O extends object, Initial
       nextChildren = createFragment(undefined, child).children;
     }
     // Terminates the node, will no longer be a function if it still was one
-    function instance(this: unknown, innerPartialOptions?: I, innerChild?: VNode) {
-      return token.call(
+    function TokenInstance(this: unknown, innerPartialOptions?: I, innerChild?: VNode) {
+      return TokenConstructor.call(
         this,
         innerPartialOptions ?
          (partialOptions ? { ...partialOptions, ...innerPartialOptions } : innerPartialOptions) :
@@ -97,14 +97,14 @@ export function createToken<T extends SourceReference, O extends object, Initial
         innerChild ?? child
       );
     }
-    const almost: object = instance;
+    const almost: object = TokenInstance;
     defineProperties(almost, nextOptions, nextChildren, isTokenSource, isTokenOptions);
     if (isFrozenOptionsToken(almost) && !child) {
       return Object.freeze(almost);
     }
     return almost;
   }
-  const almost: object = token;
+  const almost: object = TokenConstructor;
   defineProperties<T, O, Initial>(
     almost,
     options,
