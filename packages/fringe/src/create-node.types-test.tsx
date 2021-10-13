@@ -162,3 +162,20 @@ for await (const children of k.children) {
         }
     }
 }
+
+const j = h(
+    function *J() {
+        yield scxml;
+        yield h(1, { meta: 2 });
+    }
+)
+
+for await (const children of j.children) {
+    for (const child of children) {
+        if (child.source === "scxml") {
+            await doThing(child);
+        } else if (typeof child.source === "number") {
+            const { meta } = child.options
+        }
+    }
+}
