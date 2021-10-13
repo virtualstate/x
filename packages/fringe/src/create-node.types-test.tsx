@@ -143,11 +143,22 @@ const k = h(
     async function *K() {
         yield scxml;
         yield scxml;
+        for await (const children of scxml.children) {
+            for (const child of children) {
+                if (child.source === "state") {
+                    yield child;
+                }
+            }
+        }
     }
 )
 
 for await (const children of k.children) {
     for (const child of children) {
-        await doThing(child);
+        if (child.source === "scxml") {
+            await doThing(child);
+        } else if (child.source === "state") {
+            const { id } = child.options
+        }
     }
 }
