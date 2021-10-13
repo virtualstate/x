@@ -138,3 +138,16 @@ for await (const children of r.children) {
         await doThing(child);
     }
 }
+
+const k = h(
+    async function *K() {
+        yield scxml;
+        yield scxml;
+    }
+)
+
+for await (const children of k.children) {
+    for (const child of children) {
+        await doThing(child);
+    }
+}

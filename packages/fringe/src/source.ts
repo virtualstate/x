@@ -212,12 +212,9 @@ type ChildrenResult<CValue> =
                           CValue extends AsyncIterable<infer R> ? ChildrenResult<R> : never :
                             never;
 
-type ArrayItems<T extends unknown[]> = T extends Array<infer I> ? I : never;
-
+// type ArrayItems<T extends unknown[]> = T extends Array<infer I> ? I : never;
 // type ChildrenResultFromSource<C extends unknown[]> = unknown extends ChildrenResult<ArrayItems<C>> ? VNode : VNode;
-
 // type ChildrenFromResult<V> = V extends CreateNodeChildrenWithSourceType<InferChildrenSource<V>, ChildrenResult<InferChildrenSource<V>>[]>
-
 export type VNodeChildrenFromSource<V extends { children?: AsyncIterable<VNode[]> }> = VNodeWithChildrenFromSource<V>["children"];
 
 /**
