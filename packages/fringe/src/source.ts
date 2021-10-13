@@ -32,7 +32,10 @@ export type CreateNodeChildren<C extends unknown[], N extends VNode[] = VNode[]>
 
 type Options = Record<string, unknown> | object | undefined;
 
-type CreateNodeResultCoreOp1<T extends CreateNodeOp1Function, O extends Options = Options, C extends unknown[] = []> = Omit<FragmentVNode, "source"> & { source: T };
+type CreateNodeResultCoreOp1<T extends CreateNodeOp1Function, O extends Options = Options, C extends unknown[] = []> = Omit<FragmentVNode, "source" | "children"> & {
+  source: T;
+  children: CreateNodeChildrenWithSourceType<T[], ChildrenResult<ReturnType<T>>[]>;
+};
 type CreateNodeResultCoreOp2<T extends CreateNodeOp2Promise, O extends Options = Options, C extends unknown[] = []> = Omit<FragmentVNode, "source" | "children"> & {
   source: T;
   children: T extends Promise<infer I> ? CreateNodeChildrenWithSourceType<T[], CreateNodeResult<I>[]> : never;
@@ -162,8 +165,8 @@ interface SoccerBallOptions {
 // const VNodeTest1: VNode = (undefined as unknown) as CreateNodeResult<"p", {}, ["Hello world"]>;
 // const VNodeTest2: { children: AsyncIterable<{  source: "Hello world" }[]> } = (undefined as unknown) as CreateNodeResult<"p", {}, ["Hello world"]>;
 
-export interface CreateNodeOp1Function {
-  (options?: unknown, children?: VNode): unknown
+export interface CreateNodeOp1Function<T = unknown> {
+  (options?: unknown, children?: VNode): T
 }
 export type CreateNodeOp2Promise = Promise<unknown>;
 export type CreateNodeOp3Fragment = typeof Fragment;
