@@ -1,8 +1,6 @@
 import { h, h as f } from "../h";
 import { isScalarVNode, ScalarVNode, VNode } from "../vnode";
 import { SourceReference } from "../source-reference";
-import { Every } from "./logic.spec";
-import {SourceVNode} from "@virtualstate/examples/lib/examples/compile-transform/source.interface";
 
 describe("math", () => {
 

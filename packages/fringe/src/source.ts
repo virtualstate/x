@@ -32,20 +32,25 @@ export type CreateNodeChildren<C extends unknown[], N extends VNode[] = VNode[]>
 
 type Options = Record<string, unknown> | object | undefined;
 
-type CreateNodeResultCoreOp1<T extends CreateNodeOp1Function, O extends Options = Options, C extends unknown[] = []> = Omit<FragmentVNode, "source" | "children"> & {
+type MaxDepth = 8;
+type Countdown = [0,0,1,2,3,4,5,6,7]
+type DecrementMaxDepth<MaxDepthT extends number = MaxDepth> = Countdown[MaxDepthT];
+
+type CreateNodeResultCoreOp1<T extends CreateNodeOp1Function, O extends Options = Options, C extends unknown[] = [], Depth extends number = MaxDepth> = Omit<FragmentVNode, "source" | "children"> & {
   source: T;
   children: CreateNodeChildrenWithSourceType<T[], ChildrenResult<ReturnType<T>>[]>;
 };
-type CreateNodeResultCoreOp2<T extends CreateNodeOp2Promise, O extends Options = Options, C extends unknown[] = []> = Omit<FragmentVNode, "source" | "children"> & {
+type CreateNodeResultCoreOp2<T extends CreateNodeOp2Promise, O extends Options = Options, C extends unknown[] = [], Depth extends number = MaxDepth> = Omit<FragmentVNode, "source" | "children"> & {
   source: T;
-  children: T extends Promise<infer I> ? CreateNodeChildrenWithSourceType<T[], CreateNodeResult<I>[]> : never;
+  children: CreateNodeChildrenWithSourceType<T[], ChildrenResult<T>[]>;
 };
-type CreateNodeResultCoreOp3<T extends CreateNodeOp3Fragment, O extends Options = Options, C extends unknown[] = []> = CreateNodeResult<FragmentVNode, O, C>;
+type CreateNodeResultCoreOp3<T extends CreateNodeOp3Fragment, O extends Options = Options, C extends unknown[] = [], Depth extends number = MaxDepth> = CreateNodeResult<FragmentVNode, O, C>;
 
 type CreateNodeResultCoreOp4<
   T extends CreateNodeOp4VNode,
   O extends Options,
-  C extends unknown[]
+  C extends unknown[],
+  Depth extends number = MaxDepth
 > =
   | Omit<T, "children"> & {
   options: T["options"] extends O ? O : T["options"] & O,
@@ -54,9 +59,9 @@ type CreateNodeResultCoreOp4<
     CreateNodeChildren<C, ChildrenResult<C>[]>
 };
 
-type CreateNodeResultCoreOp5<T extends CreateNodeOp5MarshalledVNode, O extends Options = Options, C extends unknown[] = []> = VNode;
+type CreateNodeResultCoreOp5<T extends CreateNodeOp5MarshalledVNode, O extends Options = Options, C extends unknown[] = [], Depth extends number = MaxDepth> = VNode;
 
-type CreateNodeResultCoreOp6<T extends CreateNodeOp6SourceReference, O extends Options, C extends unknown[] = []> =
+type CreateNodeResultCoreOp6<T extends CreateNodeOp6SourceReference, O extends Options, C extends unknown[] = [], Depth extends number = MaxDepth> =
   | Omit<VNode, "source" | "scalar" | "children"> & {
   source: T;
   scalar: IfChildren<C, false, true>;
@@ -64,28 +69,28 @@ type CreateNodeResultCoreOp6<T extends CreateNodeOp6SourceReference, O extends O
   children: CreateNodeChildren<C, ChildrenResult<C>[]>;
 }
 
-type CreateNodeResultCoreOp7<T extends CreateNodeOp7IterableIterator, O extends Options, C extends unknown[]> = Omit<FragmentVNodeWithChildren, "options"> & { options: O }
-type CreateNodeResultCoreOp8<T extends CreateNodeOp8Iterable, O extends Options, C extends unknown[]> = Omit<FragmentVNodeWithChildren, "options"> & {
+type CreateNodeResultCoreOp7<T extends CreateNodeOp7IterableIterator, O extends Options, C extends unknown[], Depth extends number = MaxDepth> = Omit<FragmentVNodeWithChildren, "options"> & { options: O }
+type CreateNodeResultCoreOp8<T extends CreateNodeOp8Iterable, O extends Options, C extends unknown[], Depth extends number = MaxDepth> = Omit<FragmentVNodeWithChildren, "options"> & {
   options: O,
   children:
     T extends AsyncIterable<infer I> ? AsyncIterable<ChildrenResult<I>[]> :
     T extends Iterable<infer I> ? AsyncIterable<ChildrenResult<I>[]> : never;
 }
-type CreateNodeResultCoreOp9<T extends CreateNodeOp9Falsy, O extends Options, C extends unknown[]> = Omit<FragmentVNode, "source"> & { source: undefined }
+type CreateNodeResultCoreOp9<T extends CreateNodeOp9Falsy, O extends Options, C extends unknown[], Depth extends number = MaxDepth> = Omit<FragmentVNode, "source"> & { source: undefined }
 
 /**
  * @experimental
  */
-export type CreateNodeResultCore<T, O extends Options = Options, C extends unknown[] = []> =
-  T extends CreateNodeOp1Function ? CreateNodeResultCoreOp1<T, O, C> :
-    T extends CreateNodeOp2Promise ? CreateNodeResultCoreOp2<T, O, C> :
-      T extends CreateNodeOp3Fragment ? CreateNodeResultCoreOp3<T, O, C> :
-        T extends CreateNodeOp4VNode ? CreateNodeResultCoreOp4<T, O, C> :
-          T extends CreateNodeOp5MarshalledVNode ? CreateNodeResultCoreOp5<T, O, C> :
-            T extends CreateNodeOp6SourceReference ? CreateNodeResultCoreOp6<T, O, C> :
-              T extends CreateNodeOp7IterableIterator ? CreateNodeResultCoreOp7<T, O, C> :
-                T extends CreateNodeOp8Iterable ? CreateNodeResultCoreOp8<T, O, C> :
-                  T extends CreateNodeOp9Falsy ? CreateNodeResultCoreOp9<T, O, C> :
+export type CreateNodeResultCore<T, O extends Options = Options, C extends unknown[] = [], Depth extends number = MaxDepth> =
+  T extends CreateNodeOp1Function ? CreateNodeResultCoreOp1<T, O, C, Depth> :
+    T extends CreateNodeOp2Promise ? CreateNodeResultCoreOp2<T, O, C, Depth> :
+      T extends CreateNodeOp3Fragment ? CreateNodeResultCoreOp3<T, O, C, Depth> :
+        T extends CreateNodeOp4VNode ? CreateNodeResultCoreOp4<T, O, C, Depth> :
+          T extends CreateNodeOp5MarshalledVNode ? CreateNodeResultCoreOp5<T, O, C, Depth> :
+            T extends CreateNodeOp6SourceReference ? CreateNodeResultCoreOp6<T, O, C, Depth> :
+              T extends CreateNodeOp7IterableIterator ? CreateNodeResultCoreOp7<T, O, C, Depth> :
+                T extends CreateNodeOp8Iterable ? CreateNodeResultCoreOp8<T, O, C, Depth> :
+                  T extends CreateNodeOp9Falsy ? CreateNodeResultCoreOp9<T, O, C, Depth> :
                     // If you want to use some other object, then use { source: <objectHere>, reference: Fragment }
                     // This will throw an error
                     T extends CreateNodeOp9000ExplicitExceptionCaseForObject ? never :
