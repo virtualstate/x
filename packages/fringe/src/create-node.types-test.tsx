@@ -133,10 +133,8 @@ await doThing(scxml);
 
 const r = h(() => scxml);
 
-for await (const children of r.children) {
-    for (const child of children) {
-        await doThing(child);
-    }
+for await (const [child] of r.children) {
+    await doThing(child);
 }
 
 const k = h(
@@ -153,13 +151,11 @@ const k = h(
     }
 )
 
-for await (const children of k.children) {
-    for (const child of children) {
-        if (child.source === "scxml") {
-            await doThing(child);
-        } else if (child.source === "state") {
-            const { id } = child.options
-        }
+for await (const [child] of k.children) {
+    if (child.source === "scxml") {
+        await doThing(child);
+    } else if (child.source === "state") {
+        const { id } = child.options
     }
 }
 
@@ -170,12 +166,10 @@ const j = h(
     }
 )
 
-for await (const children of j.children) {
-    for (const child of children) {
-        if (child.source === "scxml") {
-            await doThing(child);
-        } else if (typeof child.source === "number") {
-            const { meta } = child.options
-        }
+for await (const [child] of j.children) {
+    if (child.source === "scxml") {
+        await doThing(child);
+    } else if (typeof child.source === "number") {
+        const { meta } = child.options
     }
 }
