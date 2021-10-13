@@ -96,17 +96,22 @@ async function doThing(root: typeof scxml) {
         for (const node of children) {
             if (node.source === "state") {
                 const stateId: "idle" | "dragging" = node.options.id;
+                console.log({ stateId });
                 for await (const transitions of node.children) {
                     for (const transition of transitions) {
                         if (transition.source === "transition") {
                             const event: "mousedown" | "mouseup" | "mousemove" = transition.options.event;
                             const target: "idle" | "dragging" = transition.options.target;
-                            for await (const assigns of transition.children) {
-                                for (const assign of assigns) {
-                                    const assignSource: "assign" = assign.source;
-                                    const { location, expr } = assign.options;
-                                    const locationString: string = location;
-                                    const exprString: string = expr;
+                            console.log({ event, target });
+                            if (transition.children) {
+                                for await (const assigns of transition.children) {
+                                    for (const assign of assigns) {
+                                        const assignSource: "assign" = assign.source;
+                                        const { location, expr } = assign.options;
+                                        const locationString: string = location;
+                                        const exprString: string = expr;
+                                        console.log({ assignSource, locationString, exprString });
+                                    }
                                 }
                             }
                         }
@@ -118,9 +123,11 @@ async function doThing(root: typeof scxml) {
                         const dataSource: "data" = data.source;
                         const { id } = data.options;
                         const idString: string = id;
+                        console.log({ idString, dataSource });
                         if (data.options.id === "rectX" || data.options.id === "rectY") {
                             const { expr } = data.options;
                             const exprString = expr;
+                            console.log({ exprString });
                         }
                     }
                 }
@@ -129,13 +136,20 @@ async function doThing(root: typeof scxml) {
     }
 }
 
+console.log("---------- scxml -------------");
+
 await doThing(scxml);
+
+console.log("---------- r -------------");
 
 const r = h(() => scxml);
 
 for await (const [child] of r.children) {
+    console.log({ child });
     await doThing(child);
 }
+
+console.log("---------- k -------------");
 
 const k = h(
     async function *K() {
@@ -152,12 +166,16 @@ const k = h(
 )
 
 for await (const [child] of k.children) {
+    console.log({ child });
     if (child.source === "scxml") {
         await doThing(child);
     } else if (child.source === "state") {
         const { id } = child.options
+        console.log({ id });
     }
 }
+
+console.log("---------- j -------------");
 
 const j = h(
     function *J() {
@@ -167,9 +185,11 @@ const j = h(
 )
 
 for await (const [child] of j.children) {
+    console.log({ child });
     if (child.source === "scxml") {
         await doThing(child);
     } else if (typeof child.source === "number") {
         const { meta } = child.options
+        console.log({ meta });
     }
 }
