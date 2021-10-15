@@ -1,0 +1,40 @@
+{
+  "name": "@virtualstate/typescript",
+  "version": "2.22.1",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "type": "module",
+  "keywords": [
+    "nodejs",
+    "web",
+    "frontend",
+    "backend",
+    "jsx",
+    "vsx",
+    "state",
+    "virtual-state"
+  ],
+  "peerDependencies": {
+  },
+  "devDependencies": {
+    "babel-jest": "^27.0.2",
+    "ts-jest": "^27.0.3",
+    "ts-node": "^10.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/virtualstate/x.git"
+  },
+  "bugs": {
+    "url": "https://github.com/virtualstate/x/issues"
+  },
+  "homepage": "https://github.com/virtualstate/x#readme",
+  "author": "Fabian Cook <hello@fabiancook.dev>",
+  "scripts": {
+    "test": "yarn jest",
+    "clean": "rm -rf lib && rm tsconfig.tsbuildinfo"
+  },
+  "gitHead": "f2abd3c12d9bf28cf9fe32e879822679d86d2ade"
+}

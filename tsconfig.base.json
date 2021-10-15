@@ -25,6 +25,7 @@
       "@virtualstate/deno": ["packages/deno/src/index.ts"],
       "@virtualstate/x": ["packages/x/src/index.ts"],
       "@virtualstate/examples": ["packages/examples/src/index.ts"],
+      "@virtualstate/typescript": ["packages/typescript/src/index.ts"],
       "@virtualstate/*": ["packages/*/src"]
     },
     "jsx": "react",
