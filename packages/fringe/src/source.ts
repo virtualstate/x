@@ -206,7 +206,7 @@ type ChildrenResult<CValue> =
     CValue extends ChildrenOp2Fragment ?
       undefined extends CValue["children"] ? never :
         CValue["children"] extends AsyncIterable<Iterable<infer R>> ? ChildrenResult<R> : never :
-          CValue extends { reference: SourceReference } ? CValue :
+          CValue extends ChildrenOp3VNode ? CValue :
             CValue extends ChildrenOp4SourceReference ? SourceReferenceVNode<CValue> :
               CValue extends ChildrenOp5IterableIterator ?
                 CValue extends IterableIterator<infer R> ? ChildrenResult<R> : never :
@@ -231,7 +231,7 @@ export type VNodeWithChildrenFromSource<V extends { children?: AsyncIterable<VNo
 
 type ChildrenOp1Undefined = undefined;
 type ChildrenOp2Fragment = FragmentVNode;
-type ChildrenOp3VNode = FragmentVNode;
+type ChildrenOp3VNode = { reference: SourceReference };
 type ChildrenOp4SourceReference = SourceReference;
 type ChildrenOp5IterableIterator = IterableIterator<unknown>;
 type ChildrenOp6Promise = Promise<unknown>;
