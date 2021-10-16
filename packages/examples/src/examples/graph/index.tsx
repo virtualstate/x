@@ -1,6 +1,6 @@
 import {Domain, Graph, MainGraph, DomainToken} from "./main";
 import {Store} from "../../examples/experiments/store";
-import {h, VNode, Instance, PromiseVNode, assertPromiseVNode} from "@virtualstate/fringe"
+import {h, VNode, Instance} from "@virtualstate/fringe"
 import {
   assertQuadInstanceToken,
   BlankNode,
@@ -22,7 +22,7 @@ import {
   isQuadSubjectLike,
   QuadLike
 } from "@opennetwork/rdf-data-model";
-import {then} from "@virtualstate/fringe";
+import {thenish} from "@virtualstate/fringe";
 
 export const _G0001_Graph = MainGraph;
 export const _G0001_URL = import.meta.url;
@@ -50,7 +50,7 @@ export const _G0002_GraphStore = <_G0002_GraphStoreRead />
 export const _G0002_URL = import.meta.url;
 
 async function getState(node: VNode) {
-  return new Promise<VNode[]>(then.bind(node));
+  return new Promise<VNode[]>(thenish.bind(node));
 }
 
 type Parsed = (rdf.Quad | ReturnType<rdf.DataFactory["fromTerm"]>);

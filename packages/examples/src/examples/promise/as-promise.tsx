@@ -1,4 +1,4 @@
-import {assertPromiseVNode, ChildrenSource, h, then} from "@virtualstate/fringe";
+import {assertPromiseVNode, ChildrenSource, h, thenish} from "@virtualstate/fringe";
 
 async function *Whatever() {
   yield (
@@ -30,12 +30,12 @@ async function Example() {
   const node = (
     <Whatever />
   )
-  node.then = then;
+  node.then = thenish;
   assertPromiseVNode(node);
 
   const [p] = await node;
 
-  p.then = then;
+  p.then = thenish;
   assertPromiseVNode(p);
   const result = await p;
 

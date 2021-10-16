@@ -79,3 +79,9 @@ export async function then(this: VNode, resolve?: (children: VNode[]) => unknown
     return children;
   }
 }
+
+/**
+ * Naming this then breaks await import("@virtualstate/fringe");
+ * @experimental for direct usage
+ */
+export const thenish = then;
