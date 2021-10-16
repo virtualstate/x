@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/typescript",
-  "version": "2.22.1",
+  "version": "2.23.0",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -15,8 +15,6 @@
     "state",
     "virtual-state"
   ],
-  "peerDependencies": {
-  },
   "devDependencies": {
     "babel-jest": "^27.0.2",
     "ts-jest": "^27.0.3",
