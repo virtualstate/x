@@ -1,4 +1,6 @@
-# `@virtualstate/types`
+# `@virtualstate/typescript`
+
+Add types to JSX structures generated from the use of `@virtualstate/fringe`
 
 ## Contributing
 
