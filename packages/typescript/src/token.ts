@@ -1,9 +1,11 @@
 import { SourceReference } from "./source-reference";
 import { VNode, VNodeRepresentationSource } from "./vnode";
 
-export const Token = Symbol.for("@virtualstate/fringe/token");
+const Token = Symbol.for("@virtualstate/fringe/token");
+export type TokenSymbol = typeof Token;
 
-export const IsTokenOptions = Symbol.for("@virtualstate/fringe/token/isTokenOptions");
+const IsTokenOptions = Symbol.for("@virtualstate/fringe/token/isTokenOptions");
+export type IsTokenOptionsSymbol = typeof IsTokenOptions;
 
 export type TokenOptionsRecord = Record<string | symbol | number, unknown>;
 

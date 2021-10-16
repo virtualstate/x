@@ -1,6 +1,6 @@
 import { SourceReference, MarshalledSourceReference } from "./source-reference";
 import { AsyncIterableLike } from "iterable";
-import { Fragment } from "./fragment";
+import { FragmentSymbol } from "./fragment";
 import type { PromiseVNodeThenFn } from "./then";
 
 /**
@@ -157,7 +157,7 @@ export interface NativeVNode extends VNode {
  * A {@link FragmentVNode} may have no children, in which case, it should be ignored completely
  */
 export interface FragmentVNode extends VNode {
-  reference: typeof Fragment;
+  reference: FragmentSymbol;
 }
 
 export interface FragmentVNodeWithChildren extends FragmentVNode {

@@ -1,18 +1,14 @@
 import type {FragmentVNode, FragmentVNodeWithChildren, MarshalledVNode, SourceReferenceVNode, VNode} from "./vnode";
 import type { SourceReference } from "./source-reference";
-import type { Fragment } from "./fragment";
+import type { FragmentSymbol } from "./fragment";
 
 type GetLength<T extends unknown[]> = T extends { length: infer L } ? L : never
 
 /**
- * @experimental This may go away
- */
-export const Instance = Symbol("Source Instance");
-
-/**
  * @experimental This may not be available all the time, and this functionality may disappear.
  */
-export const ChildrenSource = Symbol.for("@virtualstate/fringe/ChildrenSource");
+const ChildrenSource = Symbol.for("@virtualstate/fringe/ChildrenSource");
+export type ChildrenSourceSymbol = typeof ChildrenSource;
 
 export type CreateNodeChildrenWithSourceType<C extends unknown[], N extends VNode[] = VNode[]> = AsyncIterable<N> & {
   // This is explicitly only available _sometimes_, so only in best case will it be available,
@@ -174,7 +170,7 @@ export interface CreateNodeOp1Function<T = unknown> {
   (options?: unknown, children?: VNode): T
 }
 export type CreateNodeOp2Promise = Promise<unknown>;
-export type CreateNodeOp3Fragment = typeof Fragment;
+export type CreateNodeOp3Fragment = FragmentSymbol;
 export type CreateNodeOp4VNode = VNode;
 export type CreateNodeOp5MarshalledVNode = MarshalledVNode;
 export type CreateNodeOp6SourceReference = SourceReference;
