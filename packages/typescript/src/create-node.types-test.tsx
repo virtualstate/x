@@ -1,6 +1,4 @@
-import { CreateNodeFn } from "./create-node";
-
-let h: CreateNodeFn = (undefined as unknown) as CreateNodeFn;
+import { h } from "./create-node";
 
 // <scxml>
 //
@@ -206,7 +204,7 @@ console.log("---------- j -------------");
 const j = h(
     function *J() {
         yield scxml;
-        yield h(1, { meta: 2 });
+        yield h(1, { meta: 2 } as const);
     }
 )
 

@@ -44,3 +44,11 @@ export interface CreateNodeFn {
   (source: Source, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
   (source?: unknown, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
 }
+
+function noImplementation() {
+  return void 0;
+}
+
+export const createNode: CreateNodeFn = (noImplementation as unknown) as CreateNodeFn;
+export const h: CreateNodeFn = (noImplementation as unknown) as CreateNodeFn;
+export const f: CreateNodeFn = (noImplementation as unknown) as CreateNodeFn;

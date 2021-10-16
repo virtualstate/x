@@ -4,7 +4,6 @@ import { VNode, VNodeRepresentationSource } from "./vnode";
 export const Token = Symbol.for("@virtualstate/fringe/token");
 
 export const IsTokenOptions = Symbol.for("@virtualstate/fringe/token/isTokenOptions");
-export const Scalar = Symbol.for("@virtualstate/fringe/token/Scalar");
 
 export type TokenOptionsRecord = Record<string | symbol | number, unknown>;
 
