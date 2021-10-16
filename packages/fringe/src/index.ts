@@ -13,6 +13,6 @@ export * from "./source-reference";
 export * from "./h";
 export * from "./f";
 export * from "./token";
-export * from "./then";
+export { Then, EnableThen, isEnableThen, PromiseVNodeThenFn, VNodeWithThenOptions } from "./then";
 export * from "./resolve";
 export { asyncExtendedIterable as a, extendedIterable as i } from "iterable";

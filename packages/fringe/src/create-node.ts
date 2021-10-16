@@ -34,7 +34,6 @@ import {
   createToken,
   isTokenVNodeFn,
   Scalar,
-  TokenOptionsRecord,
   TokenRequiredOptions,
   TokenResolvedOptions,
   TokenVNodeFn

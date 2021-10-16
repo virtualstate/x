@@ -45,6 +45,9 @@ function isVNodeWithThenOptions(node: VNode): node is VNodeWithThenOptions {
 // Assume a node will complete and provide state as its final
 // This functionality can be replaced by end user by re-assigning this function
 // If no state found, an empty array will be returned
+/**
+ * @experimental for direct usage
+ */
 export async function then(this: VNode, resolve?: (children: VNode[]) => unknown, reject?: (error: unknown) => unknown): Promise<unknown> {
   let resolved
   try {
