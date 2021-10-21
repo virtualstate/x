@@ -8,9 +8,22 @@ import {
 import { UnionInput, union, UnionOptions } from "@virtualstate/union";
 import type { CreateNodeFn } from "./create-node";
 
-export interface ChildrenContext extends UnionOptions {
-  createNode: CreateNodeFn;
+export interface ProxyNodeFn {
+  (input: VNode): VNode;
 }
+
+/**
+ * @experimental
+ */
+export interface ChildrenTransformOptions extends UnionOptions {
+  createNode: CreateNodeFn;
+  proxyNode?: ProxyNodeFn;
+}
+
+/**
+ * @experimental
+ */
+export const ChildrenOptions = Symbol.for("@virtualstate/fringe/ChildrenOptions");
 
 export async function* childrenUnion<N extends VNode>(context: UnionOptions, childrenGroups: UnionInput<N[]>): AsyncIterable<N[]> {
   for await (const parts of union(childrenGroups, context)) {
@@ -21,10 +34,17 @@ export async function* childrenUnion<N extends VNode>(context: UnionOptions, chi
   }
 }
 
-export async function *children(context: ChildrenContext, ...source: VNodeRepresentationSource[]): AsyncIterable<VNode[]> {
+export async function *children(context: ChildrenTransformOptions, ...source: VNodeRepresentationSource[]): AsyncIterable<VNode[]> {
   async function *eachSource(source: VNodeRepresentationSource): AsyncIterable<VNode[]> {
     if (typeof source === "undefined") {
       return;
+    }
+
+    if (isVNode(source) && context.proxyNode) {
+      const next = context.proxyNode(source);
+      if (next && next !== source) {
+        return yield * eachSource(source);
+      }
     }
 
     if (isFragmentVNode(source)) {
@@ -66,4 +86,14 @@ export async function *children(context: ChildrenContext, ...source: VNodeRepres
   } else {
     return yield* childrenUnion(context, source.map(eachSource));
   }
+}
+
+/**
+ * @experimental
+ */
+export function isChildrenOptions(node: unknown): node is { [ChildrenOptions]: ChildrenTransformOptions } {
+  function isChildrenOptionsLike(node: unknown): node is { [ChildrenOptions]?: { createNode: unknown }  } {
+    return !!node;
+  }
+  return isChildrenOptionsLike(node) && typeof node[ChildrenOptions]?.createNode === "function";
 }

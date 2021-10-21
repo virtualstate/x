@@ -28,7 +28,7 @@ import {
   isIterableIterator,
   getNext
 } from "iterable";
-import { children as childrenGenerator, ChildrenContext } from "./children";
+import {children as childrenGenerator, ChildrenTransformOptions, ChildrenOptions, isChildrenOptions} from "./children";
 import { createFragment, Fragment } from "./fragment";
 import {
   createToken,
@@ -44,10 +44,6 @@ const nonConstructable = new WeakSet();
 
 // Access to re-assign a functional vnode child between children reads
 export const Child = Symbol("Function VNode Child");
-
-const childrenContext: ChildrenContext = {
-  createNode
-};
 
 export interface CreateNodeFn {
   <
@@ -150,7 +146,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     if (children.length && !nextSource.children) {
       nextSource = {
         ...nextSource,
-        children: replay(() => childrenGenerator(childrenContext, ...children), children)
+        children: replay(() => childrenGenerator(getChildrenOptions(source, options), ...children), children)
       };
     }
     enableThen(nextSource, source);
@@ -232,11 +228,11 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * We will create a `Fragment` that holds our node state to grab later
    */
   if (source && (isIterable(source) || isAsyncIterable(source))) {
-    const childrenInstance = childrenGenerator(childrenContext, ...children);
+    const childrenInstance = childrenGenerator(getChildrenOptions(source, source), ...children);
     const node: VNode = {
       source,
       reference: Fragment,
-      children: replay(() => childrenGenerator(childrenContext, asyncExtendedIterable(source).map(value => createNode(value, options, childrenInstance))))
+      children: replay(() => childrenGenerator(getChildrenOptions(source, options), asyncExtendedIterable(source).map(value => createNode(value, options, childrenInstance))))
     };
     if (options) {
       node.options = options;
@@ -290,6 +286,23 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     ];
   }
 
+  function getChildrenOptions(source: unknown, options: unknown): ChildrenTransformOptions {
+    return (
+      getChildrenOptionsFromUnknown(source) ??
+      getChildrenOptionsFromUnknown(options) ??
+      {
+        createNode
+      }
+    );
+  }
+
+  function getChildrenOptionsFromUnknown(source: unknown) {
+    if (isChildrenOptions(source)) {
+      return source[ChildrenOptions];
+    }
+    return undefined;
+  }
+
   function enableThen(node: VNode, source: unknown) {
     inner(source);
     inner(node.options);
@@ -316,13 +329,15 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       [Child]?: VNode,
       source: typeof source,
       options: typeof resolvedOptions,
+      [ChildrenOptions]?: ChildrenTransformOptions,
       [Instance]: unknown
     } = {
       reference: Fragment,
       source,
       options: resolvedOptions,
       children: replay(childrenFn),
-      [Instance]: undefined
+      [Instance]: undefined,
+      [ChildrenOptions]: undefined,
     };
     enableThen(node, source);
     return node;
@@ -363,12 +378,16 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       if (!instance) {
         throw new Error("What happened to the instance!");
       }
+      const context = (
+        getChildrenOptionsFromUnknown(instance) ??
+        getFunctionChildrenOptions()
+      )
       if (isIterable(instance) || isAsyncIterable(instance)) {
         for await (const next of instance) {
-          yield * childrenGenerator(childrenContext, createNode(next));
+          yield * childrenGenerator(context, context.createNode(next));
         }
       } else {
-        yield [createNode(instance)];
+        yield [context.createNode(instance)];
       }
     }
 
@@ -377,7 +396,8 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       // This allows children to be a bit more dynamic
       //
       // We will only provide a child to node.source if we have at least one child provided
-      return node[Child] = node[Child] ?? children.length ? createNode(Fragment, {}, ...children) : undefined;
+      const context = getFunctionChildrenOptions();
+      return node[Child] = node[Child] ?? children.length ? context.createNode(Fragment, {}, ...children) : undefined;
     }
 
     async function *functionAsChildren(): AsyncIterable<VNode[]> {
@@ -417,8 +437,18 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
         options !== node.options ||
         currentChild !== node[Child]
       ) {
-        yield * childrenGenerator(childrenContext, createNode(possibleMatchingSource));
+        const context = getFunctionChildrenOptions();
+        yield * childrenGenerator(context, context.createNode(possibleMatchingSource));
       }
+    }
+
+    function getFunctionChildrenOptions(): ChildrenTransformOptions {
+      return (
+        getChildrenOptionsFromUnknown(node) ??
+        getChildrenOptionsFromUnknown(node.source) ??
+        getChildrenOptionsFromUnknown(node.options) ??
+        getChildrenOptions(source, options)
+      );
     }
 
     async function *childrenFn(): AsyncIterable<VNode[]> {
