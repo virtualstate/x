@@ -47,17 +47,30 @@ export const Child = Symbol("Function VNode Child");
 
 export interface CreateNodeFn {
   <
+    TT extends SourceReference,
+    O extends object,
+    InitialOptions extends Partial<O>,
+    T extends TokenVNodeFn<TT, O, InitialOptions>
+    >(source: T): T & TokenVNodeFn<TT, O, InitialOptions>;
+  <
+    TT extends SourceReference,
+    O extends object,
+    InitialOptions extends Partial<O>,
+    T extends TokenVNodeFn<TT, O, InitialOptions>,
+    PassedOptions extends TokenRequiredOptions<O, InitialOptions>,
+    >(source: T, options: PassedOptions, ...children: unknown[]): T & TokenVNodeFn<TT, O, TokenResolvedOptions<O, InitialOptions, PassedOptions>>;
+  <
     T extends Source,
-    O extends Record<string, unknown>,
+    O extends Record<string, unknown> | object,
     C extends unknown[]
     >(source: T, options: O, ...children: C): CreateNodeResult<T, O, C>;
   <
     T extends Source,
-    O extends Record<string, unknown>,
+    O extends Record<string, unknown> | object
     >(source: T, options: O): CreateNodeResult<T, O>;
   <T extends Source>(source: T): CreateNodeResult<T>;
-  (source: Source, options?: Record<string, unknown>, ...children: unknown[]): VNode;
-  (source: unknown, options?: Record<string, unknown>, ...children: unknown[]): VNode;
+  (source: Source, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
+  (source?: unknown, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
 }
 
 
