@@ -9,7 +9,7 @@ import { UnionInput, union, UnionOptions } from "@virtualstate/union";
 import type { CreateNodeFn } from "./create-node";
 
 export interface ProxyNodeFn {
-  (input: VNode): VNode;
+  (input: VNode): VNode | undefined;
 }
 
 /**
@@ -17,6 +17,12 @@ export interface ProxyNodeFn {
  */
 export interface ChildrenTransformOptions extends UnionOptions {
   createNode: CreateNodeFn;
+  /**
+   * Allows replacement of children node instances
+   *
+   * Warning, usage can break expected types, source, options, and children structures
+   * in typed contexts expect to be the same when returned.
+   */
   proxyNode?: ProxyNodeFn;
 }
 
