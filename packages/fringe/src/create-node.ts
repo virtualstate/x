@@ -442,7 +442,8 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
           }
           forceConstruction = false;
         }
-        throw error;
+        await Promise.reject(error);
+        throw error; // We don't expect to pass the above Promise.reject!
       }
       if (
         possibleMatchingSource !== source ||
