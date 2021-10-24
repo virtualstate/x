@@ -106,70 +106,6 @@ interface SoccerBallOptions {
   pressure: "pumped" | "flat"
 }
 
-// const soccerOptions: SoccerBallOptions = {
-//   pressure: "pumped"
-// }
-// const soccer = h("⚽", soccerOptions);
-//
-// const node = h("🐸", {}, soccer);
-
-// const f: false = (undefined as unknown) as IfChildren<["1"], false, true>
-//
-// const soccer = (undefined as unknown) as CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>
-// const soccer1: { scalar: true, children: never } = (undefined as unknown) as CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>
-//
-// const frog = (undefined as unknown) as CreateNodeResultCoreOp6<"🐸", {}, [CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>]>
-// const frog1: { scalar: false, children: AsyncIterable<CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>[]> } = (undefined as unknown) as CreateNodeResultCoreOp6<"🐸", {}, [CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>]>
-//
-// const HelloWorld1 = (undefined as unknown) as CreateNodeResultCoreOp1<() => {}, {}, ["Hello world"]>;
-// const HelloWorld1V: VNode = (undefined as unknown) as CreateNodeResultCoreOp1<() => {}, {}, ["Hello world"]>;
-//
-// const HelloWorld2 = (undefined as unknown) as CreateNodeResultCoreOp2<Promise<"Hello Promise">, {}, ["Hello world"]>;
-// const HelloWorld2V: VNode = (undefined as unknown) as CreateNodeResultCoreOp2<Promise<"Hello Promise">, {}, ["Hello world"]>;
-// const HelloWorld2PC: { source: "Hello Promise" } = (undefined as unknown) as ChildrenResult<"Hello Promise">;
-// const HelloWorld2PS: SourceReferenceVNode<"Hello Promise"> = (undefined as unknown) as ChildrenResult<"Hello Promise">;
-// const HelloWorld2PS2: SourceReferenceVNode<"Hello Promise"> = (undefined as unknown) as CreateNodeResult<"Hello Promise">;
-// const HelloWorld2P: { reference: typeof Fragment, children: AsyncIterable<SourceReferenceVNode<"Hello Promise">[]> } = (undefined as unknown) as CreateNodeResultCoreOp2<Promise<"Hello Promise">, {}, ["Hello world"]>;
-//
-// const HelloWorld3 = (undefined as unknown) as CreateNodeResultCoreOp3<typeof Fragment, {}, ["Hello world"]>;
-// const HelloWorld3V: VNode = (undefined as unknown) as CreateNodeResultCoreOp3<typeof Fragment, {}, ["Hello world"]>;
-//
-// const HelloWorld4 = (undefined as unknown) as CreateNodeResultCoreOp4<VNode, {}, ["Hello world"]>;
-// const HelloWorld4V: VNode = (undefined as unknown) as CreateNodeResultCoreOp4<VNode, {}, ["Hello world"]>;
-//
-// const HelloWorld5 = (undefined as unknown) as CreateNodeResultCoreOp5<MarshalledVNode, {}, ["Hello world"]>;
-// const HelloWorld5V: VNode = (undefined as unknown) as CreateNodeResultCoreOp5<MarshalledVNode, {}, ["Hello world"]>;
-//
-// const HelloWorld6 = (undefined as unknown) as CreateNodeResultCoreOp6<"p", {}, ["Hello world"]>;
-// const HelloWorld6V: VNode = (undefined as unknown) as CreateNodeResultCoreOp6<"p", {}, ["Hello world"]>;
-// const HelloWorld6VC: { scalar: false, source: "p", children: AsyncIterable<SourceReferenceVNode<"Hello world">[]> } = (undefined as unknown) as CreateNodeResultCoreOp6<"p", {}, ["Hello world"]>;
-//
-// const HelloWorld7 = (undefined as unknown) as CreateNodeResultCoreOp7<IterableIterator<"Hello Iterable Iterator">, {}, ["Hello world"]>;
-// const HelloWorld7V: VNode = (undefined as unknown) as CreateNodeResultCoreOp7<IterableIterator<"Hello Iterable Iterator">, {}, ["Hello world"]>;
-//
-// const HelloWorld8 = (undefined as unknown) as CreateNodeResultCoreOp8<Iterable<"Hello Iterable">, {}, ["Hello world"]>;
-// const HelloWorld8V: VNode = (undefined as unknown) as CreateNodeResultCoreOp8<Iterable<"Hello Iterable">, {}, ["Hello world"]>;
-// const HelloWorld8VC: { reference: typeof Fragment, children: AsyncIterable<SourceReferenceVNode<"Hello Iterable">[]> } = (undefined as unknown) as CreateNodeResultCoreOp8<Iterable<"Hello Iterable">, {}, ["Hello world"]>;
-// const HelloWorld8Async = (undefined as unknown) as CreateNodeResultCoreOp8<AsyncIterable<"Hello Async Iterable">, {}, ["Hello world"]>;
-// const HelloWorld8VAsync: VNode = (undefined as unknown) as CreateNodeResultCoreOp8<AsyncIterable<"Hello Async Iterable">, {}, ["Hello world"]>;
-// const HelloWorld8VAsyncC: { reference: typeof Fragment, children: AsyncIterable<SourceReferenceVNode<"Hello Async Iterable">[]> } = (undefined as unknown) as CreateNodeResultCoreOp8<AsyncIterable<"Hello Async Iterable">, {}, ["Hello world"]>;
-//
-// const HelloWorld9 = (undefined as unknown) as CreateNodeResultCoreOp9<undefined, {}, ["Hello world"]>;
-// const HelloWorld9V: VNode = (undefined as unknown) as CreateNodeResultCoreOp9<undefined, {}, ["Hello world"]>;
-// const HelloWorld9VS: { source: undefined, children?: AsyncIterable<VNode[]> } = (undefined as unknown) as CreateNodeResultCoreOp9<undefined, {}, ["Hello world"]>;
-//
-// const HelloWorld = (undefined as unknown) as ChildrenResult<["Hello World"]>;
-// const HelloWorldString = (undefined as unknown) as ChildrenResult<"Hello World">;
-// // const HelloWorldInferred = (undefined as unknown) as ChildrenResult
-//
-// const VNodeTestCoreChildren = (undefined as unknown) as  CreateNodeChildrenWithSourceType<["Hello world"], VNode[]>;
-// const VNodeTestCore = (undefined as unknown) as CreateNodeResultCore<"p", {}, ["Hello world"]>
-// // const VNodeTestCoreChildrenConvert = (undefined as unknown) as ChildrenResultFromSource<["Hello world"]>;
-// // const VNodeTestCoreChildrenConvert: { source: "Hello World " } = (undefined as unknown) as ChildrenResultFromSource<["Hello world"]>;
-// const VNodeTest0: VNode = (undefined as unknown) as VNodeWithChildrenFromSource<CreateNodeResultCore<"p", {}, ["Hello world"]>>;
-// const VNodeTest1: VNode = (undefined as unknown) as CreateNodeResult<"p", {}, ["Hello world"]>;
-// const VNodeTest2: { children: AsyncIterable<{  source: "Hello world" }[]> } = (undefined as unknown) as CreateNodeResult<"p", {}, ["Hello world"]>;
-
 export interface CreateNodeOp1Function<T = unknown> {
   (options?: unknown, children?: VNode): T
 }
@@ -234,6 +170,72 @@ type ChildrenOp2Fragment = FragmentVNode;
 type ChildrenOp3VNode = { reference: SourceReference };
 type ChildrenOp4SourceReference = SourceReference;
 type ChildrenOp5IterableIterator = IterableIterator<unknown>;
-type ChildrenOp6Promise = Promise<unknown>;
 type ChildrenOp7Iterable = Iterable<unknown> | AsyncIterable<unknown>;
+type ChildrenOp6Promise = Promise<unknown>;
 
+// Type tests
+if (false) {
+// const soccerOptions: SoccerBallOptions = {
+//   pressure: "pumped"
+// }
+// const soccer = h("⚽", soccerOptions);
+//
+// const node = h("🐸", {}, soccer);
+
+  const f: false = (undefined as unknown) as IfChildren<["1"], false, true>
+
+  const soccer = (undefined as unknown) as CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>
+  const soccer1: { scalar: true, children: never } = (undefined as unknown) as CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>
+
+  const frog = (undefined as unknown) as CreateNodeResultCoreOp6<"🐸", {}, [CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>]>
+  const frog1: { scalar: false, children: AsyncIterable<CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>[]> } = (undefined as unknown) as CreateNodeResultCoreOp6<"🐸", {}, [CreateNodeResultCoreOp6<"⚽", SoccerBallOptions>]>
+
+  const HelloWorld1 = (undefined as unknown) as CreateNodeResultCoreOp1<() => {}, {}, ["Hello world"]>;
+  const HelloWorld1V: VNode = (undefined as unknown) as CreateNodeResultCoreOp1<() => {}, {}, ["Hello world"]>;
+
+  const HelloWorld2 = (undefined as unknown) as CreateNodeResultCoreOp2<Promise<"Hello Promise">, {}, ["Hello world"]>;
+  const HelloWorld2V: VNode = (undefined as unknown) as CreateNodeResultCoreOp2<Promise<"Hello Promise">, {}, ["Hello world"]>;
+  const HelloWorld2PC: { source: "Hello Promise" } = (undefined as unknown) as ChildrenResult<"Hello Promise">;
+  const HelloWorld2PS: SourceReferenceVNode<"Hello Promise"> = (undefined as unknown) as ChildrenResult<"Hello Promise">;
+  const HelloWorld2PS2: SourceReferenceVNode<"Hello Promise"> = (undefined as unknown) as CreateNodeResult<"Hello Promise">;
+  const HelloWorld2P: { reference: typeof Fragment, children: AsyncIterable<SourceReferenceVNode<"Hello Promise">[]> } = (undefined as unknown) as CreateNodeResultCoreOp2<Promise<"Hello Promise">, {}, ["Hello world"]>;
+
+  const HelloWorld3 = (undefined as unknown) as CreateNodeResultCoreOp3<typeof Fragment, {}, ["Hello world"]>;
+  const HelloWorld3V: VNode = (undefined as unknown) as CreateNodeResultCoreOp3<typeof Fragment, {}, ["Hello world"]>;
+
+  const HelloWorld4 = (undefined as unknown) as CreateNodeResultCoreOp4<VNode, {}, ["Hello world"]>;
+  const HelloWorld4V: VNode = (undefined as unknown) as CreateNodeResultCoreOp4<VNode, {}, ["Hello world"]>;
+
+  const HelloWorld5 = (undefined as unknown) as CreateNodeResultCoreOp5<MarshalledVNode, {}, ["Hello world"]>;
+  const HelloWorld5V: VNode = (undefined as unknown) as CreateNodeResultCoreOp5<MarshalledVNode, {}, ["Hello world"]>;
+
+  const HelloWorld6 = (undefined as unknown) as CreateNodeResultCoreOp6<"p", {}, ["Hello world"]>;
+  const HelloWorld6V: VNode = (undefined as unknown) as CreateNodeResultCoreOp6<"p", {}, ["Hello world"]>;
+  const HelloWorld6VC: { scalar: false, source: "p", children: AsyncIterable<SourceReferenceVNode<"Hello world">[]> } = (undefined as unknown) as CreateNodeResultCoreOp6<"p", {}, ["Hello world"]>;
+
+  const HelloWorld7 = (undefined as unknown) as CreateNodeResultCoreOp7<IterableIterator<"Hello Iterable Iterator">, {}, ["Hello world"]>;
+  const HelloWorld7V: VNode = (undefined as unknown) as CreateNodeResultCoreOp7<IterableIterator<"Hello Iterable Iterator">, {}, ["Hello world"]>;
+
+  const HelloWorld8 = (undefined as unknown) as CreateNodeResultCoreOp8<Iterable<"Hello Iterable">, {}, ["Hello world"]>;
+  const HelloWorld8V: VNode = (undefined as unknown) as CreateNodeResultCoreOp8<Iterable<"Hello Iterable">, {}, ["Hello world"]>;
+  const HelloWorld8VC: { reference: typeof Fragment, children: AsyncIterable<SourceReferenceVNode<"Hello Iterable">[]> } = (undefined as unknown) as CreateNodeResultCoreOp8<Iterable<"Hello Iterable">, {}, ["Hello world"]>;
+  const HelloWorld8Async = (undefined as unknown) as CreateNodeResultCoreOp8<AsyncIterable<"Hello Async Iterable">, {}, ["Hello world"]>;
+  const HelloWorld8VAsync: VNode = (undefined as unknown) as CreateNodeResultCoreOp8<AsyncIterable<"Hello Async Iterable">, {}, ["Hello world"]>;
+  const HelloWorld8VAsyncC: { reference: typeof Fragment, children: AsyncIterable<SourceReferenceVNode<"Hello Async Iterable">[]> } = (undefined as unknown) as CreateNodeResultCoreOp8<AsyncIterable<"Hello Async Iterable">, {}, ["Hello world"]>;
+
+  const HelloWorld9 = (undefined as unknown) as CreateNodeResultCoreOp9<undefined, {}, ["Hello world"]>;
+  const HelloWorld9V: VNode = (undefined as unknown) as CreateNodeResultCoreOp9<undefined, {}, ["Hello world"]>;
+  const HelloWorld9VS: { source: undefined, children?: AsyncIterable<VNode[]> } = (undefined as unknown) as CreateNodeResultCoreOp9<undefined, {}, ["Hello world"]>;
+
+  const HelloWorld = (undefined as unknown) as ChildrenResult<["Hello World"]>;
+  const HelloWorldString = (undefined as unknown) as ChildrenResult<"Hello World">;
+// const HelloWorldInferred = (undefined as unknown) as ChildrenResult
+
+  const VNodeTestCoreChildren = (undefined as unknown) as  CreateNodeChildrenWithSourceType<["Hello world"], VNode[]>;
+  const VNodeTestCore = (undefined as unknown) as CreateNodeResultCore<"p", {}, ["Hello world"]>
+// const VNodeTestCoreChildrenConvert = (undefined as unknown) as ChildrenResultFromSource<["Hello world"]>;
+// const VNodeTestCoreChildrenConvert: { source: "Hello World " } = (undefined as unknown) as ChildrenResultFromSource<["Hello world"]>;
+  const VNodeTest0: VNode = (undefined as unknown) as VNodeWithChildrenFromSource<CreateNodeResultCore<"p", {}, ["Hello world"]>>;
+  const VNodeTest1: VNode = (undefined as unknown) as CreateNodeResult<"p", {}, ["Hello world"]>;
+  const VNodeTest2: { children: AsyncIterable<{  source: "Hello world" }[]> } = (undefined as unknown) as CreateNodeResult<"p", {}, ["Hello world"]>;
+}

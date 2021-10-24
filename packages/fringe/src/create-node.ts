@@ -190,8 +190,6 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     return unmarshal(source);
   }
 
-  const reference = getReference(options);
-
   /**
    * A source reference may be in reference to a context we don't know about, this can be resolved from
    * external contexts by rolling through the {@link VNode} state, or watching context events
@@ -241,11 +239,15 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * We will create a `Fragment` that holds our node state to grab later
    */
   if (source && (isIterable(source) || isAsyncIterable(source))) {
-    const childrenInstance = childrenGenerator(getChildrenOptions(source, source), ...children);
+    const childrenOptions = getChildrenOptions(source, source);
+    const childrenInstance = childrenGenerator(childrenOptions, ...children);
     const node: VNode = {
       source,
       reference: Fragment,
-      children: replay(() => childrenGenerator(getChildrenOptions(source, options), asyncExtendedIterable(source).map(value => createNode(value, options, childrenInstance))))
+      children: replay(() => childrenGenerator(childrenOptions, asyncExtendedIterable(source).map(value => {
+        const node = childrenOptions.createNode(value, options, childrenInstance);
+        return childrenOptions.proxyNode?.(node) ?? node;
+      })))
     };
     if (options) {
       node.options = options;
@@ -352,6 +354,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       [Instance]: undefined,
       [ChildrenOptions]: undefined,
     };
+    node[ChildrenOptions] = getFunctionChildrenOptions();
     enableThen(node, source);
     return node;
 
@@ -397,10 +400,12 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       )
       if (isIterable(instance) || isAsyncIterable(instance)) {
         for await (const next of instance) {
-          yield * childrenGenerator(context, context.createNode(next));
+          const node = context.createNode(next);
+          yield * childrenGenerator(context, context.proxyNode?.(node) ?? node);
         }
       } else {
-        yield [context.createNode(instance)];
+        const node = context.createNode(instance);
+        yield [context.proxyNode?.(node) ?? node];
       }
     }
 
@@ -410,7 +415,14 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       //
       // We will only provide a child to node.source if we have at least one child provided
       const context = getFunctionChildrenOptions();
-      return node[Child] = node[Child] ?? children.length ? context.createNode(Fragment, {}, ...children) : undefined;
+      if (node[Child]) {
+        return node[Child];
+      }
+      if (!children.length) {
+        return undefined;
+      }
+      const childrenNode = context.createNode(Fragment, {}, ...children);
+      return context.proxyNode?.(childrenNode) ?? childrenNode;
     }
 
     async function *functionAsChildren(): AsyncIterable<VNode[]> {
@@ -452,7 +464,8 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
         currentChild !== node[Child]
       ) {
         const context = getFunctionChildrenOptions();
-        yield * childrenGenerator(context, context.createNode(possibleMatchingSource));
+        const node = context.createNode(possibleMatchingSource);
+        yield * childrenGenerator(context, context.proxyNode?.(node) ?? node);
       }
     }
 
@@ -466,10 +479,6 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     }
 
     async function *childrenFn(): AsyncIterable<VNode[]> {
-      const source = node.source;
-      if (construct(source)) {
-        return yield * classAsChildren();
-      }
       yield * functionAsChildren();
     }
 

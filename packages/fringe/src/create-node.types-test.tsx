@@ -205,7 +205,7 @@ console.log("---------- j -------------");
 const j = h(
     function *J() {
         yield scxml;
-        yield h(1, { meta: 2 });
+        yield h(1, { meta: 2 } as const);
     }
 )
 
