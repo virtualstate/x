@@ -247,9 +247,9 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       source,
       reference: Fragment,
       children: replay(function(this: unknown) {
-        const childrenOptions = getChildrenOptions(this, source);
+        const childrenOptions = getChildrenOptions(source, source, isChildrenOptions(this) ? this[ChildrenOptions] : undefined);
         return childrenGenerator(childrenOptions, asyncExtendedIterable(source).map(value => {
-          const node = childrenOptions.createNode(value, options);
+          const node = childrenOptions.createNode(value, options, ...children);
           return childrenOptions.proxyNode?.(node) ?? node;
         }))
       })
