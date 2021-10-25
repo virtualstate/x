@@ -110,6 +110,9 @@ export function createNode<T extends Source>(source: T): CreateNodeResult<T>;
 export function createNode(source: Source, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
 export function createNode(source?: unknown, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
 export function createNode(source?: Source, options?: Record<string, unknown> | object, ...children: VNodeRepresentationSource[]): VNode {
+  /**
+   * Allows a compiler to use <></> for <createFragment></createFragment> and treat both paths the same
+   */
   if (source === createFragment) {
     return createNode(Fragment, options, ...children);
   }
@@ -163,7 +166,10 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     if (children.length && !nextSource.children) {
       nextSource = {
         ...nextSource,
-        children: replay(() => childrenGenerator(getChildrenOptions(nextSource, nextSource.options), ...children), children)
+        children: replay(function(this: unknown) {
+          const childrenOptions = getChildrenOptions(nextSource, nextSource.options, isChildrenOptions(this) ? this[ChildrenOptions] : undefined);
+          return childrenGenerator(childrenOptions, ...children);
+        }, children)
       };
     }
     enableThen(nextSource, source);
@@ -180,7 +186,10 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     const node = {
       source,
       reference: Fragment,
-      children: replay(() => promiseGenerator(source))
+      children: replay(function(this: unknown) {
+        const childrenOptions = getChildrenOptions(source, source, isChildrenOptions(this) ? this[ChildrenOptions] : undefined);
+        return promiseGenerator(childrenOptions, source);
+      }, [source])
     };
     enableThen(node, source);
     return node;
@@ -252,7 +261,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
           const node = childrenOptions.createNode(value, options, ...children);
           return childrenOptions.proxyNode?.(node) ?? node;
         }))
-      })
+      }, children)
     };
     if (options) {
       node.options = options;
@@ -299,11 +308,10 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     } while (!next.done);
   }
 
-  async function *promiseGenerator(promise: Source & Promise<unknown>): AsyncIterable<VNode[]> {
+  async function *promiseGenerator(context: ChildrenTransformOptions, promise: Source & Promise<unknown>): AsyncIterable<VNode[]> {
     const result = await promise;
-    yield [
-      createNode(result, options, ...children)
-    ];
+    const node = context.createNode(result, options, ...children);
+    yield [context.proxyNode?.(node) ?? node];
   }
 
   function getChildrenOptions(source: unknown, options: unknown, defaultOptions?: ChildrenTransformOptions): ChildrenTransformOptions {
