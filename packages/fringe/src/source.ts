@@ -14,6 +14,11 @@ export const Instance = Symbol("Source Instance");
  */
 export const ChildrenSource = Symbol.for("@virtualstate/fringe/ChildrenSource");
 
+/**
+ * @experimental This may not be available all the time, and this functionality may disappear.
+ */
+export const ChildrenSourceFunction = Symbol.for("@virtualstate/fringe/ChildrenSourceFunction");
+
 export type CreateNodeChildrenWithSourceType<C extends unknown[], N extends VNode[] = VNode[]> = AsyncIterable<N> & {
   // This is explicitly only available _sometimes_, so only in best case will it be available,
   // you should assume that it is not available most of the time.

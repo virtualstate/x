@@ -4,7 +4,7 @@ import {
   CreateNodeOp1Function,
   CreateNodeResult,
   Source,
-  Instance,
+  Instance, ChildrenSourceFunction,
 } from "./source";
 import {
   isSourceReference,
@@ -110,6 +110,10 @@ export function createNode<T extends Source>(source: T): CreateNodeResult<T>;
 export function createNode(source: Source, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
 export function createNode(source?: unknown, options?: Record<string, unknown> | object, ...children: unknown[]): VNode;
 export function createNode(source?: Source, options?: Record<string, unknown> | object, ...children: VNodeRepresentationSource[]): VNode {
+  if (source === createFragment) {
+    return createNode(Fragment, options, ...children);
+  }
+
   /**
    * Shortcut a functional token, this will allow the node to be directly created here
    */
@@ -159,7 +163,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     if (children.length && !nextSource.children) {
       nextSource = {
         ...nextSource,
-        children: replay(() => childrenGenerator(getChildrenOptions(source, options), ...children), children)
+        children: replay(() => childrenGenerator(getChildrenOptions(nextSource, nextSource.options), ...children), children)
       };
     }
     enableThen(nextSource, source);
@@ -239,15 +243,16 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * We will create a `Fragment` that holds our node state to grab later
    */
   if (source && (isIterable(source) || isAsyncIterable(source))) {
-    const childrenOptions = getChildrenOptions(source, source);
-    const childrenInstance = childrenGenerator(childrenOptions, ...children);
     const node: VNode = {
       source,
       reference: Fragment,
-      children: replay(() => childrenGenerator(childrenOptions, asyncExtendedIterable(source).map(value => {
-        const node = childrenOptions.createNode(value, options, childrenInstance);
-        return childrenOptions.proxyNode?.(node) ?? node;
-      })))
+      children: replay(function(this: unknown) {
+        const childrenOptions = getChildrenOptions(this, source);
+        return childrenGenerator(childrenOptions, asyncExtendedIterable(source).map(value => {
+          const node = childrenOptions.createNode(value, options);
+          return childrenOptions.proxyNode?.(node) ?? node;
+        }))
+      })
     };
     if (options) {
       node.options = options;
@@ -301,10 +306,11 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     ];
   }
 
-  function getChildrenOptions(source: unknown, options: unknown): ChildrenTransformOptions {
+  function getChildrenOptions(source: unknown, options: unknown, defaultOptions?: ChildrenTransformOptions): ChildrenTransformOptions {
     return (
       getChildrenOptionsFromUnknown(source) ??
       getChildrenOptionsFromUnknown(options) ??
+      defaultOptions ??
       {
         createNode
       }
@@ -354,7 +360,6 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       [Instance]: undefined,
       [ChildrenOptions]: undefined,
     };
-    node[ChildrenOptions] = getFunctionChildrenOptions();
     enableThen(node, source);
     return node;
 
@@ -425,10 +430,15 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       return context.proxyNode?.(childrenNode) ?? childrenNode;
     }
 
-    async function *functionAsChildren(): AsyncIterable<VNode[]> {
+    async function *functionAsChildren(this: unknown): AsyncIterable<VNode[]> {
+      const context = getFunctionChildrenOptions(
+        (isChildrenOptions(this) ? this[ChildrenOptions] : undefined)
+      );
+      const proxied = context.proxyNode?.(node) ?? node;
+
       // Referencing node here allows for external to update the nodes implementation on the fly...
-      const options = node.options;
-      const source = node.source;
+      const options = proxied.options;
+      const source = proxied.source;
 
       const currentChild = child();
 
@@ -446,7 +456,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       try {
         possibleMatchingSource = source(options, currentChild);
       } catch (error) {
-        if (error instanceof TypeError) {
+        if (error instanceof TypeError && error.message.includes("cannot be invoked without 'new'")) {
           forceConstruction = true;
           node[Instance] = construct(source);
           if (node[Instance]) {
@@ -458,28 +468,35 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
         throw error; // We don't expect to pass the above Promise.reject!
       }
       if (
-        possibleMatchingSource !== source ||
-        source !== node.source ||
-        options !== node.options ||
-        currentChild !== node[Child]
+        isVNodeRepresentationSource(possibleMatchingSource)
       ) {
-        const context = getFunctionChildrenOptions();
-        const node = context.createNode(possibleMatchingSource);
-        yield * childrenGenerator(context, context.proxyNode?.(node) ?? node);
+        yield * childrenGenerator(context, possibleMatchingSource);
+      }
+
+      function isVNodeRepresentationSource(possibleMatchingSource: unknown): possibleMatchingSource is VNodeRepresentationSource {
+        return (
+          possibleMatchingSource !== source ||
+          source !== node.source ||
+          options !== node.options ||
+          currentChild !== node[Child]
+        )
       }
     }
 
-    function getFunctionChildrenOptions(): ChildrenTransformOptions {
+    function getFunctionChildrenOptions(defaultOptions?: ChildrenTransformOptions): ChildrenTransformOptions {
       return (
         getChildrenOptionsFromUnknown(node) ??
         getChildrenOptionsFromUnknown(node.source) ??
         getChildrenOptionsFromUnknown(node.options) ??
-        getChildrenOptions(source, options)
+        getChildrenOptions(source, options, defaultOptions)
       );
     }
 
-    async function *childrenFn(): AsyncIterable<VNode[]> {
-      yield * functionAsChildren();
+    async function *childrenFn(this: unknown): AsyncIterable<VNode[]> {
+      if (forceConstruction) {
+        return yield * classAsChildren.call(this);
+      }
+      return yield * functionAsChildren.call(this);
     }
 
     function isDefaultOptionsO(value: unknown): value is Record<string, unknown> {
@@ -513,10 +530,13 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     return node;
   }
 
-  function replay<T>(fn: () => AsyncIterable<T>, source?: unknown): AsyncIterable<T> & { [ChildrenSource]?: unknown } {
+  function replay<T>(fn: () => AsyncIterable<T>, source?: unknown): AsyncIterable<T> & { [ChildrenSource]?: unknown, [ChildrenSourceFunction]?: unknown } {
     return {
-      [Symbol.asyncIterator]: () => fn()[Symbol.asyncIterator](),
-      [ChildrenSource]: source
+      [Symbol.asyncIterator]() {
+        return fn()[Symbol.asyncIterator]();
+      },
+      [ChildrenSource]: source,
+      [ChildrenSourceFunction]: fn
     };
   }
 

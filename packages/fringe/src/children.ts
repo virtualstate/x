@@ -7,8 +7,10 @@ import {
 } from "iterable";
 import { UnionInput, union, UnionOptions } from "@virtualstate/union";
 import type { CreateNodeFn } from "./create-node";
+import { ChildrenSource, ChildrenSourceFunction } from "./source";
 
 export interface ProxyNodeFn {
+  <T extends VNode>(input: T): T | undefined;
   (input: VNode): VNode | undefined;
 }
 
@@ -40,24 +42,38 @@ export async function* childrenUnion<N extends VNode>(context: UnionOptions, chi
   }
 }
 
-export async function *children(context: ChildrenTransformOptions, ...source: VNodeRepresentationSource[]): AsyncIterable<VNode[]> {
-  async function *eachSource(source: VNodeRepresentationSource): AsyncIterable<VNode[]> {
+export async function *children(givenContext: ChildrenTransformOptions, ...source: VNodeRepresentationSource[]): AsyncIterable<VNode[]> {
+  async function *eachSource(original: VNodeRepresentationSource): AsyncIterable<VNode[]> {
+    let source: VNodeRepresentationSource = original;
+
     if (typeof source === "undefined") {
       return;
     }
 
+    const context = isChildrenOptions(source) ? source[ChildrenOptions] : givenContext;
+
     if (isVNode(source) && context.proxyNode) {
-      const next = context.proxyNode(source);
-      if (next && next !== source) {
-        return yield * eachSource(source);
-      }
+      source = context.proxyNode(source) ?? source;
     }
 
     if (isFragmentVNode(source)) {
       if (!source.children) {
         return;
       }
-      for await (const children of source.children) {
+      const childrenSource = source.children[ChildrenSource];
+      if (Array.isArray(childrenSource)) {
+        return yield * childrenUnion(
+          context,
+          childrenSource.map(eachSource)
+        );
+      }
+      let iterable: AsyncIterable<VNode[]> = source.children;
+      if (isChildrenSourceFunction(source.children)) {
+        iterable = source.children[ChildrenSourceFunction].call({
+          [ChildrenOptions]: context
+        });
+      }
+      for await (const children of iterable) {
         yield * childrenUnion(
           context,
           children.map(eachSource)
@@ -90,7 +106,7 @@ export async function *children(context: ChildrenTransformOptions, ...source: VN
   if (source.length === 1) {
     return yield* eachSource(source[0]);
   } else {
-    return yield* childrenUnion(context, source.map(eachSource));
+    return yield* childrenUnion(givenContext, source.map(eachSource));
   }
 }
 
@@ -102,4 +118,14 @@ export function isChildrenOptions(node: unknown): node is { [ChildrenOptions]: C
     return !!node;
   }
   return isChildrenOptionsLike(node) && typeof node[ChildrenOptions]?.createNode === "function";
+}
+
+function isChildrenSourceFunction(node: unknown): node is { [ChildrenSourceFunction](): AsyncIterable<VNode>[] } {
+  function isChildrenSourceFunctionLike(node: unknown): node is { [ChildrenSourceFunction]: unknown } {
+    return !!node;
+  }
+  return (
+    isChildrenSourceFunctionLike(node) &&
+    typeof node[ChildrenSourceFunction] === "function"
+  );
 }
