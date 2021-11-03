@@ -45,6 +45,9 @@ async function *toStringIterable(node: VNode): AsyncIterable<string> {
   }
 }
 
+/**
+ * @experimental
+ */
 export function toString(node: VNode): { then(resolve: (value: string) => void, reject: (error: unknown) => void): void } & AsyncIterable<string> {
   const toStringInstance = {
     then(resolve: (value: string) => void, reject: (error: unknown) => void) {
