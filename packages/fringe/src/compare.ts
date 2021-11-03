@@ -13,7 +13,6 @@ async function getChildren(node: VNode) {
 export async function compare(left: VNode, right: VNode) {
   return compareChildren(await getAsChildren(left), await getAsChildren(right));
   async function compareChildren(left: VNode[], right: VNode[]) {
-    console.log({ left, right });
     if (left.length !== right.length) return false;
     // This could all be done in parallel, but, leave that for later to optimise
     for (let index = 0; index < left.length; index += 1) {
