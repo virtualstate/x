@@ -24,7 +24,7 @@ async function Render() {
   // for await (const iteration of toString(<MyWebsite />)) {
   //   console.log({ iteration });
   // }
-  return await toString(<MyWebsite />)
+  return toString(<MyWebsite />)
 }
 
 export const _Z0001_StringWebsite = <Render />
