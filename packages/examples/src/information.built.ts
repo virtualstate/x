@@ -914,6 +914,23 @@ export const _EC001_ExampleInformation: ExampleInformation = {
       throw new Error("Not available");
     }
 }
+export const _ECO01_ExampleInformation: ExampleInformation = {
+    name: "Compare",
+    id: "ECO01",
+    exportedAs: "_ECO01_Compare",
+    source: "import {compare, h, createFragment} from \"@virtualstate/fringe\";\n\nfunction Structure() {\n  return (\n    <thing>\n      <inner />\n    </thing>\n  )\n}\n\nasync function Compare() {\n  return (\n    <p>\n      Is Same {`${await compare(<Structure />, <Structure />)}`}\n      Is Same {`${await compare(<Structure />, (\n        <>\n          {h(async function *Thinger() {\n            yield <z />\n            yield <thing />\n            yield <thing><zee /></thing>\n            yield <thing><inner /></thing>\n          })}\n        </>\n      ))}`}\n    </p>\n  )\n}\n\nexport const _ECO01_Compare = <Compare />\nexport const _ECO01_URL = import.meta.url;\n",
+    sourceURL: "file:///workspaces/x/packages/examples/lib/examples/experiments/compare/index.js",
+    output: "import { compare, h, createFragment } from \"@virtualstate/fringe\";\nfunction Structure() {\n    return (h(\"thing\", null,\n        h(\"inner\", null)));\n}\nasync function Compare() {\n    return (h(\"p\", null,\n        \"Is Same \",\n        `${await compare(h(Structure, null), h(Structure, null))}`,\n        \"Is Same \",\n        `${await compare(h(Structure, null), (h(createFragment, null, h(async function* Thinger() {\n            yield h(\"z\", null);\n            yield h(\"thing\", null);\n            yield h(\"thing\", null,\n                h(\"zee\", null));\n            yield h(\"thing\", null,\n                h(\"inner\", null));\n        }))))}`));\n}\nexport const _ECO01_Compare = h(Compare, null);\nexport const _ECO01_URL = import.meta.url;\n//# sourceMappingURL=index.js.map",
+    cleanerSource: "import {compare, h, createFragment} from \"@virtualstate/fringe\";\n\nfunction Structure() {\n  return (\n    <thing>\n      <inner />\n    </thing>\n  )\n}\n\nasync function Compare() {\n  return (\n    <p>\n      Is Same {`${await compare(<Structure />, <Structure />)}`}\n      Is Same {`${await compare(<Structure />, (\n        <>\n          {h(async function *Thinger() {\n            yield <z />\n            yield <thing />\n            yield <thing><zee /></thing>\n            yield <thing><inner /></thing>\n          })}\n        </>\n      ))}`}\n    </p>\n  )\n}\n\nexport const Example = <Compare />",
+    structure: "<p>\n  {\"Is Same \"}\n  {\"true\"}\n  {\"Is Same \"}\n  {\"true\"}\n</p>",
+    info: undefined,
+    engineURL: undefined,
+    sourceInterfaceURL: undefined,
+    sourceInterface: undefined,
+    import: async (context?: Record<string, unknown>, state?: VNode): Promise<VNode> => {
+      throw new Error("Not available");
+    }
+}
 export const _G0001_ExampleInformation: ExampleInformation = {
     name: "Graph",
     id: "G0001",
