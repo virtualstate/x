@@ -77,7 +77,7 @@ export function createToken<T extends SourceReference, O extends object, Initial
     const node = isTokenVNode<T, O>(this) ? this : tokenized;
     const previousNode: Pick<Token, keyof Token> = node;
     let nextOptions: TokenOptionsRecord = node.options;
-    let nextChildren = node.children;
+    let nextChildren = node.scalar ? undefined : node.children;
     if (partialOptions && hasOwnPropertyAvailable(partialOptions) && !(isOptionsFrozenStatic && !child)) {
       nextOptions = {
         ...previousNode.options,
@@ -170,9 +170,11 @@ export function createToken<T extends SourceReference, O extends object, Initial
         value: isOptionsScalar(options) ? undefined : children,
         enumerable: !isOptionsScalar(options) && !!children
       },
-      ...(isOptionsScalar(options) ? {
+      ...(isOptionsScalar(options) || !children ? {
         scalar:  {
-          ...accessOnly,
+          writable: true,
+          enumerable: true,
+          configurable: true,
           value: true
         }
       } : {})

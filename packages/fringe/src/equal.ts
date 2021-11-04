@@ -10,7 +10,7 @@ async function getChildren(node: VNode) {
 /**
  * @experimental
  */
-export async function compare(left: VNode, right: VNode) {
+export async function equal(left: VNode, right: VNode) {
   return compareChildren(await getAsChildren(left), await getAsChildren(right));
   async function compareChildren(left: VNode[], right: VNode[]) {
     if (left.length !== right.length) return false;
@@ -26,7 +26,12 @@ export async function compare(left: VNode, right: VNode) {
         } else if (!compareSource(leftChild, rightChild)) {
           return false;
         }
-        if (leftChild.scalar !== rightChild.scalar) return false;
+        if (leftChild.scalar !== rightChild.scalar) {
+          return false;
+        }
+      }
+      if (!compareOptions(leftChild, rightChild)) {
+        return false;
       }
       if (leftChild.children || rightChild.children) {
         if (!await compareChildren(await getChildren(leftChild), await getChildren(rightChild))) {
@@ -40,6 +45,36 @@ export async function compare(left: VNode, right: VNode) {
   async function getAsChildren(node: VNode): Promise<VNode[]> {
     if (isSourceReference(node.source) && !isFragmentVNode(node)) return [node];
     return getChildren(node);
+  }
+
+  function compareOptions(left: VNode, right: VNode) {
+    const leftOptionKeys = Object.keys(left.options ?? {});
+    const rightOptionKeys = Object.keys(right.options ?? {});
+
+    if (leftOptionKeys.length !== rightOptionKeys.length) {
+      return false;
+    }
+    if (!leftOptionKeys.length) {
+      return true;
+    }
+
+    return leftOptionKeys.findIndex(
+      /**
+       *
+       * @param key
+       * @returns true if key is not equal
+       */
+      (key) => {
+        if (!rightOptionKeys.includes(key)) {
+          return true;
+        }
+        if (!isSourceReference(left.options[key])) {
+          // If not a source reference, do not compare, and instead ensure right is not a source reference
+          return isSourceReference(right.options[key]);
+        }
+        return left.options[key] !== right.options[key];
+      }
+    ) === -1;
   }
 
   function compareSource(left: VNode, right: VNode) {

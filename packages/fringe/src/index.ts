@@ -16,5 +16,5 @@ export * from "./token";
 export { Then, EnableThen, isEnableThen, PromiseVNodeThenFn, VNodeWithThenOptions, thenish } from "./then";
 export * from "./resolve";
 export * from "./string";
-export * from "./compare";
+export * from "./equal";
 export { asyncExtendedIterable as a, extendedIterable as i } from "iterable";
