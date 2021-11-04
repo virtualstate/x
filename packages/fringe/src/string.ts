@@ -85,19 +85,23 @@ async function *toStringIterable(this: ToStringContext, node: VNode): AsyncItera
   this.values.set(node, value);
 }
 
+interface IterablePromise<V> extends AsyncIterable<V> {
+  then(resolve: (value: V) => void, reject: (error: unknown) => void): void
+}
+
 /**
  * @experimental
  */
-export function toString(node: VNode): { then(resolve: (value: string) => void, reject: (error: unknown) => void): void } & AsyncIterable<string>
-export function toString(this: Partial<ToStringContext>, node: VNode): { then(resolve: (value: string) => void, reject: (error: unknown) => void): void } & AsyncIterable<string>
-export function toString(this: Partial<ToStringContext> | undefined, node: VNode): { then(resolve: (value: string) => void, reject: (error: unknown) => void): void } & AsyncIterable<string> {
+export function toString(node: VNode): IterablePromise<string>
+export function toString(this: Partial<ToStringContext>, node: VNode): IterablePromise<string>
+export function toString(this: Partial<ToStringContext> | undefined, node: VNode): IterablePromise<string> {
   const context = {
     ...defaultContext,
     values: new WeakMap(),
     ...this
   };
-  const toStringInstance = {
-    then(resolve: (value: string) => void, reject: (error: unknown) => void) {
+  const toStringInstance: IterablePromise<string> = {
+    then(resolve, reject) {
       toStringInvoked().then(resolve, reject);
       async function toStringInvoked(): Promise<string> {
         let value = "";
