@@ -56,7 +56,7 @@ async function *toStringIterableChildren(this: ToStringContext, node: VNode): As
   let yielded = false;
   for await (const children of node.children) {
     for await (const strings of union(children.map(toStringIterable.bind(this)))) {
-      yield strings.join("\n");
+      yield strings.filter(value => typeof value !== "undefined").join("\n");
       yielded = true;
     }
   }
