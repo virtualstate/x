@@ -3,6 +3,7 @@ import {isSourceReference} from "./source-reference";
 import {union} from "@virtualstate/union";
 
 export interface ToStringContext {
+  values: WeakMap<VNode, string>;
   isScalar(node: VNode): boolean;
   getBody(node: VNode, body: string): string;
   getHeader(node: VNode, body: string): string;
@@ -25,6 +26,7 @@ function getFooter(node: VNode, body: string) {
 }
 
 const defaultContext: ToStringContext = {
+  values: new WeakMap(),
   isScalar(node) {
     return node.scalar;
   },
@@ -68,12 +70,19 @@ async function *toStringIterable(this: ToStringContext, node: VNode): AsyncItera
   if (this.isScalar(node)) {
     return yield String(node.source);
   }
+  const existingValue = this.values.get(node);
+  if (existingValue) {
+    return yield existingValue;
+  }
+  let value;
   for await (const inner of toStringIterableChildren.call(this, node)) {
     const body = this.getBody(node, inner);
     const header = this.getHeader(node, body);
     const footer = this.getFooter(node, body);
-    yield `${header}${body}${footer}`;
+    value = `${header}${body}${footer}`;
+    yield value;
   }
+  this.values.set(node, value);
 }
 
 /**
@@ -84,21 +93,17 @@ export function toString(this: Partial<ToStringContext>, node: VNode): { then(re
 export function toString(this: Partial<ToStringContext> | undefined, node: VNode): { then(resolve: (value: string) => void, reject: (error: unknown) => void): void } & AsyncIterable<string> {
   const context = {
     ...defaultContext,
+    values: new WeakMap(),
     ...this
   };
   const toStringInstance = {
     then(resolve: (value: string) => void, reject: (error: unknown) => void) {
       toStringInvoked().then(resolve, reject);
       async function toStringInvoked(): Promise<string> {
-        const iterator = toStringInstance[Symbol.asyncIterator]();
-        let result: IteratorResult<string>,
-          value = "";
-        do {
-          result = await iterator.next();
-          if (!result.done) {
-            value = result.value;
-          }
-        } while (!result.done);
+        let value = "";
+        for await (const iteration of toStringInstance) {
+          value = iteration;
+        }
         return value;
       }
     },
