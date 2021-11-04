@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/x",
-  "version": "2.25.3",
+  "version": "2.25.4",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -30,9 +30,9 @@
     "clean": "rm -rf lib && rm tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@virtualstate/fringe": "^2.25.3",
-    "@virtualstate/hooks": "^2.25.3",
-    "@virtualstate/union": "^2.25.3",
+    "@virtualstate/fringe": "^2.25.4",
+    "@virtualstate/hooks": "^2.25.4",
+    "@virtualstate/union": "^2.25.4",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
