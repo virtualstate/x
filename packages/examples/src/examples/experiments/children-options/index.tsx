@@ -3,6 +3,7 @@ import {ChildrenOptions, ChildrenTransformOptions, h, VNode, createFragment} fro
 function TryItOut(this: { counter?: number }) {
   console.log({ TryItOut: this });
   this.counter = 0;
+  console.log({ TryItOutSet: this });
   return (
     <>
       <Child />

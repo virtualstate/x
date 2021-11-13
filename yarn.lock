@@ -8402,10 +8402,10 @@ typescript@^4.2.3, typescript@^4.2.4:
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.2.4.tgz"
   integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
 
-typescript@^4.5.1-rc:
-  version "4.5.1-rc"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-4.5.1-rc.tgz#02155eaa0579d11babb2a55dcbd796948a994bb3"
-  integrity sha512-tQBWW1DCFqweyhSzsAUSFgssJ3uuRBh0zyOkRV4CaFF2rMBkGU0I+MqPMch0qhGCUGXjOW7FgMrbQLS6PE3Z6Q==
+typescript@^4.6.0-dev.20211105:
+  version "4.6.0-dev.20211105"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-4.6.0-dev.20211105.tgz#b0f5819711b388c4a8df383df62788467a6ce112"
+  integrity sha512-Af5rLZtlF/Ah4i7pQBxF7OfxK2bxDBoxgsRUK639YQq9zNmSj3H6YJZIFw/+OEthFZrj4izAfp6USxBUMAdqQQ==
 
 uglify-js@^3.1.4:
   version "3.13.7"

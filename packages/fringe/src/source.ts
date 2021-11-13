@@ -179,7 +179,7 @@ type ChildrenOp7Iterable = Iterable<unknown> | AsyncIterable<unknown>;
 type ChildrenOp6Promise = Promise<unknown>;
 
 // Type tests
-if (false) {
+{
 // const soccerOptions: SoccerBallOptions = {
 //   pressure: "pumped"
 // }

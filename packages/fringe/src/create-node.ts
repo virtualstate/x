@@ -140,7 +140,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * statement is invoked to handle fragments with children
    */
   if (source === Fragment) {
-    return createNode({ reference: Fragment, source }, options, ...children);
+    return createNode({ reference: Fragment, source, huh: 1 }, options, ...children);
   }
   /**
    * If we already have a {@link VNode} then we don't and can't do any more
