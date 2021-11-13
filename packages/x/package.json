@@ -21,7 +21,6 @@
     "./collector": "./lib/collector.js",
     "./fringe": "./lib/fringe.js",
     "./hooks": "./lib/hooks.js",
-    "./iterable": "./lib/iterable.js",
     "./union": "./lib/union.js"
   },
   "scripts": {
