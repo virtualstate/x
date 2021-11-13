@@ -44,5 +44,5 @@
     "test": "yarn jest",
     "clean": "rm -rf lib && rm tsconfig.tsbuildinfo"
   },
-  "gitHead": "f2abd3c12d9bf28cf9fe32e879822679d86d2ade"
+  "gitHead": "4346a305ef884cb40ef48ecfc9fc9d774684f81c"
 }

@@ -68,5 +68,5 @@
     "clean": "rm -rf lib && rm tsconfig.tsbuildinfo && yarn clean:examples",
     "clean:examples": "rm src/information.built.ts && echo 'export {}' >> src/information.built.ts"
   },
-  "gitHead": "9852e8fa95cf827f787e8135e571da4d49b42193"
+  "gitHead": "4346a305ef884cb40ef48ecfc9fc9d774684f81c"
 }
