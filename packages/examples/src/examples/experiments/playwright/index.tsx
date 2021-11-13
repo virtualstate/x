@@ -38,12 +38,16 @@ async function Render() {
         const { thenish } = await import("@virtualstate/fringe");
         const { _Z0001_StringWebsite } = await import("@virtualstate/examples");
         console.log({ thenish, _Z0001_StringWebsite });
-        const site = await new Promise(thenish.bind(_Z0001_StringWebsite));
+        const [{ source: site }] = await new Promise(thenish.bind(_Z0001_StringWebsite));
+        console.log({ site });
         const parser = new DOMParser();
         const importedDocument = parser.parseFromString(site, "text/html");
+        if (!!importedDocument.head.querySelector("title")) {
+          document.head.querySelector("title").remove();
+        }
         document.head.append(...Array.from(importedDocument.head.children).map(document.adoptNode.bind(document)));
         document.body.append(...Array.from(importedDocument.body.children).map(document.adoptNode.bind(document)));
-        console.log("appended");
+        console.log("appended", importedDocument);
         `}
       </script>
     </head>
