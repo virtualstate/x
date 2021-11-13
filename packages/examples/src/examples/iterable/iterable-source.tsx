@@ -1,4 +1,4 @@
-import { h, createFragment } from "@virtualstate/x";
+import { h, createFragment } from "@virtualstate/fringe";
 import { extendedIterable as i } from "iterable";
 
 function *source(): Iterable<number> {

@@ -1,4 +1,4 @@
-import {h, createFragment, VNode, createToken} from "@virtualstate/x";
+import {h, createFragment, VNode, createToken} from "@virtualstate/fringe";
 import { read } from "./read";
 import { asyncExtendedIterable as a } from "iterable";
 

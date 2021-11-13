@@ -1,6 +1,6 @@
 import { VNode } from "@virtualstate/fringe";
 
-export { h, createFragment, createToken } from "@virtualstate/x";
+export { h, createFragment, createToken } from "@virtualstate/fringe";
 
 export namespace JSX {
 
