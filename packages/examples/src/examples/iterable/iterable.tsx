@@ -1,4 +1,5 @@
-import { h, i, createFragment } from "@virtualstate/x";
+import { h, createFragment } from "@virtualstate/x";
+import { extendedIterable as i } from "iterable";
 
 const source: Iterable<number> = [
   1,

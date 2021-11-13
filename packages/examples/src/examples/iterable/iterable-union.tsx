@@ -1,5 +1,4 @@
-import {h, a, createFragment, VNode, createToken} from "@virtualstate/x";
-import { read } from "./read";
+import {h, createFragment, VNode, createToken} from "@virtualstate/x";
 import {union} from "@virtualstate/union";
 
 async function *Horse() {

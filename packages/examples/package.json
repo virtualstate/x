@@ -46,6 +46,7 @@
     "jest": "^26.6.3",
     "jsdom": "^15.1.1",
     "microtask-collector": "^3.1.0",
+    "playwright": "^1.16.3",
     "ts-jest": "^26.5.5",
     "ts-node": "^9.1.1",
     "tslint": "^6.1.3",

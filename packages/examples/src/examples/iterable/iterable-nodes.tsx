@@ -1,5 +1,6 @@
-import {h, a, createFragment, VNode, createToken} from "@virtualstate/x";
+import {h, createFragment, VNode, createToken} from "@virtualstate/x";
 import { read } from "./read";
+import { asyncExtendedIterable as a } from "iterable";
 
 async function *Source() {
   yield "🐦";
