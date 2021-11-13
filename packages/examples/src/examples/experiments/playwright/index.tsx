@@ -57,21 +57,36 @@ async function Render() {
 
   console.log(url);
 
-  const browser = await playwright.chromium.launch();
+  const browser = await playwright.chromium.launch({
+    timeout: 120000
+  });
   const page = await browser.newPage();
   await page.goto(url);
-  await page.waitForLoadState("load");
-  await page.waitForLoadState("domcontentloaded");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load", {
+    timeout: 120000
+  });
+  await page.waitForLoadState("domcontentloaded", {
+    timeout: 120000
+  });
+  await page.waitForLoadState("networkidle", {
+    timeout: 120000
+  });
   page.on('console', msg => console.log(msg.text()));
   page.on('pageerror', exception => {
+    console.log(`Uncaught exception: "${exception}"`);
+  });
+  page.on('crash', exception => {
     console.log(`Uncaught exception: "${exception}"`);
   });
   page.on('requestfailed', request => {
     console.log(request.url() + ' ' + request.failure().errorText);
   });
+  const head = await page.$("head");
   const body = await page.$("body");
-  return await body.innerHTML();
+  return JSON.stringify({
+    head: await head.innerHTML(),
+    body: await body.innerHTML()
+  });
 
   // return <ok />
 }
