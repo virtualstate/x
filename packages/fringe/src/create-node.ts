@@ -140,7 +140,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * statement is invoked to handle fragments with children
    */
   if (source === Fragment) {
-    return createNode({ reference: Fragment, source, huh: 1 }, options, ...children);
+    return createNode({ reference: Fragment, source }, options, ...children);
   }
   /**
    * If we already have a {@link VNode} then we don't and can't do any more
@@ -434,6 +434,10 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       if (!children.length) {
         return undefined;
       }
+      // Possible improvement
+      // if (children.length === 1 && isVNode(children[0]) && isSourceReference(children[0].source)) {
+      //   return children[0];
+      // }
       const childrenNode = context.createNode(Fragment, {}, ...children);
       return context.proxyNode?.(childrenNode) ?? childrenNode;
     }

@@ -1,5 +1,12 @@
 import {h, createFragment, toString} from "@virtualstate/fringe";
 
+
+declare global {
+  interface Window {
+    render?(): Promise<void>;
+  }
+}
+
 async function Render() {
 
   // https://cdn.skypack.dev/-/@virtualstate/examples
@@ -34,32 +41,34 @@ async function Render() {
       </script>
       <script type="module">
         {`
-        console.log("Hello");
-        const { thenish } = await import("@virtualstate/fringe");
-        const { _Z0001_StringWebsite } = await import("@virtualstate/examples");
-        console.log({ thenish, _Z0001_StringWebsite });
-        const [{ source: site }] = await new Promise(thenish.bind(_Z0001_StringWebsite));
-        console.log({ site });
-        const parser = new DOMParser();
-        const importedDocument = parser.parseFromString(site, "text/html");
-        if (!!importedDocument.head.querySelector("title")) {
-          document.head.querySelector("title").remove();
-        }
-        document.head.append(...Array.from(importedDocument.head.children).map(document.adoptNode.bind(document)));
-        document.body.append(...Array.from(importedDocument.body.children).map(document.adoptNode.bind(document)));
-        console.log("appended", importedDocument);
+        window.render = async function () {
+          console.log("Hello");
+          const { thenish } = await import("@virtualstate/fringe");
+          const { _Z0001_StringWebsite } = await import("@virtualstate/examples");
+          console.log({ thenish, _Z0001_StringWebsite });
+          const [{ source: site }] = await new Promise(thenish.bind(_Z0001_StringWebsite));
+          console.log({ site });
+          const parser = new DOMParser();
+          const importedDocument = parser.parseFromString(site, "text/html");
+          if (!!importedDocument.head.querySelector("title")) {
+            document.head.querySelector("title").remove();
+          }
+          document.head.append(...Array.from(importedDocument.head.children).map(document.adoptNode.bind(document)));
+          document.body.append(...Array.from(importedDocument.body.children).map(document.adoptNode.bind(document)));
+          console.log("appended", document);
+        };
         `}
       </script>
     </head>
     <body>
-    <noscript>Hello</noscript>
+    <noscript>JavaScript was expected to be enabled</noscript>
     </body>
     </html>
   );
 
   const url = `data:text/html,${encodeURIComponent(content)}`;
 
-  console.log(url);
+  // console.log(url);
 
   const browser = await playwright.chromium.launch({
     timeout: 120000
@@ -75,6 +84,12 @@ async function Render() {
   await page.waitForLoadState("networkidle", {
     timeout: 120000
   });
+  await page.coverage.startJSCoverage({
+
+  });
+  await page.evaluate(async () => await window.render())
+  await page.coverage.stopJSCoverage();
+
   page.on('console', msg => console.log(msg.text()));
   page.on('pageerror', exception => {
     console.log(`Uncaught exception: "${exception}"`);

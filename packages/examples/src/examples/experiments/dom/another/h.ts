@@ -1,9 +1,5 @@
-import {Element} from "./element";
-import {f, VNode} from "@virtualstate/fringe";
+import {f} from "@virtualstate/fringe";
 
-export function h(tag: string, attributes: Record<string, unknown>, ...children: unknown[]) {
-  return f(Element, {
-    tag,
-    attributes
-  }, ...children);
+export function h(tag: string, options: Record<string, unknown>, ...children: unknown[]) {
+  return f(tag, options, ...children);
 }

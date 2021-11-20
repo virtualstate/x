@@ -8,6 +8,9 @@ export const Token = Symbol.for("@virtualstate/fringe/token");
 export const IsTokenOptions = Symbol.for("@virtualstate/fringe/token/isTokenOptions");
 export const Scalar = Symbol.for("@virtualstate/fringe/token/Scalar");
 
+export const TokenConstructor = Symbol.for("@virtualstate/fringe/token/TokenConstructor");
+const TokenConstructorSymbol = TokenConstructor;
+
 export type TokenOptionsRecord = Record<string | symbol | number, unknown>;
 
 export interface TokenOptions {
@@ -72,6 +75,8 @@ export function createToken<T extends SourceReference, O extends object, Initial
 
   const isOptionsFrozenStatic = !!options && Object.isFrozen(options);
   const optionsKeyLength = options ? isOptionsFrozenStatic ? Object.keys(options).length : 0 : 0;
+
+  const objectReference = {};
 
   function TokenConstructor<I extends Partial<TokenOptionsRecord>>(this: unknown, partialOptions?: I, child?: VNode): TokenVNodeFn<T, O, O> {
     const node = isTokenVNode<T, O>(this) ? this : tokenized;
@@ -177,7 +182,11 @@ export function createToken<T extends SourceReference, O extends object, Initial
           configurable: true,
           value: true
         }
-      } : {})
+      } : {}),
+      [TokenConstructorSymbol]: {
+        ...accessOnly,
+        value: TokenConstructor,
+      }
     });
     assertTokenVNodeFn<T, O, Initial>(token, isTokenSource, isTokenOptions);
   }
