@@ -9,6 +9,7 @@ import {
   Fragment, thenish, EnableThen, assertVNode
 } from "@virtualstate/fringe";
 import {assertElement, isNode, setAttributes} from "@virtualstate/dom";
+import {globalDocument} from "./global-document";
 
 const ParentInstance = Symbol("Parent Instance");
 
@@ -192,3 +193,11 @@ export async function *Render({ document, space = new WeakMap() }: Pick<Context,
   }
 }
 Render[EnableThen] = true;
+
+export async function render(document: Document, site: VNode, space?: WeakMap<object, unknown>): Promise<VNode[]> {
+  return (
+    <Render document={document} space={space}>
+      {site}
+    </Render>
+  )
+}

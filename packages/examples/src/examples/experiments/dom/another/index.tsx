@@ -1,5 +1,5 @@
 import {h, Instance, VNode} from "@virtualstate/fringe";
-import {Render} from "./render";
+import {Render, render} from "./render";
 import {globalDocument} from "./global-document";
 import {assertElement} from "@virtualstate/dom";
 
@@ -28,6 +28,14 @@ async function *Controller() {
 
   yield renderSite;
 
+  const [earlier] = await render(globalDocument, referenced, space);
+  console.log({ instance: earlier[Instance], siblings: earlier[Instance].parentNode.childNodes })
+
+  // Or like a function
+
+  await render(globalDocument, <Site>{Body}</Site>, space);
+  await render(globalDocument, Body, space);
+
   // Or render something new over the top
   yield (
     <Render document={globalDocument} space={space}>
@@ -47,7 +55,10 @@ async function *Controller() {
     {referenced}
   </Render>);
 
-  console.log({ instance });
+  console.log({ instance, same: earlier[Instance] === instance });
+
+  const [node] = await render(globalDocument, referenced, space);
+  console.log({ instance: node[Instance], siblings: node[Instance].parentNode.childNodes, same: earlier[Instance] === node[Instance] })
 
   // yield <Website />;
   // yield <ok />
