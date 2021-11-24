@@ -8,6 +8,9 @@ export const Token = Symbol.for("@virtualstate/fringe/token");
 export const IsTokenOptions = Symbol.for("@virtualstate/fringe/token/isTokenOptions");
 export const Scalar = Symbol.for("@virtualstate/fringe/token/Scalar");
 
+/**
+ * @experimental
+ */
 export const TokenConstructor = Symbol.for("@virtualstate/fringe/token/TokenConstructor");
 const TokenConstructorSymbol = TokenConstructor;
 
