@@ -25,8 +25,9 @@ export function f<T = unknown, R extends Record<string | symbol, unknown> = Reco
     if (this instanceof ThingConstructor) {
       // Some other known state
       return f(defaultValue);
+    } else {
+      return f(defaultValue);
     }
-    return defaultValue;
   }
   const almost: object = ThingConstructor;
   defineIt(almost);
@@ -85,6 +86,8 @@ async function F() {
   console.log({ new: await new t() });
   console.log({ h: (await (<T h={1} />))[0].source })
   console.log({ string: await t`h` })
+  console.log({ string: await t`h``what` })
+  console.log({ string: await (new t`h`)`what` })
 
   for (const item of t) {
     console.log({ item });
