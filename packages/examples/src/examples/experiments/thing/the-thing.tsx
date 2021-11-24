@@ -78,7 +78,7 @@ export function f<T = unknown, R extends Record<string | symbol, unknown> = Reco
 
 async function F() {
   const t = f(1);
-  const T: Function = t; // if you wanted to use in
+  const T: Function = t; // if you wanted to use with h
 
   console.log({ t });
   console.log({ await: await t });
@@ -87,16 +87,9 @@ async function F() {
   console.log({ h: (await (<T h={1} />))[0].source })
   console.log({ string: await t`h` })
   console.log({ string: await t`h``what` })
-  console.log({ string: await (new t`h`)`what` })
-
-  for (const item of t) {
-    console.log({ item });
-  }
-
-  for await (const awaitItem of t) {
-    console.log({ awaitItem });
-  }
-
+  console.log({ string: await (new t`h`())`what` })
+  for (const item of t) console.log({ item });
+  for await (const awaitItem of t) console.log({ awaitItem })
   console.log({ awaitNext: (await t.next()).value });
 
   return t;
