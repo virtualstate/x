@@ -7,3 +7,4 @@ export * from "./children-options";
 export * from "./equal";
 export * from "./dom/another";
 // export * from "./playwright";
+export * from "./thing";

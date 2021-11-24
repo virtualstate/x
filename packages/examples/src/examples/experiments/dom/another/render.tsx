@@ -9,7 +9,6 @@ import {
   Fragment, thenish, EnableThen, assertVNode
 } from "@virtualstate/fringe";
 import {assertElement, isNode, setAttributes} from "@virtualstate/dom";
-import {globalDocument} from "./global-document";
 
 const ParentInstance = Symbol("Parent Instance");
 
