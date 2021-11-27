@@ -24,8 +24,10 @@ export function f<T = unknown, R extends Record<string | symbol, unknown> = Reco
   function ThingConstructor() {
     if (this instanceof ThingConstructor) {
       // Some other known state
+      // console.log("Construct");
       return f(defaultValue);
     } else {
+      // console.log("Call");
       return f(defaultValue);
     }
   }
@@ -46,12 +48,15 @@ export function f<T = unknown, R extends Record<string | symbol, unknown> = Reco
         value: () => iterable()[Symbol.iterator]().next()
       },
       then: {
-        value: (resolve, reject) => asyncIterable()[Symbol.asyncIterator]().next().then(result => {
-          if (result.done) {
-            throw new Error("No value");
-          }
-          return result.value;
-        }).then(resolve, reject)
+        value: (resolve, reject) => {
+          // console.log("Await");
+          return asyncIterable()[Symbol.asyncIterator]().next().then(result => {
+            if (result.done) {
+              throw new Error("No value");
+            }
+            return result.value;
+          }).then(resolve, reject)
+        }
       },
       [EnableThen]: {
         value: true
@@ -60,10 +65,12 @@ export function f<T = unknown, R extends Record<string | symbol, unknown> = Reco
   }
 
   async function *asyncIterable(): AsyncIterable<T> {
+    // console.log("asyncIterable")
     yield defaultValue;
   }
 
   function *iterable(): Iterable<T> {
+    // console.log("iterable")
     yield defaultValue;
   }
 

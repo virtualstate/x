@@ -2,6 +2,8 @@ import { isFragmentVNode, isVNode, VNode, VNodeRepresentationSource } from "./vn
 import { isSourceReference } from "./source-reference";
 import {
   asyncExtendedIterable,
+  extendedIterable,
+  isIterable,
   isIterableIterator,
   isPromise
 } from "iterable";
@@ -39,6 +41,16 @@ export async function* childrenUnion<N extends VNode>(context: UnionOptions, chi
       (updates: N[], part: N[]): N[] => part ? updates.concat(part.filter(Boolean)) : updates,
       []
     );
+  }
+}
+
+function *flat(iterable: Iterable<VNodeRepresentationSource>): Iterable<VNodeRepresentationSource> {
+  for (const item of iterable) {
+    if (typeof item !== "string" && isIterable(item)) {
+      yield * flat(item);
+    } else {
+      yield item;
+    }
   }
 }
 
@@ -95,6 +107,13 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
 
     if (isPromise(source)) {
       return yield* eachSource(await source);
+    }
+
+    if (isIterable(source)) {
+      return yield* childrenUnion(
+        context,
+        extendedIterable(flat(source)).map(eachSource)
+      );
     }
 
     return yield* childrenUnion(
