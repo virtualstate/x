@@ -55,6 +55,32 @@ function *flat(iterable: Iterable<VNodeRepresentationSource>): Iterable<VNodeRep
 }
 
 export async function *children(givenContext: ChildrenTransformOptions, ...source: VNodeRepresentationSource[]): AsyncIterable<VNode[]> {
+
+  function isIterableChildrenSource(value: unknown): value is VNodeRepresentationSource & Iterable<unknown> {
+    return isIterable(value);
+  }
+
+  /**
+   * This allows a sync iterable source to bypass async resolution until it hits a defined node
+   * @param iterable
+   */
+  function *flatSource(iterable: Iterable<VNodeRepresentationSource>): Iterable<AsyncIterable<VNode[]>> {
+    for (const item of iterable) {
+      if (typeof item !== "string" && isIterable(item)) {
+        yield * flatSource(item);
+      } else
+      /**
+       * If we have a fragment, and we have the source input for the children, then we can continue
+       * flattening to bypass async resolution
+       */
+      if (isFragmentVNode(item) && item.children && isIterableChildrenSource(item.children[ChildrenSource])) {
+        yield * flatSource(item.children[ChildrenSource]);
+      } else {
+        yield eachSource(item);
+      }
+    }
+  }
+
   async function *eachSource(original: VNodeRepresentationSource): AsyncIterable<VNode[]> {
     let source: VNodeRepresentationSource = original;
 
@@ -69,15 +95,19 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
     }
 
     if (isFragmentVNode(source)) {
+      /**
+       * If a fragment has no children, it will never yield a result
+       */
       if (!source.children) {
         return;
       }
+      /**
+       * If we have internal documented source for the children, and it
+       * is an iterable, we can use this sync source and pre-flatten it
+       */
       const childrenSource = source.children[ChildrenSource];
-      if (Array.isArray(childrenSource)) {
-        return yield * childrenUnion(
-          context,
-          childrenSource.map(eachSource)
-        );
+      if (isIterableChildrenSource(childrenSource)) {
+        return yield * eachSource(childrenSource);
       }
       let iterable: AsyncIterable<VNode[]> = source.children;
       if (isChildrenSourceFunction(source.children)) {
@@ -112,7 +142,7 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
     if (isIterable(source)) {
       return yield* childrenUnion(
         context,
-        extendedIterable(flat(source)).map(eachSource)
+        flatSource(source)
       );
     }
 

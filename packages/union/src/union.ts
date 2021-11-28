@@ -54,13 +54,15 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
   const knownIterators: AsyncIterator<T>[] = [];
   let iteratorsDone = false;
   let valuesDone = false;
+  // I wish I could use "const isSourceIterable: source is Iterable<Input<T>> = isIterable(source);"
+  const isSourceIterable = isIterable(source);
   const sourceIterator: AsyncIterator<Input<T>> | Iterator<Input<T>> =
     isIterable(source) ?
       source[Symbol.iterator]() :
       source[Symbol.asyncIterator]();
   let active: IterationFlag | undefined = undefined;
   let iteratorsPromise: Promise<void> = Promise.resolve();
-  let iteratorAvailable = deferred<AsyncIterator<T> | undefined>();
+  let iteratorAvailable = deferred<void>();
   const iteratorsComplete = deferred();
   const errorOccurred = deferred();
   const errors: unknown[] = [];
@@ -144,6 +146,7 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
   }
 
   async function nextLanes(iteration: IterationFlag) {
+    let anyResult = false;
     while (active === iteration && !iteratorsDone) {
       let result: IteratorResult<Input<T>> | Promise<IteratorResult<Input<T>>> = sourceIterator.next();
       if (isPromise(result)) {
@@ -155,7 +158,10 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
           valuesDone = true;
         }
         iteratorsComplete.resolve();
-        await sourceIterator.return?.();
+        const returned = sourceIterator.return?.();
+        if (isPromise(returned)) {
+          await returned;
+        }
       } else if (result.value) {
         const sourceLane = result.value;
         const iterator = getIterator(sourceLane);
@@ -163,9 +169,28 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
           iterators.set(sourceLane, iterator);
         }
         knownIterators.push(iterator);
-        iteratorAvailable.resolve(iterator);
-        iteratorAvailable = deferred();
+        /**
+         * If we have a source iterable, we know we will
+         * fully resolve our knownIterators within a sync cycle,
+         * meaning it will be wasteful to create and resolve multiple
+         * promises. We will resolve at the end now that anyResult is set
+         *
+         * If our source is async, we know we will have at least one promise
+         * resolution in between each available lane. This means we will have
+         * a break in context between here and the end of this loop. In the
+         * async case we want to resolve iteratorAvailable ASAP.
+         */
+        anyResult = true;
+        if (!isSourceIterable) {
+          iteratorAvailable.resolve();
+          iteratorAvailable = deferred();
+        }
       }
+    }
+
+    if (isSourceIterable && anyResult) {
+      iteratorAvailable.resolve();
+      iteratorAvailable = deferred();
     }
 
     function getIterator(sourceLane: Input<T>) {
