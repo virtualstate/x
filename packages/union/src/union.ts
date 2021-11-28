@@ -3,6 +3,7 @@ import { deferred } from "./deferred";
 import { defaultTask, QueueTask } from "./microtask";
 import { aggregateError } from "./aggregate-error";
 import { isReuse } from "./reuse";
+import { isIterable, isPromise } from "iterable";
 
 export interface UnionOptions {
   queueTask?: QueueTask;
@@ -53,7 +54,10 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
   const knownIterators: AsyncIterator<T>[] = [];
   let iteratorsDone = false;
   let valuesDone = false;
-  const sourceIterator: AsyncIterator<Input<T>> = asAsync(source)[Symbol.asyncIterator]();
+  const sourceIterator: AsyncIterator<Input<T>> | Iterator<Input<T>> =
+    isIterable(source) ?
+      source[Symbol.iterator]() :
+      source[Symbol.asyncIterator]();
   let active: IterationFlag | undefined = undefined;
   let iteratorsPromise: Promise<void> = Promise.resolve();
   let iteratorAvailable = deferred<AsyncIterator<T> | undefined>();
@@ -141,7 +145,10 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
 
   async function nextLanes(iteration: IterationFlag) {
     while (active === iteration && !iteratorsDone) {
-      const result: IteratorResult<Input<T>> = await sourceIterator.next();
+      let result: IteratorResult<Input<T>> | Promise<IteratorResult<Input<T>>> = sourceIterator.next();
+      if (isPromise(result)) {
+        result = await result;
+      }
       if (!isIteratorYieldResult(result)) {
         iteratorsDone = true;
         if (!knownIterators.length) {
