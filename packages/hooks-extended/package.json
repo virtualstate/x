@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/hooks-extended",
-  "version": "2.30.0",
+  "version": "2.31.0",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -18,9 +18,9 @@
   },
   "devDependencies": {
     "@types/node": "^14.14.41",
-    "@virtualstate/fringe": "^2.30.0",
-    "@virtualstate/hooks": "^2.30.0",
-    "@virtualstate/union": "^2.30.0",
+    "@virtualstate/fringe": "^2.31.0",
+    "@virtualstate/hooks": "^2.31.0",
+    "@virtualstate/union": "^2.31.0",
     "esm": "^3.2.25",
     "filehound": "^1.17.3",
     "iterable": "^5.7.0",
