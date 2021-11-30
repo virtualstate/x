@@ -1,13 +1,34 @@
-import {isFragmentVNode, VNode} from "./vnode";
+import {assertVNode, isFragmentVNode, VNode} from "./vnode";
 import {isSourceReference} from "./source-reference";
 import {union} from "@virtualstate/union";
 
+/**
+ * @experimental
+ */
+export const ToStringIsScalar = Symbol("isScalar");
+/**
+ * @experimental
+ */
+export const ToStringGetHeader = Symbol("getHeader");
+/**
+ * @experimental
+ */
+export const ToStringGetBody = Symbol("getBody");
+/**
+ * @experimental
+ */
+export const ToStringGetFooter = Symbol("getFooter");
+/**
+ * @experimental
+ */
+export const ToStringCache = Symbol("Cache");
+
 export interface ToStringContext {
-  values: WeakMap<VNode, string>;
-  isScalar(node: VNode): boolean;
-  getBody(node: VNode, body: string): string;
-  getHeader(node: VNode, body: string): string;
-  getFooter(node: VNode, body: string): string;
+  [ToStringCache]: Pick<WeakMap<VNode, string>, "get" | "set">;
+  [ToStringIsScalar](node: VNode): boolean;
+  [ToStringGetBody](node: VNode, body: string): string;
+  [ToStringGetHeader](node: VNode, body: string): string;
+  [ToStringGetFooter](node: VNode, body: string): string;
 }
 
 function getBody(node: VNode, body: string) {
@@ -25,14 +46,16 @@ function getFooter(node: VNode, body: string) {
   return `</${String(node.source)}>`
 }
 
+function isScalar(node: VNode): node is VNode & { scalar: true } {
+  return node.scalar;
+}
+
 const defaultContext: ToStringContext = {
-  values: new WeakMap(),
-  isScalar(node) {
-    return node.scalar;
-  },
-  getBody,
-  getHeader,
-  getFooter
+  [ToStringCache]: new WeakMap(),
+  [ToStringIsScalar]: isScalar,
+  [ToStringGetBody]: getBody,
+  [ToStringGetHeader]: getHeader,
+  [ToStringGetFooter]: getFooter
 }
 
 function getOptionsAsAttributes(options?: object): string {
@@ -67,22 +90,22 @@ async function *toStringIterable(this: ToStringContext, node: VNode): AsyncItera
   if (!isSourceReference(node.source) || isFragmentVNode(node)) {
     return yield * toStringIterableChildren.call(this, node);
   }
-  if (this.isScalar(node)) {
+  if (this[ToStringIsScalar](node)) {
     return yield String(node.source);
   }
-  const existingValue = this.values.get(node);
+  const existingValue = this[ToStringCache].get(node);
   if (existingValue) {
     return yield existingValue;
   }
   let value;
   for await (const inner of toStringIterableChildren.call(this, node)) {
-    const body = this.getBody(node, inner);
-    const header = this.getHeader(node, body);
-    const footer = this.getFooter(node, body);
+    const body = this[ToStringGetBody](node, inner);
+    const header = this[ToStringGetHeader](node, body);
+    const footer = this[ToStringGetFooter](node, body);
     value = `${header}${body}${footer}`;
     yield value;
   }
-  this.values.set(node, value);
+  this[ToStringCache].set(node, value);
 }
 
 interface IterablePromise<V> extends AsyncIterable<V> {
@@ -93,13 +116,16 @@ interface IterablePromise<V> extends AsyncIterable<V> {
  * @experimental
  */
 export function toString(node: VNode): IterablePromise<string>
+export function toString(this: Partial<ToStringContext> & VNode): IterablePromise<string>
 export function toString(this: Partial<ToStringContext>, node: VNode): IterablePromise<string>
-export function toString(this: Partial<ToStringContext> | undefined, node: VNode): IterablePromise<string> {
-  const context = {
+export function toString(this: Partial<ToStringContext> | undefined, input?: VNode): IterablePromise<string> {
+  const context: ToStringContext = {
     ...defaultContext,
-    values: new WeakMap(),
+    [ToStringCache]: new WeakMap(),
     ...this
   };
+  const node = input ?? context;
+  assertVNode(node);
   const toStringInstance: IterablePromise<string> = {
     then(resolve, reject) {
       toStringInvoked().then(resolve, reject);

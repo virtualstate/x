@@ -8,3 +8,4 @@ export * from "./equal";
 export * from "./dom/another";
 // export * from "./playwright";
 export * from "./thing";
+export * from "./generalisation";

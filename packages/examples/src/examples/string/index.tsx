@@ -1,4 +1,20 @@
-import { toString, h, createFragment } from "@virtualstate/fringe";
+import {toString, f, createFragment, ToStringIsScalar, ToStringGetBody, VNode} from "@virtualstate/fringe";
+
+const context = {
+  [ToStringIsScalar]: node => node.scalar && !["script"].includes(node.source),
+  // If we have a script, we want to force a body to exist
+  [ToStringGetBody]: (node, body) => body || (["script"].includes(node.source) ? "\n" : ""),
+  toString
+} as const;
+
+function h(...args: unknown[]) {
+  const node = f(...args);
+  assign(node);
+  return node;
+  function assign(node: VNode): asserts node is typeof context & VNode {
+    Object.assign(node, context);
+  }
+}
 
 function MyWebsite() {
   return (
@@ -15,16 +31,18 @@ function MyWebsite() {
         <footer>
           <a href="https://example.com" target="_blank">example.com</a>
         </footer>
+        <script type="module" src="index.js"></script>
       </body>
     </html>
   )
 }
 
 async function Render() {
-  // for await (const iteration of toString(<MyWebsite />)) {
+  const node: ReturnType<typeof h> = <MyWebsite />;
+  // for await (const iteration of node.toString()) {
   //   console.log({ iteration });
   // }
-  return toString(<MyWebsite />)
+  return node.toString();
 }
 
 export const _Z0001_StringWebsite = <Render />
