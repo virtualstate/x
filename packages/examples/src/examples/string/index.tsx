@@ -9,10 +9,10 @@ const context = {
 
 function h(...args: unknown[]) {
   const node = f(...args);
-  assign(node);
+  assign(node, context);
   return node;
-  function assign(node: VNode): asserts node is typeof context & VNode {
-    Object.assign(node, context);
+  function assign<T, U>(left: T, right: U): asserts left is T & U {
+    Object.assign(left, right);
   }
 }
 
@@ -38,7 +38,7 @@ function MyWebsite() {
 }
 
 async function Render() {
-  const node: ReturnType<typeof h> = <MyWebsite />;
+  const node = <MyWebsite />;
   // for await (const iteration of node.toString()) {
   //   console.log({ iteration });
   // }

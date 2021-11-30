@@ -130,15 +130,13 @@ export function toString(this: Partial<ToStringContext> | undefined, input?: VNo
     then(resolve, reject) {
       toStringInvoked().then(resolve, reject);
       async function toStringInvoked(): Promise<string> {
-        let value = "";
-        for await (const iteration of toStringInstance) {
-          value = iteration;
-        }
-        return value;
+        let iteration = "";
+        for await (iteration of toStringInstance) {}
+        return iteration;
       }
     },
-    [Symbol.asyncIterator]() {
-      return toStringIterable.call(context, node)[Symbol.asyncIterator]();
+    async *[Symbol.asyncIterator]() {
+      yield* toStringIterable.call(context, node);
     }
   }
   return toStringInstance;
