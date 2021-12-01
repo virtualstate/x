@@ -5,7 +5,7 @@ import {
   ToStringIsScalar,
   ToStringGetBody,
   VNode,
-  ToStringUseSource, ToStringGetFooter, ToString
+  ToStringUseSource, ToStringGetFooter, ToString, ToStringCache
 } from "@virtualstate/fringe";
 
 const context = {
@@ -40,13 +40,38 @@ const loading = Object.assign(<p />, {
   }
 })
 
-function MyWebsite() {
+// This is our cache
+const cache = new WeakMap();
+
+const node = { ...h("p", { class: "test" }, "content"), toString, [ToStringCache]: cache };
+
+// The first call to
+
+async function MyWebsite() {
+  // This is our cache
+  const cache = new WeakMap();
+
+  const node = { ...h("p", { class: "test" }, "content"), toString, [ToStringCache]: cache };
+
+  // first cache will be empty, value will be undefined
+  const cached0 = cache.get(node);
+  // invoke will set the cache
+  const string1 = await node.toString();
+  // then we will have a value cached
+  const cached1 = cache.get(node);
+  // meaning we will not need to re-compute our toString
+  const string2 = await node.toString();
+  // We could use a new cache (or pass undefined) if we wanted to recompute for sure
+  const recompute = await ({ ...node, [ToStringCache]: undefined }).toString()
+  const results = { cached0, string1, cached1, string2, recompute };
   return (
     <html>
       <head>
         <title>My Website</title>
         {link}
         {link2}
+        <results>{Object.keys(results)
+          .map(key => h(key, {}, {...h("p"), [ToString]: () => results[key] }))}</results>
       </head>
       <body>
         <h1>Hello!</h1>
