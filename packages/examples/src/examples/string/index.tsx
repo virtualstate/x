@@ -1,4 +1,12 @@
-import {toString, f, createFragment, ToStringIsScalar, ToStringGetBody, VNode} from "@virtualstate/fringe";
+import {
+  toString,
+  f,
+  createFragment,
+  ToStringIsScalar,
+  ToStringGetBody,
+  VNode,
+  ToStringUseSource
+} from "@virtualstate/fringe";
 
 const context = {
   [ToStringIsScalar]: node => node.scalar && !["script"].includes(node.source),
@@ -16,11 +24,16 @@ function h(...args: unknown[]) {
   }
 }
 
+const link = Object.assign(h("<link rel='prefetch' href='index.tsx'>"), {
+  [ToStringUseSource]: true
+})
+
 function MyWebsite() {
   return (
     <html>
       <head>
         <title>My Website</title>
+        {link}
       </head>
       <body>
         <h1>Hello!</h1>

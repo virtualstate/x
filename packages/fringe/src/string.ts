@@ -23,6 +23,10 @@ export const ToStringGetFooter = Symbol("getFooter");
  * @experimental
  */
 export const ToStringCache = Symbol("Cache");
+/**
+ * @experimental
+ */
+export const ToStringUseSource = Symbol("useSource");
 
 export interface ToStringContext {
   [ToStringCache]: Pick<WeakMap<VNode, string>, "get" | "set">;
@@ -30,6 +34,7 @@ export interface ToStringContext {
   [ToStringGetBody](node: VNode, body: string): string;
   [ToStringGetHeader](node: VNode, body: string): string;
   [ToStringGetFooter](node: VNode, body: string): string;
+  [ToStringUseSource]?: boolean
   // Allows for full override of functionality
   [ToString]?(node: VNode): undefined | string | Promise<string | undefined>;
 }
@@ -90,6 +95,13 @@ async function *toStringIterableChildren(this: ToStringContext, node: VNode): As
 }
 
 async function *toStringIterable(this: ToStringContext, node: VNode): AsyncIterable<string> {
+  if (this[ToStringUseSource]) {
+    if (typeof node.source === "string") {
+      return yield node.source;
+    } else if (typeof node.source !== "undefined") {
+      return yield `${node.source}`;
+    }
+  }
   if (this[ToString]) {
     const existingValue = this[ToStringCache].get(node);
     if (existingValue) {
