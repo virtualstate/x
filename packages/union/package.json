@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/union",
-  "version": "2.31.0",
+  "version": "2.32.0",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
