@@ -102,136 +102,186 @@ async function *toStringIterableChildren(this: ToStringContext, node: VNode): As
 }
 
 async function *toStringIterable(this: ToStringContext, node: VNode & Partial<ToStringContext>): AsyncIterable<string> {
-  if (node[ToStringUseSource] || this[ToStringUseSource]) {
-    if (typeof node.source === "string") {
-      return yield node.source;
-    } else if (typeof node.source !== "undefined") {
-      return yield `${node.source}`;
+  yield * performCached(
+    [node[ToStringCache], this[ToStringCache]],
+    !(node[ToStringDisablePromiseCache] || this[ToStringDisablePromiseCache]),
+    node,
+    (async function *cached(this: ToStringContext): AsyncIterable<string> {
+      if (node[ToStringUseSource] || this[ToStringUseSource]) {
+        if (typeof node.source === "string") {
+          return yield node.source;
+        } else if (typeof node.source !== "undefined") {
+          return yield `${node.source}`;
+        }
+      }
+      const toStringFn: ToStringContext[typeof ToString] = node[ToString]?.bind(node) ?? this[ToString]?.bind(this);
+      if (toStringFn) {
+        const result = toStringFn(node);
+        if (typeof result === "string") {
+          return yield result;
+        } else if (isPromise(result)) {
+          return yield await result;
+        } else if (isAsyncIterable(result)) {
+          return yield * result;
+        } else if (typeof result === "undefined") {
+          return;
+        }
+        throw new Error("Unknown string return type");
+      }
+      if (!isSourceReference(node.source) || isFragmentVNode(node)) {
+        return yield * toStringIterableChildren.call(this, node);
+      }
+      if ((node[ToStringIsScalar]?.bind(node) ?? this[ToStringIsScalar]?.bind(this))(node)) {
+        return yield String(node.source);
+      }
+      let value: string;
+      let inner: string;
+      for await (inner of toStringIterableChildren.call(this, node)) {
+        const body: string = (node[ToStringGetBody]?.bind(node) ?? this[ToStringGetBody].bind(this))(node, inner);
+        const header: string = (node[ToStringGetHeader]?.bind(node) ?? this[ToStringGetHeader].bind(this))(node, body);
+        const footer: string = (node[ToStringGetFooter]?.bind(node) ?? this[ToStringGetFooter].bind(this))(node, body);
+        value = `${header}${body}${footer}`;
+        yield value;
+      }
+    }).call(this)
+  );
+
+  /**
+   * Returns an async iterable that moves forward in value
+   * Whenever an iterator is added, it will start at the most recent value
+   * that was yielded, and continue from there
+   */
+  function queue<T>() {
+    interface QueueResult {
+      next: Promise<QueueResult>
+      value: T
+      done?: boolean
     }
+    interface Queue extends AsyncIterable<T>, PromiseLike<T> {
+      value<Z extends T>(value: Z): Z;
+      end(): void;
+      reject(error: unknown): void;
+    }
+    let done = false;
+    let current = deferred<QueueResult>();
+    let value: T;
+    let error: unknown;
+    const q: Queue = {
+      value<Z extends T>(nextValue: Z): Z {
+        value = nextValue;
+        const previous = current;
+        current = deferred();
+        previous.resolve({
+          next: current.promise,
+          value: nextValue,
+          done: false
+        });
+        return nextValue;
+      },
+      end() {
+        done = true;
+        current.resolve({
+          value: undefined,
+          done: true,
+          next: current.promise
+        });
+      },
+      reject(nextError: unknown) {
+        if (done) return;
+        done = true;
+        error = nextError;
+        current.reject(nextError);
+      },
+      async *[Symbol.asyncIterator](): AsyncIterator<T> {
+        if (typeof value !== "undefined") {
+          yield value;
+        }
+        let result: Partial<QueueResult> = {
+          next: current.promise
+        }
+        do {
+          result = await result.next;
+          if (!result.done && typeof result.value !== "undefined") {
+            yield value;
+          }
+        } while (!result.done)
+      },
+      async then(resolve, reject) {
+        if (error) {
+          return reject(error);
+        }
+        if (done) {
+          return resolve(value);
+        }
+        return wait().then(resolve, reject);
+        async function wait<T>() {
+          let value;
+          for await (value of q) {}
+          return value;
+        }
+      }
+    };
+    return q;
   }
-  const promiseCache = !(node[ToStringDisablePromiseCache] || this[ToStringDisablePromiseCache]);
-  const toStringFn: ToStringContext[typeof ToString] = node[ToString]?.bind(node) ?? this[ToString]?.bind(this);
-  if (toStringFn) {
-    const existingValue = (node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node));
-    if (typeof existingValue === "string") {
-      return yield existingValue;
-    } else if (promiseCache && isPromise(existingValue)) {
-      const value = await existingValue;
-      if (typeof value === "string") {
+
+  async function *performCached<T>(
+    caches: (Pick<WeakMap<object, unknown>, "get" | "set"> | undefined)[],
+    enabled: boolean,
+    key: object,
+    input: AsyncIterable<T>
+  ): AsyncIterable<T> {
+    const existingValue = caches.reduce((found, cache) => found ?? cache?.get(key), undefined);
+    if (enabled && isAsyncIterable<T>(existingValue)) {
+      // If we have an async iterable, we can replay it
+      return yield * existingValue;
+    } else if (enabled && isPromise<T>(existingValue)) {
+      const value: T = await existingValue;
+      if (isValueNotUndefined(value)) {
         yield value;
       }
       return;
+    } else if (isValueNotUndefined(existingValue) && (enabled || !isPromise(existingValue))) {
+      return yield existingValue;
     }
-    const result = toStringFn(node);
-    if (typeof result === "string") {
-      node[ToStringCache]?.set(node, result);
-      this[ToStringCache].set(node, result);
-      return yield result;
-    } else if (isPromise(result)) {
-      if (promiseCache) {
-        node[ToStringCache]?.set(node, result);
-        this[ToStringCache].set(node, result);
+    const q = queue<T>();
+    if (enabled) {
+      for (const cache of caches) {
+        cache?.set(key, q);
       }
-      try {
-        const value = await result;
-        node[ToStringCache]?.set(node, value);
-        this[ToStringCache].set(node, value);
-        return yield value;
-      } finally {
-        if (promiseCache) {
-          if (node[ToStringCache]?.get(node) === result) {
-            node[ToStringCache]?.set(node, undefined);
-          }
-          if (this[ToStringCache]?.get(node) === result) {
-            this[ToStringCache].set(node, undefined);
-          }
+    }
+    let value: T;
+    try {
+      for await (value of input) {
+        yield q.value(value);
+      }
+    } catch (error) {
+      if (enabled) {
+        resetCachesIfPromise()
+        q.reject(error);
+      }
+      await Promise.reject(error);
+      throw error; // awaiting a rejected promise above should close this stack... but for a programmers eye...
+    }
+    for (const cache of caches) {
+      cache?.set(key, value);
+    }
+    if (enabled) {
+      q.end();
+    }
+
+    function resetCachesIfPromise() {
+      for (const cache of caches) {
+        if (cache?.get(key) === q) {
+          cache.set(key, undefined);
         }
       }
-    } else if (isAsyncIterable(result)) {
-      const { resolve, reject, promise } = deferred<string>();
-      if (promiseCache) {
-        node[ToStringCache]?.set(node, promise);
-        this[ToStringCache].set(node, promise);
-      }
-      let value: string;
-      try {
-        for await (value of result) {
-          yield value;
-        }
-        node[ToStringCache]?.set(node, value);
-        this[ToStringCache].set(node, value);
-      } catch (error) {
-        if (promiseCache) {
-          reject(error);
-        }
-        await Promise.reject(error);
-      } finally {
-        if (promiseCache) {
-          if (node[ToStringCache]?.get(node) === promise) {
-            node[ToStringCache]?.set(node, undefined);
-          }
-          if (this[ToStringCache].get(node) === promise) {
-            this[ToStringCache].set(node, undefined);
-          }
-          resolve(value);
-        }
-      }
-      return;
-    } else if (typeof result === "undefined") {
-      return;
     }
-    throw new Error("Unknown string return type");
-  }
-  if (!isSourceReference(node.source) || isFragmentVNode(node)) {
-    return yield * toStringIterableChildren.call(this, node);
-  }
-  if ((node[ToStringIsScalar]?.bind(node) ?? this[ToStringIsScalar]?.bind(this))(node)) {
-    return yield String(node.source);
-  }
-  const existingValue = (node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node));
-  if (typeof existingValue === "string") {
-    return yield existingValue;
-  }
-  if (promiseCache && isPromise(existingValue)) {
-    const value = await existingValue;
-    if (typeof value === "string") {
-      yield value;
-    }
-    return;
-  }
-  const { resolve, reject, promise } = deferred<string>();
-  if (promiseCache) {
-    node[ToStringCache]?.set(node, promise);
-    this[ToStringCache].set(node, promise);
-  }
-  let value: string = "";
-  try {
-    let inner: string;
-    for await (inner of toStringIterableChildren.call(this, node)) {
-      const body: string = (node[ToStringGetBody]?.bind(node) ?? this[ToStringGetBody].bind(this))(node, inner);
-      const header: string = (node[ToStringGetHeader]?.bind(node) ?? this[ToStringGetHeader].bind(this))(node, body);
-      const footer: string = (node[ToStringGetFooter]?.bind(node) ?? this[ToStringGetFooter].bind(this))(node, body);
-      value = `${header}${body}${footer}`;
-      yield value;
-    }
-    node[ToStringCache]?.set(node, value);
-    this[ToStringCache].set(node, value);
-  } catch (error) {
-    if (promiseCache) {
-      reject(error);
-    }
-    await Promise.reject(error);
-  } finally {
-    if (promiseCache) {
-      if (node[ToStringCache]?.get(node) === promise) {
-        node[ToStringCache]?.set(node, undefined);
-      }
-      if (this[ToStringCache].get(node) === promise) {
-        this[ToStringCache].set(node, undefined);
-      }
-      resolve(value);
+
+    function isValueNotUndefined(value: unknown): value is T {
+      return typeof value !== "undefined";
     }
   }
+
 }
 
 interface IterablePromise<V> extends AsyncIterable<V> {
