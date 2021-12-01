@@ -125,11 +125,12 @@ async function *toStringIterable(this: ToStringContext, node: VNode & Partial<To
   if (typeof existingValue === "string") {
     return yield existingValue;
   }
-  let value;
-  for await (const inner of toStringIterableChildren.call(this, node)) {
-    const body = (node[ToStringGetBody]?.bind(node) ?? this[ToStringGetBody].bind(this))(node, inner);
-    const header = (node[ToStringGetHeader]?.bind(node) ?? this[ToStringGetHeader].bind(this))(node, body);
-    const footer = (node[ToStringGetFooter]?.bind(node) ?? this[ToStringGetFooter].bind(this))(node, body);
+  let value: string;
+  let inner: string;
+  for await (inner of toStringIterableChildren.call(this, node)) {
+    const body: string = (node[ToStringGetBody]?.bind(node) ?? this[ToStringGetBody].bind(this))(node, inner);
+    const header: string = (node[ToStringGetHeader]?.bind(node) ?? this[ToStringGetHeader].bind(this))(node, body);
+    const footer: string = (node[ToStringGetFooter]?.bind(node) ?? this[ToStringGetFooter].bind(this))(node, body);
     value = `${header}${body}${footer}`;
     yield value;
   }
