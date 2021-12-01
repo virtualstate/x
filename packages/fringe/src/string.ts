@@ -1,7 +1,8 @@
 import {assertVNode, isFragmentVNode, VNode} from "./vnode";
 import {isSourceReference} from "./source-reference";
 import {union} from "@virtualstate/union";
-import {isAsyncIterable} from "iterable";
+import {isAsyncIterable, isPromise} from "iterable";
+import {deferred} from "./deferred";
 
 export const ToString = Symbol("toString");
 /**
@@ -28,6 +29,10 @@ export const ToStringCache = Symbol("Cache");
  * @experimental
  */
 export const ToStringUseSource = Symbol("useSource");
+/**
+ * @experimental
+ */
+export const ToStringDisablePromiseCache = Symbol("disablePromiseCache");
 
 export interface ToStringContext {
   [ToStringCache]: Pick<WeakMap<VNode, unknown>, "get" | "set">;
@@ -36,6 +41,7 @@ export interface ToStringContext {
   [ToStringGetHeader](node: VNode, body: string): string;
   [ToStringGetFooter](node: VNode, body: string): string;
   [ToStringUseSource]?: boolean
+  [ToStringDisablePromiseCache]?: boolean
   // Allows for full override of functionality
   [ToString]?(node: VNode): undefined | string | Promise<string | undefined> | AsyncIterable<string>;
 }
@@ -103,24 +109,73 @@ async function *toStringIterable(this: ToStringContext, node: VNode & Partial<To
       return yield `${node.source}`;
     }
   }
+  const promiseCache = !(node[ToStringDisablePromiseCache] || this[ToStringDisablePromiseCache]);
   const toStringFn: ToStringContext[typeof ToString] = node[ToString]?.bind(node) ?? this[ToString]?.bind(this);
   if (toStringFn) {
-    const existingValue = node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node);
+    const existingValue = (node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node));
     if (typeof existingValue === "string") {
       return yield existingValue;
+    } else if (promiseCache && isPromise(existingValue)) {
+      const value = await existingValue;
+      if (typeof value === "string") {
+        yield value;
+      }
+      return;
     }
-    const result = await toStringFn(node);
+    const result = toStringFn(node);
     if (typeof result === "string") {
       node[ToStringCache]?.set(node, result);
       this[ToStringCache].set(node, result);
       return yield result;
-    } else if (isAsyncIterable(result)) {
-      let value: string;
-      for await (value of result) {
-        yield value;
+    } else if (isPromise(result)) {
+      if (promiseCache) {
+        node[ToStringCache]?.set(node, result);
+        this[ToStringCache].set(node, result);
       }
-      node[ToStringCache]?.set(node, value);
-      this[ToStringCache].set(node, value);
+      try {
+        const value = await result;
+        node[ToStringCache]?.set(node, value);
+        this[ToStringCache].set(node, value);
+        return yield value;
+      } finally {
+        if (promiseCache) {
+          if (node[ToStringCache]?.get(node) === result) {
+            node[ToStringCache]?.set(node, undefined);
+          }
+          if (this[ToStringCache]?.get(node) === result) {
+            this[ToStringCache].set(node, undefined);
+          }
+        }
+      }
+    } else if (isAsyncIterable(result)) {
+      const { resolve, reject, promise } = deferred<string>();
+      if (promiseCache) {
+        node[ToStringCache]?.set(node, promise);
+        this[ToStringCache].set(node, promise);
+      }
+      let value: string;
+      try {
+        for await (value of result) {
+          yield value;
+        }
+        node[ToStringCache]?.set(node, value);
+        this[ToStringCache].set(node, value);
+      } catch (error) {
+        if (promiseCache) {
+          reject(error);
+        }
+        await Promise.reject(error);
+      } finally {
+        if (promiseCache) {
+          if (node[ToStringCache]?.get(node) === promise) {
+            node[ToStringCache]?.set(node, undefined);
+          }
+          if (this[ToStringCache].get(node) === promise) {
+            this[ToStringCache].set(node, undefined);
+          }
+          resolve(value);
+        }
+      }
       return;
     } else if (typeof result === "undefined") {
       return;
@@ -133,21 +188,50 @@ async function *toStringIterable(this: ToStringContext, node: VNode & Partial<To
   if ((node[ToStringIsScalar]?.bind(node) ?? this[ToStringIsScalar]?.bind(this))(node)) {
     return yield String(node.source);
   }
-  const existingValue = node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node);
+  const existingValue = (node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node));
   if (typeof existingValue === "string") {
     return yield existingValue;
   }
-  let value: string;
-  let inner: string;
-  for await (inner of toStringIterableChildren.call(this, node)) {
-    const body: string = (node[ToStringGetBody]?.bind(node) ?? this[ToStringGetBody].bind(this))(node, inner);
-    const header: string = (node[ToStringGetHeader]?.bind(node) ?? this[ToStringGetHeader].bind(this))(node, body);
-    const footer: string = (node[ToStringGetFooter]?.bind(node) ?? this[ToStringGetFooter].bind(this))(node, body);
-    value = `${header}${body}${footer}`;
-    yield value;
+  if (promiseCache && isPromise(existingValue)) {
+    const value = await existingValue;
+    if (typeof value === "string") {
+      yield value;
+    }
+    return;
   }
-  node[ToStringCache]?.set(node, value);
-  this[ToStringCache].set(node, value);
+  const { resolve, reject, promise } = deferred<string>();
+  if (promiseCache) {
+    node[ToStringCache]?.set(node, promise);
+    this[ToStringCache].set(node, promise);
+  }
+  let value: string = "";
+  try {
+    let inner: string;
+    for await (inner of toStringIterableChildren.call(this, node)) {
+      const body: string = (node[ToStringGetBody]?.bind(node) ?? this[ToStringGetBody].bind(this))(node, inner);
+      const header: string = (node[ToStringGetHeader]?.bind(node) ?? this[ToStringGetHeader].bind(this))(node, body);
+      const footer: string = (node[ToStringGetFooter]?.bind(node) ?? this[ToStringGetFooter].bind(this))(node, body);
+      value = `${header}${body}${footer}`;
+      yield value;
+    }
+    node[ToStringCache]?.set(node, value);
+    this[ToStringCache].set(node, value);
+  } catch (error) {
+    if (promiseCache) {
+      reject(error);
+    }
+    await Promise.reject(error);
+  } finally {
+    if (promiseCache) {
+      if (node[ToStringCache]?.get(node) === promise) {
+        node[ToStringCache]?.set(node, undefined);
+      }
+      if (this[ToStringCache].get(node) === promise) {
+        this[ToStringCache].set(node, undefined);
+      }
+      resolve(value);
+    }
+  }
 }
 
 interface IterablePromise<V> extends AsyncIterable<V> {
@@ -163,12 +247,8 @@ export function toString(this: Partial<ToStringContext>, node: VNode): IterableP
 export function toString(this: Partial<ToStringContext> | undefined, input?: VNode): IterablePromise<string> {
   const context: ToStringContext = {
     ...defaultContext,
-    [ToStringCache]: new WeakMap(),
-    ...Object.entries(
-      Object.keys(this ?? {})
-        .filter(key => typeof key === "symbol")
-        .map(key => [key, this[key]])
-    )
+    ...this,
+    [ToStringCache]: this[ToStringCache] ?? new WeakMap()
   };
   // Use the original this for access as a node
   const node = input ?? this;

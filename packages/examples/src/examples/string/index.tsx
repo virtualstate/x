@@ -9,6 +9,7 @@ import {
 } from "@virtualstate/fringe";
 
 const context = {
+  [ToStringCache]: new WeakMap(),
   [ToStringIsScalar]: node => node.scalar && !["script"].includes(node.source),
   // If we have a script, we want to force a body to exist
   [ToStringGetBody]: (node, body) => body || (["script"].includes(node.source) ? "\n" : ""),
@@ -35,15 +36,11 @@ const link2 = Object.assign(<link rel="prefetch" href="index.tsx" />, {
 
 const loading = Object.assign(<p />, {
   async *[ToString]() {
+    console.log("Loading content")
     yield "<p>Loading</p>";
     yield "<p>Loaded</p>";
   }
 })
-
-// This is our cache
-const cache = new WeakMap();
-
-const node = { ...h("p", { class: "test" }, "content"), toString, [ToStringCache]: cache };
 
 // The first call to
 
@@ -61,8 +58,8 @@ async function MyWebsite() {
   const cached1 = cache.get(node);
   // meaning we will not need to re-compute our toString
   const string2 = await node.toString();
-  // We could use a new cache (or pass undefined) if we wanted to recompute for sure
-  const recompute = await ({ ...node, [ToStringCache]: undefined }).toString()
+  // We could use a new cache if we wanted to recompute for sure
+  const recompute = await ({ ...node, [ToStringCache]: new WeakMap() }).toString()
   const results = { cached0, string1, cached1, string2, recompute };
   return (
     <html>
@@ -78,6 +75,7 @@ async function MyWebsite() {
         <main>
           <p key="huh">Content here</p>
           <p attr={false} other={true} value={1} one="two">Content there</p>
+          {loading}
           {loading}
         </main>
         <footer>
