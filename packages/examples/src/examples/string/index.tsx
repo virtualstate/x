@@ -5,7 +5,7 @@ import {
   ToStringIsScalar,
   ToStringGetBody,
   VNode,
-  ToStringUseSource, ToStringGetFooter
+  ToStringUseSource, ToStringGetFooter, ToString
 } from "@virtualstate/fringe";
 
 const context = {
@@ -33,6 +33,13 @@ const link2 = Object.assign(<link rel="prefetch" href="index.tsx" />, {
   scalar: false
 })
 
+const loading = Object.assign(<p />, {
+  async *[ToString]() {
+    yield "<p>Loading</p>";
+    yield "<p>Loaded</p>";
+  }
+})
+
 function MyWebsite() {
   return (
     <html>
@@ -46,6 +53,7 @@ function MyWebsite() {
         <main>
           <p key="huh">Content here</p>
           <p attr={false} other={true} value={1} one="two">Content there</p>
+          {loading}
         </main>
         <footer>
           <a href="https://example.com" target="_blank">example.com</a>

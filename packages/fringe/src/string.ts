@@ -1,6 +1,7 @@
 import {assertVNode, isFragmentVNode, VNode} from "./vnode";
 import {isSourceReference} from "./source-reference";
 import {union} from "@virtualstate/union";
+import {isAsyncIterable} from "iterable";
 
 export const ToString = Symbol("toString");
 /**
@@ -36,7 +37,7 @@ export interface ToStringContext {
   [ToStringGetFooter](node: VNode, body: string): string;
   [ToStringUseSource]?: boolean
   // Allows for full override of functionality
-  [ToString]?(node: VNode): undefined | string | Promise<string | undefined>;
+  [ToString]?(node: VNode): undefined | string | Promise<string | undefined> | AsyncIterable<string>;
 }
 
 function getBody(node: VNode, body: string) {
@@ -109,11 +110,22 @@ async function *toStringIterable(this: ToStringContext, node: VNode & Partial<To
       return yield existingValue;
     }
     const result = await toStringFn(node);
-    if (typeof result !== "undefined") {
+    if (typeof result === "string") {
       node[ToStringCache]?.set(node, result);
       this[ToStringCache].set(node, result);
       return yield result;
+    } else if (isAsyncIterable(result)) {
+      let value: string;
+      for await (value of result) {
+        yield value;
+      }
+      node[ToStringCache]?.set(node, value);
+      this[ToStringCache].set(node, value);
+      return;
+    } else if (typeof result === "undefined") {
+      return;
     }
+    throw new Error("Unknown string return type");
   }
   if (!isSourceReference(node.source) || isFragmentVNode(node)) {
     return yield * toStringIterableChildren.call(this, node);
