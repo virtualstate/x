@@ -29,7 +29,7 @@ export const ToStringCache = Symbol("Cache");
 export const ToStringUseSource = Symbol("useSource");
 
 export interface ToStringContext {
-  [ToStringCache]: Pick<WeakMap<VNode, string>, "get" | "set">;
+  [ToStringCache]: Pick<WeakMap<VNode, unknown>, "get" | "set">;
   [ToStringIsScalar](node: VNode): boolean;
   [ToStringGetBody](node: VNode, body: string): string;
   [ToStringGetHeader](node: VNode, body: string): string;
@@ -102,10 +102,10 @@ async function *toStringIterable(this: ToStringContext, node: VNode & Partial<To
       return yield `${node.source}`;
     }
   }
-  const toStringFn = node[ToString] ?? this[ToString];
+  const toStringFn: ToStringContext[typeof ToString] = node[ToString]?.bind(node) ?? this[ToString]?.bind(this);
   if (toStringFn) {
     const existingValue = node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node);
-    if (existingValue) {
+    if (typeof existingValue === "string") {
       return yield existingValue;
     }
     const result = await toStringFn(node);
@@ -118,18 +118,18 @@ async function *toStringIterable(this: ToStringContext, node: VNode & Partial<To
   if (!isSourceReference(node.source) || isFragmentVNode(node)) {
     return yield * toStringIterableChildren.call(this, node);
   }
-  if ((node[ToStringIsScalar] ?? this[ToStringIsScalar])(node)) {
+  if ((node[ToStringIsScalar]?.bind(node) ?? this[ToStringIsScalar]?.bind(this))(node)) {
     return yield String(node.source);
   }
   const existingValue = node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node);
-  if (existingValue) {
+  if (typeof existingValue === "string") {
     return yield existingValue;
   }
   let value;
   for await (const inner of toStringIterableChildren.call(this, node)) {
-    const body = (node[ToStringGetBody] ?? this[ToStringGetBody])(node, inner);
-    const header = (node[ToStringGetHeader] ?? this[ToStringGetHeader])(node, body);
-    const footer = (node[ToStringGetFooter] ?? this[ToStringGetFooter])(node, body);
+    const body = (node[ToStringGetBody]?.bind(node) ?? this[ToStringGetBody].bind(this))(node, inner);
+    const header = (node[ToStringGetHeader]?.bind(node) ?? this[ToStringGetHeader].bind(this))(node, body);
+    const footer = (node[ToStringGetFooter]?.bind(node) ?? this[ToStringGetFooter].bind(this))(node, body);
     value = `${header}${body}${footer}`;
     yield value;
   }
