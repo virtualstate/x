@@ -94,21 +94,23 @@ async function *toStringIterableChildren(this: ToStringContext, node: VNode): As
   if (!yielded) return yield "";
 }
 
-async function *toStringIterable(this: ToStringContext, node: VNode): AsyncIterable<string> {
-  if (this[ToStringUseSource]) {
+async function *toStringIterable(this: ToStringContext, node: VNode & Partial<ToStringContext>): AsyncIterable<string> {
+  if (node[ToStringUseSource] || this[ToStringUseSource]) {
     if (typeof node.source === "string") {
       return yield node.source;
     } else if (typeof node.source !== "undefined") {
       return yield `${node.source}`;
     }
   }
-  if (this[ToString]) {
-    const existingValue = this[ToStringCache].get(node);
+  const toStringFn = node[ToString] ?? this[ToString];
+  if (toStringFn) {
+    const existingValue = node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node);
     if (existingValue) {
       return yield existingValue;
     }
-    const result = await this[ToString](node);
+    const result = await toStringFn(node);
     if (typeof result !== "undefined") {
+      node[ToStringCache]?.set(node, result);
       this[ToStringCache].set(node, result);
       return yield result;
     }
@@ -116,21 +118,22 @@ async function *toStringIterable(this: ToStringContext, node: VNode): AsyncItera
   if (!isSourceReference(node.source) || isFragmentVNode(node)) {
     return yield * toStringIterableChildren.call(this, node);
   }
-  if (this[ToStringIsScalar](node)) {
+  if ((node[ToStringIsScalar] ?? this[ToStringIsScalar])(node)) {
     return yield String(node.source);
   }
-  const existingValue = this[ToStringCache].get(node);
+  const existingValue = node[ToStringCache]?.get(node) ?? this[ToStringCache].get(node);
   if (existingValue) {
     return yield existingValue;
   }
   let value;
   for await (const inner of toStringIterableChildren.call(this, node)) {
-    const body = this[ToStringGetBody](node, inner);
-    const header = this[ToStringGetHeader](node, body);
-    const footer = this[ToStringGetFooter](node, body);
+    const body = (node[ToStringGetBody] ?? this[ToStringGetBody])(node, inner);
+    const header = (node[ToStringGetHeader] ?? this[ToStringGetHeader])(node, body);
+    const footer = (node[ToStringGetFooter] ?? this[ToStringGetFooter])(node, body);
     value = `${header}${body}${footer}`;
     yield value;
   }
+  node[ToStringCache]?.set(node, value);
   this[ToStringCache].set(node, value);
 }
 
@@ -148,9 +151,14 @@ export function toString(this: Partial<ToStringContext> | undefined, input?: VNo
   const context: ToStringContext = {
     ...defaultContext,
     [ToStringCache]: new WeakMap(),
-    ...this
+    ...Object.entries(
+      Object.keys(this ?? {})
+        .filter(key => typeof key === "symbol")
+        .map(key => [key, this[key]])
+    )
   };
-  const node = input ?? context;
+  // Use the original this for access as a node
+  const node = input ?? this;
   assertVNode(node);
   const toStringInstance: IterablePromise<string> = {
     then(resolve, reject) {

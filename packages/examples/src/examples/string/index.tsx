@@ -5,7 +5,7 @@ import {
   ToStringIsScalar,
   ToStringGetBody,
   VNode,
-  ToStringUseSource
+  ToStringUseSource, ToStringGetFooter
 } from "@virtualstate/fringe";
 
 const context = {
@@ -28,12 +28,18 @@ const link = Object.assign(h("<link rel='prefetch' href='index.tsx'>"), {
   [ToStringUseSource]: true
 })
 
+const link2 = Object.assign(<link rel="prefetch" href="index.tsx" />, {
+  [ToStringGetFooter]: () => ">",
+  scalar: false
+})
+
 function MyWebsite() {
   return (
     <html>
       <head>
         <title>My Website</title>
         {link}
+        {link2}
       </head>
       <body>
         <h1>Hello!</h1>
