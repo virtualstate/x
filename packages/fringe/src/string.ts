@@ -2,6 +2,7 @@ import {assertVNode, isFragmentVNode, VNode} from "./vnode";
 import {isSourceReference} from "./source-reference";
 import {union} from "@virtualstate/union";
 
+export const ToString = Symbol("toString");
 /**
  * @experimental
  */
@@ -29,6 +30,8 @@ export interface ToStringContext {
   [ToStringGetBody](node: VNode, body: string): string;
   [ToStringGetHeader](node: VNode, body: string): string;
   [ToStringGetFooter](node: VNode, body: string): string;
+  // Allows for full override of functionality
+  [ToString]?(node: VNode): undefined | string | Promise<string | undefined>;
 }
 
 function getBody(node: VNode, body: string) {
@@ -87,6 +90,17 @@ async function *toStringIterableChildren(this: ToStringContext, node: VNode): As
 }
 
 async function *toStringIterable(this: ToStringContext, node: VNode): AsyncIterable<string> {
+  if (this[ToString]) {
+    const existingValue = this[ToStringCache].get(node);
+    if (existingValue) {
+      return yield existingValue;
+    }
+    const result = await this[ToString](node);
+    if (typeof result !== "undefined") {
+      this[ToStringCache].set(node, result);
+      return yield result;
+    }
+  }
   if (!isSourceReference(node.source) || isFragmentVNode(node)) {
     return yield * toStringIterableChildren.call(this, node);
   }

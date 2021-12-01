@@ -1,4 +1,5 @@
 import {ChildrenOptions, ChildrenTransformOptions, h, VNode, createFragment} from "@virtualstate/fringe";
+import { domain, input } from "./typing";
 
 function TryItOut(this: { counter?: number }) {
   console.log({ TryItOut: this });
@@ -9,6 +10,7 @@ function TryItOut(this: { counter?: number }) {
       <Child />
       <Child />
       <Child />
+      {domain.map(fn => h(fn))}
     </>
   )
 }
@@ -59,7 +61,11 @@ function bind(defaultContext: object, node: VNode): VNode {
   return options.proxyNode?.(node) ?? node;
 }
 
-const bound = bind({ [Provided]: true, counter: undefined }, <TryItOut />);
+const bound = bind({
+  [Provided]: true,
+  counter: undefined,
+  ...input
+}, <TryItOut />);
 
 export const _EC001_ChildrenOptions = bound;
 export const _EC001_URL = import.meta.url;

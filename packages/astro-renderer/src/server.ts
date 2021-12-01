@@ -48,9 +48,7 @@ async function renderToStaticMarkup(...args: Parameters<typeof createNode>): Pro
   );
   root.id = "root-detached";
   await render(node, root);
-  return {
-    html: root.innerHTML
-  };
+  return root.innerHTML;
 }
 
 export default {
