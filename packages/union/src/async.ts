@@ -1,4 +1,4 @@
-import {isAsyncIterable} from "iterable";
+import {isAsyncIterable} from "./is-async-iterable";
 
 export type Input<T> = AsyncIterable<T> | Iterable<T>;
 
