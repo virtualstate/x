@@ -3,7 +3,8 @@ import { deferred } from "./deferred";
 import { defaultTask, QueueTask } from "./microtask";
 import { aggregateError } from "./aggregate-error";
 import { isReuse } from "./reuse";
-import { isIterable, isPromise } from "iterable";
+import { isPromise } from "./is-promise";
+import { isIterable } from "./is-iterable";
 
 export interface UnionOptions {
   queueTask?: QueueTask;
