@@ -1,15 +1,14 @@
 import type {VNode} from "./vnode";
-import {createToken} from "./token";
 
 // Access to re-assign promise functionality
 /**
  * @experimental
  */
-export const Then = Symbol("Function VNode Then");
+export const Then = Symbol.for("@virtualstate/fringe/then");
 /**
  * @experimental
  */
-export const EnableThen = Symbol("VNode Enable Then");
+export const EnableThen = Symbol.for("@virtualstate/fringe/then/enable");
 
 /**
  * @experimental

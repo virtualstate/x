@@ -6,7 +6,7 @@ import {createNode} from "./create-node";
 /**
  * @experimental
  */
-export const ResolveSymbol = Symbol("Resolve");
+export const ResolveSymbol = Symbol.for("@virtualstate/fringe/Resolve");
 
 /**
  * @experimental

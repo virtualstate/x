@@ -4,39 +4,39 @@ import {union} from "@virtualstate/union";
 import {isAsyncIterable, isPromise} from "iterable";
 import {deferred} from "./deferred";
 
-export const ToString = Symbol("toString");
+export const ToString = Symbol.for("@virtualstate/toString");
 /**
  * @experimental
  */
-export const ToStringIsScalar = Symbol("isScalar");
+export const ToStringIsScalar = Symbol.for("@virtualstate/toString/isScalar");
 /**
  * @experimental
  */
-export const ToStringGetHeader = Symbol("getHeader");
+export const ToStringGetHeader = Symbol.for("@virtualstate/toString/getHeader");
 /**
  * @experimental
  */
-export const ToStringGetBody = Symbol("getBody");
+export const ToStringGetBody = Symbol.for("@virtualstate/toString/getBody");
 /**
  * @experimental
  */
-export const ToStringGetFooter = Symbol("getFooter");
+export const ToStringGetFooter = Symbol.for("@virtualstate/toString/getFooter");
 /**
  * @experimental
  */
-export const ToStringCache = Symbol("Cache");
+export const ToStringCache = Symbol.for("@virtualstate/toString/Cache");
 /**
  * @experimental
  */
-export const ToStringGetCacheKey = Symbol("getCacheKey");
+export const ToStringGetCacheKey = Symbol.for("@virtualstate/toString/getCacheKey");
 /**
  * @experimental
  */
-export const ToStringUseSource = Symbol("useSource");
+export const ToStringUseSource = Symbol.for("@virtualstate/toString/useSource");
 /**
  * @experimental
  */
-export const ToStringDisablePromiseCache = Symbol("disablePromiseCache");
+export const ToStringDisablePromiseCache = Symbol.for("@virtualstate/toString/disablePromiseCache");
 
 export interface ToStringContext {
   [ToStringCache]: Pick<WeakMap<VNode, unknown>, "get" | "set">;

@@ -43,7 +43,7 @@ import {isEnableThen, then} from "./then";
 const nonConstructable = new WeakSet();
 
 // Access to re-assign a functional vnode child between children reads
-export const Child = Symbol("Function VNode Child");
+export const Child = Symbol.for("@virtualstate/fringe/function/child");
 
 export interface CreateNodeFn {
   <

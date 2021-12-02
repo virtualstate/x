@@ -2,7 +2,6 @@ import { isSourceReference, SourceReference, MarshalledSourceReference } from ".
 import { isAsyncIterable, AsyncIterableLike, isIterable } from "iterable";
 import { Fragment } from "./fragment";
 import type { PromiseVNodeThenFn } from "./then";
-import {CreateNodeResult} from "./source";
 
 /**
  * Generic VNode, represents a virtual node within a state tree
