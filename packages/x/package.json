@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/x",
-  "version": "2.38.1",
+  "version": "2.38.2",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -29,9 +29,9 @@
     "clean": "rm -rf lib && rm tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@virtualstate/fringe": "^2.38.1",
-    "@virtualstate/hooks": "^2.38.1",
-    "@virtualstate/union": "^2.38.1",
+    "@virtualstate/fringe": "^2.38.2",
+    "@virtualstate/hooks": "^2.38.2",
+    "@virtualstate/union": "^2.38.2",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
@@ -69,5 +69,5 @@
   },
   "homepage": "https://github.com/virtualstate/x#readme",
   "author": "Fabian Cook <hello@fabiancook.dev>",
-  "gitHead": "4346a305ef884cb40ef48ecfc9fc9d774684f81c"
+  "gitHead": "6c404774b031cb51ca7cbf1b4d152a7ea308937a"
 }

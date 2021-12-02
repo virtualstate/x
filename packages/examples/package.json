@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/examples",
-  "version": "2.38.1",
+  "version": "2.38.2",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -20,11 +20,11 @@
   ],
   "dependencies": {
     "@opennetwork/rdf-data-model": "^6.2.0",
-    "@virtualstate/fringe": "^2.38.1",
-    "@virtualstate/hooks": "^2.38.1",
-    "@virtualstate/hooks-extended": "^2.38.1",
-    "@virtualstate/union": "^2.38.1",
-    "@virtualstate/x": "^2.38.1",
+    "@virtualstate/fringe": "^2.38.2",
+    "@virtualstate/hooks": "^2.38.2",
+    "@virtualstate/hooks-extended": "^2.38.2",
+    "@virtualstate/union": "^2.38.2",
+    "@virtualstate/x": "^2.38.2",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
@@ -68,5 +68,5 @@
     "clean": "rm -rf lib && rm tsconfig.tsbuildinfo && yarn clean:examples",
     "clean:examples": "rm src/information.built.ts && echo 'export {}' >> src/information.built.ts"
   },
-  "gitHead": "4346a305ef884cb40ef48ecfc9fc9d774684f81c"
+  "gitHead": "6c404774b031cb51ca7cbf1b4d152a7ea308937a"
 }
