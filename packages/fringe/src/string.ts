@@ -310,7 +310,7 @@ export function toString(this: Partial<ToStringContext> | undefined, input?: VNo
   const context: ToStringContext = {
     ...defaultContext,
     ...this,
-    [ToStringCache]: this[ToStringCache] ?? new WeakMap()
+    [ToStringCache]: this?.[ToStringCache] ?? new WeakMap()
   };
   // Use the original this for access as a node
   const node = input ?? this;
