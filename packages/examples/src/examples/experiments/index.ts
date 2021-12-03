@@ -9,3 +9,4 @@ export * from "./dom/another";
 // export * from "./playwright";
 export * from "./thing";
 export * from "./generalisation";
+export * from "./cached";
