@@ -3,7 +3,7 @@ import {isAsyncIterable, isPromise} from "iterable";
 
 export async function *performCached<T>(
   caches: (Pick<WeakMap<object, unknown>, "get" | "set"> | undefined)[],
-  enabled: boolean,
+  intermediateCacheEnabled: boolean,
   key: object,
   input: AsyncIterable<T>
 ): AsyncIterable<T> {
@@ -29,7 +29,7 @@ export async function *performCached<T>(
     let error: unknown;
     const q: Queue = {
       value<Z extends T>(nextValue: Z): Z {
-        if (enabled) {
+        if (intermediateCacheEnabled) {
           value = nextValue;
           const previous = current;
           current = deferred();
@@ -43,7 +43,7 @@ export async function *performCached<T>(
       },
       end() {
         done = true;
-        if (enabled) {
+        if (intermediateCacheEnabled) {
           current.resolve({
             value: undefined,
             done: true,
@@ -54,7 +54,7 @@ export async function *performCached<T>(
       reject(nextError: unknown) {
         if (done) return;
         done = true;
-        if (enabled) {
+        if (intermediateCacheEnabled) {
           error = nextError;
           current.reject(nextError);
         }
@@ -92,20 +92,20 @@ export async function *performCached<T>(
   }
 
   const existingValue = caches.reduce((found, cache) => found ?? cache?.get(key), undefined);
-  if (enabled && isAsyncIterable<T>(existingValue)) {
+  if (intermediateCacheEnabled && isAsyncIterable<T>(existingValue)) {
     // If we have an async iterable, we can replay it
     return yield * existingValue;
-  } else if (enabled && isPromise<T>(existingValue)) {
+  } else if (intermediateCacheEnabled && isPromise<T>(existingValue)) {
     const value: T = await existingValue;
     if (isValueNotUndefined(value)) {
       yield value;
     }
     return;
-  } else if (isValueNotUndefined(existingValue) && (enabled || !isPromise(existingValue))) {
+  } else if (isValueNotUndefined(existingValue) && (intermediateCacheEnabled || !isPromise(existingValue))) {
     return yield existingValue;
   }
   const q = queue<T>();
-  if (enabled) {
+  if (intermediateCacheEnabled) {
     for (const cache of caches) {
       cache?.set(key, q);
     }
@@ -116,7 +116,7 @@ export async function *performCached<T>(
       yield q.value(value);
     }
   } catch (error) {
-    if (enabled) {
+    if (intermediateCacheEnabled) {
       resetCachesIfPromise()
       q.reject(error);
     }
@@ -126,7 +126,7 @@ export async function *performCached<T>(
   for (const cache of caches) {
     cache?.set(key, value);
   }
-  if (enabled) {
+  if (intermediateCacheEnabled) {
     q.end();
   }
 

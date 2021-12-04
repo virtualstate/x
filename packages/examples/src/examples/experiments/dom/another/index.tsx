@@ -29,7 +29,7 @@ async function *Controller() {
   yield renderSite;
 
   const [earlier] = await render(globalDocument, referenced, space);
-  console.log({ instance: earlier[Instance], siblings: earlier[Instance].parentNode.childNodes })
+  // console.log({ instance: earlier[Instance], siblings: earlier[Instance].parentNode.childNodes })
 
   // Or like a function
 
@@ -55,10 +55,10 @@ async function *Controller() {
     {referenced}
   </Render>);
 
-  console.log({ instance, same: earlier[Instance] === instance });
+  // console.log({ instance, same: earlier[Instance] === instance });
 
   const [node] = await render(globalDocument, referenced, space);
-  console.log({ instance: node[Instance], siblings: node[Instance].parentNode.childNodes, same: earlier[Instance] === node[Instance] })
+  // console.log({ instance: node[Instance], siblings: node[Instance].parentNode.childNodes, same: earlier[Instance] === node[Instance] })
 
   // yield <Website />;
   // yield <ok />
