@@ -463,11 +463,28 @@ export const _501_ExampleInformation: ExampleInformation = {
     name: "Static",
     id: "501",
     exportedAs: "_501_Static",
-    source: "import { h } from \"@virtualstate/fringe\";\nimport { Cactus, Scroll, TestTube, Thread } from \"./domain\";\n\nexport const _501_Static = (\n  <TestTube>\n    <Thread size={2} />\n    <Cactus spikes=\"spikey\" />\n    <Cactus spikes=\"not very spikey\" />\n    <Scroll />\n  </TestTube>\n);\nexport const _501_URL = import.meta.url;\n",
+    source: "import { h, createFragment } from \"@virtualstate/fringe\";\nimport { Cactus, Scroll, TestTube, Thread } from \"./domain\";\n\nexport const _501_Static = (\n  <TestTube>\n    <Thread size={2} />\n    <Cactus spikes=\"spikey\" />\n    <Cactus spikes=\"not very spikey\" />\n    <Scroll />\n  </TestTube>\n);\nexport const _501_URL = import.meta.url;\n\nfunction StaticLog() {\n  const [thread, spikeyCactus, cactus, scroll] = _501_Static.children;\n  const log = { thread, spikeyCactus, cactus, scroll };\n  console.log(log);\n  return (\n    <>\n      {Object.entries(log).map(([Key, result]) => <Key>{result}</Key>)}\n    </>\n  );\n}\n\nexport const _502_Static = <StaticLog />;\nexport const _502_URL = import.meta.url;\n",
     sourceURL: "file:///workspaces/x/packages/examples/lib/examples/static/static.js",
-    output: "import { h } from \"@virtualstate/fringe\";\nimport { Cactus, Scroll, TestTube, Thread } from \"./domain.js\";\nexport const _501_Static = (h(TestTube, null,\n    h(Thread, { size: 2 }),\n    h(Cactus, { spikes: \"spikey\" }),\n    h(Cactus, { spikes: \"not very spikey\" }),\n    h(Scroll, null)));\nexport const _501_URL = import.meta.url;\n//# sourceMappingURL=static.js.map",
-    cleanerSource: "import { h } from \"@virtualstate/fringe\";\nimport { Cactus, Scroll, TestTube, Thread } from \"./domain\";\n\nexport const Example = (\n  <TestTube>\n    <Thread size={2} />\n    <Cactus spikes=\"spikey\" />\n    <Cactus spikes=\"not very spikey\" />\n    <Scroll />\n  </TestTube>\n);",
+    output: "import { h, createFragment } from \"@virtualstate/fringe\";\nimport { Cactus, Scroll, TestTube, Thread } from \"./domain.js\";\nexport const _501_Static = (h(TestTube, null,\n    h(Thread, { size: 2 }),\n    h(Cactus, { spikes: \"spikey\" }),\n    h(Cactus, { spikes: \"not very spikey\" }),\n    h(Scroll, null)));\nexport const _501_URL = import.meta.url;\nfunction StaticLog() {\n    const [thread, spikeyCactus, cactus, scroll] = _501_Static.children;\n    const log = { thread, spikeyCactus, cactus, scroll };\n    console.log(log);\n    return (h(createFragment, null, Object.entries(log).map(([Key, result]) => h(Key, null, result))));\n}\nexport const _502_Static = h(StaticLog, null);\nexport const _502_URL = import.meta.url;\n//# sourceMappingURL=static.js.map",
+    cleanerSource: "import { h, createFragment } from \"@virtualstate/fringe\";\nimport { Cactus, Scroll, TestTube, Thread } from \"./domain\";\n\nexport const Example = (\n  <TestTube>\n    <Thread size={2} />\n    <Cactus spikes=\"spikey\" />\n    <Cactus spikes=\"not very spikey\" />\n    <Scroll />\n  </TestTube>\n);",
     structure: "<🧪>\n  <🧵 size={2} />\n  <🌵 spikes=\"spikey\" />\n  <🌵 spikes=\"not very spikey\" />\n  {Symbol(\"📜\")}\n</🧪>",
+    info: undefined,
+    engineURL: undefined,
+    sourceInterfaceURL: undefined,
+    sourceInterface: undefined,
+    import: async (context?: Record<string, unknown>, state?: VNode): Promise<VNode> => {
+      throw new Error("Not available");
+    }
+}
+export const _502_ExampleInformation: ExampleInformation = {
+    name: "Static",
+    id: "502",
+    exportedAs: "_502_Static",
+    source: "import { h, createFragment } from \"@virtualstate/fringe\";\nimport { Cactus, Scroll, TestTube, Thread } from \"./domain\";\n\nexport const _501_Static = (\n  <TestTube>\n    <Thread size={2} />\n    <Cactus spikes=\"spikey\" />\n    <Cactus spikes=\"not very spikey\" />\n    <Scroll />\n  </TestTube>\n);\nexport const _501_URL = import.meta.url;\n\nfunction StaticLog() {\n  const [thread, spikeyCactus, cactus, scroll] = _501_Static.children;\n  const log = { thread, spikeyCactus, cactus, scroll };\n  console.log(log);\n  return (\n    <>\n      {Object.entries(log).map(([Key, result]) => <Key>{result}</Key>)}\n    </>\n  );\n}\n\nexport const _502_Static = <StaticLog />;\nexport const _502_URL = import.meta.url;\n",
+    sourceURL: "file:///workspaces/x/packages/examples/lib/examples/static/static.js",
+    output: "import { h, createFragment } from \"@virtualstate/fringe\";\nimport { Cactus, Scroll, TestTube, Thread } from \"./domain.js\";\nexport const _501_Static = (h(TestTube, null,\n    h(Thread, { size: 2 }),\n    h(Cactus, { spikes: \"spikey\" }),\n    h(Cactus, { spikes: \"not very spikey\" }),\n    h(Scroll, null)));\nexport const _501_URL = import.meta.url;\nfunction StaticLog() {\n    const [thread, spikeyCactus, cactus, scroll] = _501_Static.children;\n    const log = { thread, spikeyCactus, cactus, scroll };\n    console.log(log);\n    return (h(createFragment, null, Object.entries(log).map(([Key, result]) => h(Key, null, result))));\n}\nexport const _502_Static = h(StaticLog, null);\nexport const _502_URL = import.meta.url;\n//# sourceMappingURL=static.js.map",
+    cleanerSource: "import { h, createFragment } from \"@virtualstate/fringe\";\nimport { Cactus, Scroll, TestTube, Thread } from \"./domain\";\n\nexport const Example = (\n  <TestTube>\n    <Thread size={2} />\n    <Cactus spikes=\"spikey\" />\n    <Cactus spikes=\"not very spikey\" />\n    <Scroll />\n  </TestTube>\n);",
+    structure: "<>\n  <thread>\n    <🧵 size={2} />\n  </thread>\n  <spikeyCactus>\n    <🌵 spikes=\"spikey\" />\n  </spikeyCactus>\n  <cactus>\n    <🌵 spikes=\"not very spikey\" />\n  </cactus>\n  <scroll>\n    {Symbol(\"📜\")}\n  </scroll>\n</>",
     info: undefined,
     engineURL: undefined,
     sourceInterfaceURL: undefined,

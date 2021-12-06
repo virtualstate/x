@@ -1,4 +1,4 @@
-import { h } from "@virtualstate/fringe";
+import { h, createFragment } from "@virtualstate/fringe";
 import { Cactus, Scroll, TestTube, Thread } from "./domain";
 
 export const _501_Static = (
@@ -10,3 +10,17 @@ export const _501_Static = (
   </TestTube>
 );
 export const _501_URL = import.meta.url;
+
+function StaticLog() {
+  const [thread, spikeyCactus, cactus, scroll] = _501_Static.children;
+  const log = { thread, spikeyCactus, cactus, scroll };
+  console.log(log);
+  return (
+    <>
+      {Object.entries(log).map(([Key, result]) => <Key>{result}</Key>)}
+    </>
+  );
+}
+
+export const _502_Static = <StaticLog />;
+export const _502_URL = import.meta.url;
