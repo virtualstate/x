@@ -181,10 +181,32 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
 }
 
 /**
+ * @internal
+ * @experimental
+ */
+export function *flattenChildrenSourceRepresentation(source: Iterable<VNodeRepresentationSource>): Iterable<VNodeRepresentationSource> {
+  if (typeof source === "string") {
+    return yield source; // A string is iterable!
+  }
+  for (const item of source) {
+    if (isSourceReference(item)) {
+      yield item;
+    } else if (isVNode(item)) {
+      yield item;
+    } else if (isIterable(item)) {
+      yield *flattenChildrenSourceRepresentation(item)
+    } else {
+      // Async
+      yield item;
+    }
+  }
+}
+
+/**
  * @experimental
  */
 export function *flattenChildrenSource(context: ChildrenTransformOptions, source: Iterable<VNodeRepresentationSource>) {
-  for (const item of source) {
+  for (const item of flattenChildrenSourceRepresentation(source)) {
     if (typeof item !== "string" && isIterable(item)) {
       yield * flattenChildrenSource(context, item);
     } else

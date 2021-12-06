@@ -36,7 +36,8 @@ import {
   ChildrenOptions,
   isChildrenOptions,
   VNodeChildren,
-  flattenChildrenSource
+  flattenChildrenSource,
+  flattenChildrenSourceRepresentation
 } from "./children";
 import { createFragment, Fragment } from "./fragment";
 import {
@@ -566,7 +567,25 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
             flattened = [];
             return undefined;
           }
-          const initial = isSourceReference(source) ? [source] : [...source];
+
+          const initial = [...flattenChildrenSourceRepresentation(source)]
+          /**
+           * TODO find a scenario where flattenChildrenSourceRepresentation actually helps
+           *
+           * Below is the previous code that ignored non flat iterables
+           * The goal is either way, we want to know we have a set of values that have already passed through
+           * createNode
+           *
+           *
+           const previous = isSourceReference(source) ? [source] : [...source];
+           const previousA = previous.every(node => isVNode(node) || isSourceReference(node));
+           const initialA = initial.every(node => isVNode(node) || isSourceReference(node));
+           if (previousA !== initialA) {
+            console.log("HUHHH!!!!");
+          } else {
+            console.log("SAME!");
+          }
+           */
           // All nodes need to be already resolved, or source
           if (!initial.every(node => isVNode(node) || isSourceReference(node))) {
             flattened = [];
