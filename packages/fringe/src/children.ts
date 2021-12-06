@@ -164,7 +164,10 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
   }
 
   function isSyncChild(node: VNode): boolean {
-    return node.scalar || !node.children || !!node.children[Symbol.iterator];
+    return (
+      node.scalar ||
+      (isFragmentVNode(node) ? isIterable(node.children) : true)
+    )
   }
 
   if (source.length === 1) {

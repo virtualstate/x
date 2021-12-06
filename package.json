@@ -26,7 +26,8 @@
     "build:post": "node correct-import-extensions.js",
     "release": "yarn build && lerna publish",
     "examples:log": "yarn build && node packages/examples/lib/log.js",
-    "examples:build": "yarn build && node packages/examples/lib/build.js && yarn build"
+    "examples:build": "yarn build && yarn examples:build:run && yarn build",
+    "examples:build:run": "node packages/examples/lib/build.js"
   },
   "private": true,
   "devDependencies": {

@@ -4,7 +4,8 @@ import {
   CreateNodeOp1Function,
   CreateNodeResult,
   Source,
-  Instance, ChildrenSourceFunction,
+  Instance,
+  ChildrenSourceFunction,
 } from "./source";
 import {
   isSourceReference,
@@ -16,7 +17,8 @@ import {
   isFragmentVNode,
   isMarshalledVNode,
   isVNode,
-  MarshalledVNode, SyncVNodeRepresentation,
+  MarshalledVNode,
+  SyncVNodeRepresentation,
   VNode,
   VNodeRepresentationSource
 } from "./vnode";
@@ -33,7 +35,8 @@ import {
   ChildrenTransformOptions,
   ChildrenOptions,
   isChildrenOptions,
-  VNodeChildren
+  VNodeChildren,
+  flattenChildrenSource
 } from "./children";
 import { createFragment, Fragment } from "./fragment";
 import {
@@ -44,7 +47,7 @@ import {
   TokenResolvedOptions,
   TokenVNodeFn
 } from "./token";
-import {isEnableThen, then} from "./then";
+import { isEnableThen, then } from "./then";
 
 const nonConstructable = new WeakSet();
 
@@ -548,15 +551,48 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     return node;
   }
 
-  function replay(fn: () => AsyncIterable<VNode[]>, source?: VNodeRepresentationSource[]): VNodeChildren {
+  function replay(fn: (options: ChildrenTransformOptions) => AsyncIterable<VNode[]>, source?: VNodeRepresentationSource[], getOptions: () => ChildrenTransformOptions = getChildrenOptions.bind(undefined, source, options)): VNodeChildren {
+    // We will use this variable to store a static snapshot of our children, if they are available
+    let flattened: VNode[];
     return {
       [Symbol.asyncIterator]() {
-        return fn()[Symbol.asyncIterator]();
+        return fn(getOptions?.())[Symbol.asyncIterator]();
       },
       [ChildrenSource]: source,
-      [ChildrenSourceFunction]: fn
+      [ChildrenSourceFunction]: fn,
+      get [Symbol.iterator]() {
+        if (!flattened) {
+          if (!isIterable(source)) {
+            flattened = [];
+            return undefined;
+          }
+          const initial = isSourceReference(source) ? [source] : [...source];
+          // All nodes need to be already resolved, or source
+          if (!initial.every(node => isVNode(node) || isSourceReference(node))) {
+            flattened = [];
+            return undefined;
+          }
+          const options = getOptions?.() ?? { createNode };
+          flattened = [...flattenChildrenSource(options, initial)]
+          if (!flattened.every(isSyncItem)) {
+            flattened = [];
+            return undefined;
+          }
+        }
+        if (!flattened.length) {
+          return undefined;
+        }
+        return flattened[Symbol.iterator].bind(flattened)
+      }
     };
-  }
+
+    function isSyncItem(item): item is VNode {
+      return isVNode(item) && (
+        item.scalar ||
+        (isFragmentVNode(item) ? isIterable(item.children) : true)
+      );
+    }
+   }
 
 }
 
