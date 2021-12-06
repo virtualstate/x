@@ -32,10 +32,12 @@ export async function marshal(node: VNode, parent?: SourceReference, getReferenc
    */
   const reference = getReferenceInternal(parent, currentReference);
 
-  const children = await asyncExtendedIterable(node.children || []).map(
-    children => asyncExtendedIterable(children || []).map(
-      child => marshal(child, reference, getReferenceInternal)
-    ).toArray()
+  const children = await asyncExtendedIterable<VNode[]>(node.children).map(
+    (children) => Promise.all(
+      children.map(
+        child => marshal(child, reference, getReferenceInternal)
+      )
+    )
   ).toArray();
 
   const marshalled: MarshalledVNode = {

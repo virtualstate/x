@@ -11,6 +11,30 @@ import { UnionInput, union, UnionOptions } from "@virtualstate/union";
 import type { CreateNodeFn } from "./create-node";
 import { ChildrenSource, ChildrenSourceFunction } from "./source";
 
+
+export interface VNodeChildren<N extends VNode = VNode> extends AsyncIterable<N[]> {
+  /**
+   * @experiment
+   */
+  [Symbol.iterator]?(): Iterator<N>;
+
+  /**
+   * @experiment
+   */
+  [ChildrenSource]?: VNodeRepresentationSource[];
+
+  /**
+   * @experiment
+   */
+  [ChildrenSourceFunction]?: unknown;
+
+  /**
+   * @experiment
+   */
+  [ChildrenOptions]?: unknown;
+}
+
+
 export interface ProxyNodeFn {
   <T extends VNode>(input: T): T | undefined;
   (input: VNode): VNode | undefined;
@@ -62,21 +86,24 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
 
   /**
    * This allows a sync iterable source to bypass async resolution until it hits a defined node
-   * @param iterable
    */
-  function *flatSource(iterable: Iterable<VNodeRepresentationSource>): Iterable<AsyncIterable<VNode[]>> {
+  function *flatSource(context: ChildrenTransformOptions, iterable: Iterable<VNodeRepresentationSource>): Iterable<VNode> {
     for (const item of iterable) {
       if (typeof item !== "string" && isIterable(item)) {
-        yield * flatSource(item);
+        yield * flatSource(context, item);
       } else
       /**
        * If we have a fragment, and we have the source input for the children, then we can continue
        * flattening to bypass async resolution
        */
-      if (isFragmentVNode(item) && item.children && isIterableChildrenSource(item.children[ChildrenSource])) {
-        yield * flatSource(item.children[ChildrenSource]);
+      if (isFragmentVNode(item) && isIterable(item.children)) {
+        yield * flatSource(context, item.children);
+      } else if (isFragmentVNode(item) && item.children && isIterableChildrenSource(item.children[ChildrenSource])) {
+        yield * flatSource(context, item.children[ChildrenSource]);
+      } else if (isVNode(item)) {
+        yield item;
       } else {
-        yield eachSource(item);
+        yield givenContext.createNode(item);
       }
     }
   }
@@ -140,10 +167,23 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
     }
 
     if (isIterable(source)) {
-      return yield* childrenUnion(
-        context,
-        flatSource(source)
-      );
+      const initial = [...source];
+      if (!initial.length) {
+        return;
+      }
+      const allChildren = [...flatSource(context, initial)];
+      if (!allChildren.length) {
+        return;
+      }
+      if (allChildren.every(isSyncChild)) {
+        return yield [...allChildren];
+      } else {
+        return yield * childrenUnion(
+          context,
+          initial.map(eachSource)
+        );
+      }
+
     }
 
     return yield* childrenUnion(
@@ -152,11 +192,19 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
     );
   }
 
+  function isSyncChild(node: VNode): boolean {
+    return node.scalar || !node.children || !!node.children[Symbol.iterator];
+  }
+
   if (source.length === 1) {
     return yield* eachSource(source[0]);
   } else {
     return yield* childrenUnion(givenContext, source.map(eachSource));
   }
+}
+
+export function flattenChildrenSource(source: Iterable<VNodeRepresentationSource>) {
+
 }
 
 /**

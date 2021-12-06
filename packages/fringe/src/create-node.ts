@@ -16,7 +16,7 @@ import {
   isFragmentVNode,
   isMarshalledVNode,
   isVNode,
-  MarshalledVNode,
+  MarshalledVNode, SyncVNodeRepresentation,
   VNode,
   VNodeRepresentationSource
 } from "./vnode";
@@ -28,7 +28,13 @@ import {
   isIterableIterator,
   getNext
 } from "iterable";
-import {children as childrenGenerator, ChildrenTransformOptions, ChildrenOptions, isChildrenOptions} from "./children";
+import {
+  children as childrenGenerator,
+  ChildrenTransformOptions,
+  ChildrenOptions,
+  isChildrenOptions,
+  VNodeChildren
+} from "./children";
 import { createFragment, Fragment } from "./fragment";
 import {
   createToken,
@@ -182,7 +188,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * This may be wasteful, but the idea is that we wouldn't cause a next tick for no reason
    * Maybe this isn't the case if the value isn't a promise to start with ¯\_(ツ)_/¯
    */
-  if (source && isPromise(source)) {
+  if (source && isPromise<SyncVNodeRepresentation>(source)) {
     const node = {
       source,
       reference: Fragment,
@@ -542,7 +548,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     return node;
   }
 
-  function replay<T>(fn: () => AsyncIterable<T>, source?: unknown): AsyncIterable<T> & { [ChildrenSource]?: unknown, [ChildrenSourceFunction]?: unknown } {
+  function replay(fn: () => AsyncIterable<VNode[]>, source?: VNodeRepresentationSource[]): VNodeChildren {
     return {
       [Symbol.asyncIterator]() {
         return fn()[Symbol.asyncIterator]();
