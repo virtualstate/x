@@ -555,9 +555,13 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
   function replay(fn: (options: ChildrenTransformOptions) => AsyncIterable<VNode[]>, source?: VNodeRepresentationSource[], getOptions: () => ChildrenTransformOptions = getChildrenOptions.bind(undefined, source, options)): VNodeChildren {
     // We will use this variable to store a static snapshot of our children, if they are available
     let flattened: VNode[];
-    return {
-      [Symbol.asyncIterator]() {
-        return fn(getOptions?.())[Symbol.asyncIterator]();
+    const children: VNodeChildren = {
+      async *[Symbol.asyncIterator]() {
+        if (isIterable(children)) {
+          yield [...children];
+        } else {
+          return yield * fn(getOptions?.());
+        }
       },
       [ChildrenSource]: source,
       [ChildrenSourceFunction]: fn,
@@ -604,6 +608,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
         return flattened[Symbol.iterator].bind(flattened)
       }
     };
+    return children;
 
     function isSyncItem(item): item is VNode {
       return isVNode(item) && (
