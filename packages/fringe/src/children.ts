@@ -1,4 +1,4 @@
-import { isFragmentVNode, isVNode, VNode, VNodeRepresentationSource } from "./vnode";
+import {BasicVNodeRepresentation, isFragmentVNode, isVNode, VNode, VNodeRepresentationSource} from "./vnode";
 import { isSourceReference } from "./source-reference";
 import {
   asyncExtendedIterable,
@@ -14,22 +14,22 @@ import { ChildrenSource, ChildrenSourceFunction } from "./source";
 
 export interface VNodeChildren<N extends VNode = VNode> extends AsyncIterable<N[]> {
   /**
-   * @experiment
+   * @experimental
    */
   [Symbol.iterator]?(): Iterator<N>;
 
   /**
-   * @experiment
+   * @experimental
    */
-  [ChildrenSource]?: VNodeRepresentationSource[];
+  [ChildrenSource]?: Iterable<VNodeRepresentationSource>;
 
   /**
-   * @experiment
+   * @experimental
    */
   [ChildrenSourceFunction]?: unknown;
 
   /**
-   * @experiment
+   * @experimental
    */
   [ChildrenOptions]?: unknown;
 }
@@ -80,34 +80,6 @@ function *flat(iterable: Iterable<VNodeRepresentationSource>): Iterable<VNodeRep
 
 export async function *children(givenContext: ChildrenTransformOptions, ...source: VNodeRepresentationSource[]): AsyncIterable<VNode[]> {
 
-  function isIterableChildrenSource(value: unknown): value is VNodeRepresentationSource & Iterable<unknown> {
-    return isIterable(value);
-  }
-
-  /**
-   * This allows a sync iterable source to bypass async resolution until it hits a defined node
-   */
-  function *flatSource(context: ChildrenTransformOptions, iterable: Iterable<VNodeRepresentationSource>): Iterable<VNode> {
-    for (const item of iterable) {
-      if (typeof item !== "string" && isIterable(item)) {
-        yield * flatSource(context, item);
-      } else
-      /**
-       * If we have a fragment, and we have the source input for the children, then we can continue
-       * flattening to bypass async resolution
-       */
-      if (isFragmentVNode(item) && isIterable(item.children)) {
-        yield * flatSource(context, item.children);
-      } else if (isFragmentVNode(item) && item.children && isIterableChildrenSource(item.children[ChildrenSource])) {
-        yield * flatSource(context, item.children[ChildrenSource]);
-      } else if (isVNode(item)) {
-        yield item;
-      } else {
-        yield givenContext.createNode(item);
-      }
-    }
-  }
-
   async function *eachSource(original: VNodeRepresentationSource): AsyncIterable<VNode[]> {
     let source: VNodeRepresentationSource = original;
 
@@ -132,9 +104,8 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
        * If we have internal documented source for the children, and it
        * is an iterable, we can use this sync source and pre-flatten it
        */
-      const childrenSource = source.children[ChildrenSource];
-      if (isIterableChildrenSource(childrenSource)) {
-        return yield * eachSource(childrenSource);
+      if (isIterableChildrenSource(source.children)) {
+        return yield * eachSource(source.children[ChildrenSource]);
       }
       let iterable: AsyncIterable<VNode[]> = source.children;
       if (isChildrenSourceFunction(source.children)) {
@@ -171,7 +142,7 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
       if (!initial.length) {
         return;
       }
-      const allChildren = [...flatSource(context, initial)];
+      const allChildren = [...flattenChildrenSource(context, initial)];
       if (!allChildren.length) {
         return;
       }
@@ -203,9 +174,38 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
   }
 }
 
-export function flattenChildrenSource(source: Iterable<VNodeRepresentationSource>) {
-
+/**
+ * @experimental
+ */
+export function *flattenChildrenSource(context: ChildrenTransformOptions, source: Iterable<VNodeRepresentationSource>) {
+  for (const item of source) {
+    if (typeof item !== "string" && isIterable(item)) {
+      yield * flattenChildrenSource(context, item);
+    } else
+      /**
+       * If we have a fragment, and we have the source input for the children, then we can continue
+       * flattening to bypass async resolution
+       */
+    if (isFragmentVNode(item) && isIterableChildren(item.children)) {
+      yield * flattenChildrenSource(context, item.children);
+    } else if (isFragmentVNode(item) && item.children && isIterableChildrenSource(item.children)) {
+      yield * flattenChildrenSource(context, item.children[ChildrenSource]);
+    } else if (isVNode(item)) {
+      yield item;
+    } else {
+      yield context.createNode(item);
+    }
+  }
 }
+
+function isIterableChildrenSource(children: VNodeChildren): children is VNodeChildren & { [ChildrenSource]: Iterable<BasicVNodeRepresentation> } {
+  return isIterable(children[ChildrenSource]);
+}
+
+function isIterableChildren(children: VNodeChildren): children is VNodeChildren & Iterable<BasicVNodeRepresentation> {
+  return isIterable(children);
+}
+
 
 /**
  * @experimental
