@@ -100,6 +100,9 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
       if (!source.children) {
         return;
       }
+      if (isIterable(source.children)) {
+        return yield [...source.children];
+      }
       /**
        * If we have internal documented source for the children, and it
        * is an iterable, we can use this sync source and pre-flatten it
