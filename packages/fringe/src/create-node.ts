@@ -579,14 +579,14 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
         return flattened;
       },
       async *[Symbol.asyncIterator]() {
-        if (isIterable(children)) {
+        if (isIterable<VNode[]>(children)) {
           yield [...children];
         } else {
-          return yield * fn.call(this, flattenedInitial ?? source, getOptions.call(this) ?? { createNode });
+          return yield * children[ChildrenSourceFunction]();
         }
       },
       [ChildrenSource]: source,
-      [ChildrenSourceFunction]() {
+      [ChildrenSourceFunction](this: unknown): AsyncIterable<VNode[]> {
         return fn.call(this, flattenedInitial ?? source, getOptions.call(this) ?? { createNode });
       },
       get [Symbol.iterator]() {

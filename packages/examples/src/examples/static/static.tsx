@@ -1,5 +1,6 @@
-import {h, createFragment} from "@virtualstate/fringe";
+import {h, createFragment, EnableThen} from "@virtualstate/fringe";
 import { Cactus, Scroll, TestTube, Thread } from "./domain";
+import {isIterable} from "iterable";
 
 export const _501_Static = (
   <TestTube>
@@ -21,6 +22,14 @@ async function StaticLog() {
   const promise = Promise.resolve(_501_Static.children);
   const [threadAsync, spikeyCactusAsync, cactusAsync, scrollAsync] = await promise;
   console.log("promise", { promise, thread: threadAsync, spikeyCactus: spikeyCactusAsync, cactus: cactusAsync, scroll: scrollAsync });
+  const child = h(Symbol("Child"), { [EnableThen]: true });
+  const it = Symbol("It");
+  let Component = h(it, { [EnableThen]: true }, child);
+
+  await Component;
+  if (isIterable(Component.children)) {
+    console.log([...Component.children]);
+  }
   return (
     <>
       {Object.entries({ thread, spikeyCactus, cactus, scroll }).map(([Key, result]) => <Key>{result}</Key>)}

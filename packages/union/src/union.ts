@@ -4,7 +4,7 @@ import { defaultTask, QueueTask } from "./microtask";
 import { aggregateError } from "./aggregate-error";
 import { isReuse } from "./reuse";
 import { isPromise } from "./is-promise";
-import { isIterable } from "./is-iterable";
+import { isAsyncIterable } from "./is-async-iterable";
 
 export interface UnionOptions {
   queueTask?: QueueTask;
@@ -56,11 +56,14 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
   let iteratorsDone = false;
   let valuesDone = false;
   // I wish I could use "const isSourceIterable: source is Iterable<Input<T>> = isIterable(source);"
-  const isSourceIterable = isIterable(source);
+  const isSourceAsyncIterable = isAsyncIterable(source);
   const sourceIterator: AsyncIterator<Input<T>> | Iterator<Input<T>> =
-    isIterable(source) ?
-      source[Symbol.iterator]() :
-      source[Symbol.asyncIterator]();
+    // Prefer async iteration, as then it can be chosen as to how the iteration happens
+    // We are in an async context either way.
+    // Only if the source is only iterable, we want to use the sync iterator
+    isAsyncIterable(source) ?
+      source[Symbol.asyncIterator]() :
+      source[Symbol.iterator]();
   let active: IterationFlag | undefined = undefined;
   let iteratorsPromise: Promise<void> = Promise.resolve();
   let iteratorAvailable = deferred<void>();
@@ -182,14 +185,14 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
          * async case we want to resolve iteratorAvailable ASAP.
          */
         anyResult = true;
-        if (!isSourceIterable) {
+        if (isSourceAsyncIterable) {
           iteratorAvailable.resolve();
           iteratorAvailable = deferred();
         }
       }
     }
 
-    if (isSourceIterable && anyResult) {
+    if (!isSourceAsyncIterable && anyResult) {
       iteratorAvailable.resolve();
       iteratorAvailable = deferred();
     }

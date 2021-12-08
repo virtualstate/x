@@ -79,8 +79,6 @@ export function createToken<T extends SourceReference, O extends object, Initial
   const isOptionsFrozenStatic = !!options && Object.isFrozen(options);
   const optionsKeyLength = options ? isOptionsFrozenStatic ? Object.keys(options).length : 0 : 0;
 
-  const objectReference = {};
-
   function TokenConstructor<I extends Partial<TokenOptionsRecord>>(this: unknown, partialOptions?: I, child?: VNode): TokenVNodeFn<T, O, O> {
     const node = isTokenVNode<T, O>(this) ? this : tokenized;
     const previousNode: Pick<Token, keyof Token> = node;

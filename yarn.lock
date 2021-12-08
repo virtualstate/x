@@ -8523,10 +8523,10 @@ typescript@^4.2.3, typescript@^4.2.4:
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.2.4.tgz"
   integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
 
-typescript@^4.6.0-dev.20211105:
-  version "4.6.0-dev.20211105"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-4.6.0-dev.20211105.tgz#b0f5819711b388c4a8df383df62788467a6ce112"
-  integrity sha512-Af5rLZtlF/Ah4i7pQBxF7OfxK2bxDBoxgsRUK639YQq9zNmSj3H6YJZIFw/+OEthFZrj4izAfp6USxBUMAdqQQ==
+typescript@^4.6.0-dev.20211208:
+  version "4.6.0-dev.20211208"
+  resolved "https://packages.contact-digital-devops.net/typescript/-/typescript-4.6.0-dev.20211208.tgz#6eae1cc387868d9074604af45a5955affea7c023"
+  integrity sha512-yMG1rK3/BUGqchcRwixAfBLcpNMBPe1EC0pOls5iqf6RYonitQ1TqLEkFA2ero7b39SydW7IFzeUaqRbfXYUMg==
 
 uglify-js@^3.1.4:
   version "3.13.7"

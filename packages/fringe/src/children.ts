@@ -26,12 +26,12 @@ export interface VNodeChildren<N extends VNode = VNode> extends AsyncIterable<N[
   /**
    * @experimental
    */
-  [ChildrenSourceFunction]?: unknown;
+  [ChildrenSourceFunction]?(): AsyncIterable<VNode[]>;
 
   /**
    * @experimental
    */
-  [ChildrenOptions]?: unknown;
+  [ChildrenOptions]?: ChildrenTransformOptions;
 
   /**
    * @experimental
