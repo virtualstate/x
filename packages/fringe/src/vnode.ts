@@ -105,7 +105,7 @@ export type AsyncVNodeRepresentation = Promise<SyncVNodeRepresentation> | AsyncI
 /**
  * A {@link VNode} that can be resolved synchronously
  */
-export type SyncVNodeRepresentation = SourceReference | VNode | Iterable<VNode>;
+export type SyncVNodeRepresentation = SourceReference | VNode | Iterable<VNode | SourceReference | Iterable<VNode | SourceReference>>;
 /**
  * A {@link VNode} with requiring _either_ synchronous or asynchronous resolution
  */

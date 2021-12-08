@@ -20,6 +20,7 @@ import {
   MarshalledVNode,
   SyncVNodeRepresentation,
   VNode,
+  VNodeRepresentation,
   VNodeRepresentationSource
 } from "./vnode";
 import {
@@ -176,10 +177,14 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     if (children.length && !nextSource.children) {
       nextSource = {
         ...nextSource,
-        children: replay(function(this: unknown) {
-          const childrenOptions = getChildrenOptions(nextSource, nextSource.options, isChildrenOptions(this) ? this[ChildrenOptions] : undefined);
-          return childrenGenerator(childrenOptions, ...children);
-        }, children)
+        children: replay(
+          function(children, childrenOptions) {
+            return childrenGenerator(childrenOptions, ...children);
+          },
+          children,
+          function (this: unknown) {
+            return getChildrenOptions(nextSource, nextSource.options, isChildrenOptions(this) ? this[ChildrenOptions] : undefined)
+          })
       };
     }
     enableThen(nextSource, source);
@@ -196,10 +201,15 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     const node = {
       source,
       reference: Fragment,
-      children: replay(function(this: unknown) {
-        const childrenOptions = getChildrenOptions(source, source, isChildrenOptions(this) ? this[ChildrenOptions] : undefined);
-        return promiseGenerator(childrenOptions, source);
-      }, [source])
+      children: replay(
+      function(flat, childrenOptions) {
+          return promiseGenerator(childrenOptions, source);
+        },
+        [source],
+        function (this: unknown) {
+          return getChildrenOptions(source, source, isChildrenOptions(this) ? this[ChildrenOptions] : undefined);
+        }
+      )
     };
     enableThen(node, source);
     return node;
@@ -261,17 +271,22 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    *
    * We will create a `Fragment` that holds our node state to grab later
    */
-  if (source && (isIterable(source) || isAsyncIterable(source))) {
+  if (source && (isIterable<VNodeRepresentation>(source) || isAsyncIterable<VNodeRepresentation>(source))) {
     const node: VNode = {
       source,
       reference: Fragment,
-      children: replay(function(this: unknown) {
-        const childrenOptions = getChildrenOptions(source, source, isChildrenOptions(this) ? this[ChildrenOptions] : undefined);
-        return childrenGenerator(childrenOptions, asyncExtendedIterable(source).map(value => {
-          const node = childrenOptions.createNode(value, options, ...children);
-          return childrenOptions.proxyNode?.(node) ?? node;
-        }))
-      }, children)
+      children: replay(
+        function(source, childrenOptions) {
+          return childrenGenerator(childrenOptions, source.map(value => {
+            const node = childrenOptions.createNode(value, options, ...children);
+            return childrenOptions.proxyNode?.(node) ?? node;
+          }))
+        },
+        [source],
+        function (this) {
+          return getChildrenOptions(source, source, isChildrenOptions(this) ? this[ChildrenOptions] : undefined)
+        }
+      )
     };
     if (options) {
       node.options = options;
@@ -552,19 +567,22 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     return node;
   }
 
-  function replay(fn: (options: ChildrenTransformOptions) => AsyncIterable<VNode[]>, source?: VNodeRepresentationSource[], getOptions: () => ChildrenTransformOptions = getChildrenOptions.bind(undefined, source, options)): VNodeChildren {
+  function replay(fn: (this: VNodeChildren, flattenedInitial: VNodeRepresentationSource[], options: ChildrenTransformOptions) => AsyncIterable<VNode[]>, source?: VNodeRepresentationSource[], getOptions: (this: VNodeChildren) => ChildrenTransformOptions = getChildrenOptions.bind(undefined, source, options)): VNodeChildren {
     // We will use this variable to store a static snapshot of our children, if they are available
+    let flattenedInitial: VNode[];
     let flattened: VNode[];
     const children: VNodeChildren = {
       async *[Symbol.asyncIterator]() {
         if (isIterable(children)) {
           yield [...children];
         } else {
-          return yield * fn(getOptions?.());
+          return yield * fn.call(this, flattenedInitial ?? source, getOptions.call(this) ?? { createNode });
         }
       },
       [ChildrenSource]: source,
-      [ChildrenSourceFunction]: fn,
+      [ChildrenSourceFunction]() {
+        return fn.call(this, flattenedInitial ?? source, getOptions.call(this) ?? { createNode });
+      },
       get [Symbol.iterator]() {
         if (!flattened) {
           if (!isIterable(source)) {
@@ -572,7 +590,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
             return undefined;
           }
 
-          const initial = [...flattenChildrenSourceRepresentation(source)]
+          const flattenedInitial = [...flattenChildrenSourceRepresentation(source)]
           /**
            * TODO find a scenario where flattenChildrenSourceRepresentation actually helps
            *
@@ -583,7 +601,7 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
            *
            const previous = isSourceReference(source) ? [source] : [...source];
            const previousA = previous.every(node => isVNode(node) || isSourceReference(node));
-           const initialA = initial.every(node => isVNode(node) || isSourceReference(node));
+           const initialA = flattenedInitial.every(node => isVNode(node) || isSourceReference(node));
            if (previousA !== initialA) {
             console.log("HUHHH!!!!");
           } else {
@@ -591,12 +609,12 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
           }
            */
           // All nodes need to be already resolved, or source
-          if (!initial.every(node => isVNode(node) || isSourceReference(node))) {
+          if (!flattenedInitial.every(node => isVNode(node) || isSourceReference(node))) {
             flattened = [];
             return undefined;
           }
-          const options = getOptions?.() ?? { createNode };
-          flattened = [...flattenChildrenSource(options, initial)]
+          const options = getOptions.call(this) ?? { createNode };
+          flattened = [...flattenChildrenSource(options, flattenedInitial)]
           if (!flattened.every(isSyncItem)) {
             flattened = [];
             return undefined;

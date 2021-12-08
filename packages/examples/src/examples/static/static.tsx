@@ -1,8 +1,7 @@
-import {h, createFragment, VNode} from "@virtualstate/fringe";
+import {h, createFragment} from "@virtualstate/fringe";
 import { Cactus, Scroll, TestTube, Thread } from "./domain";
-import {isAsyncIterable, isIterable} from "iterable";
 
-export const _501_Static: VNode = (
+export const _501_Static = (
   <TestTube>
     <Thread size={2} />
     <Cactus spikes="spikey" />
@@ -13,9 +12,7 @@ export const _501_Static: VNode = (
 export const _501_URL = import.meta.url;
 
 async function StaticLog() {
-  const children = _501_Static.children;
-  if (!(isIterable(children))) return;
-  const [thread, spikeyCactus, cactus, scroll] = children;
+  const [thread, spikeyCactus, cactus, scroll] = _501_Static.children;
   const log = { thread, spikeyCactus, cactus, scroll };
   console.log("sync", log);
   for await (const [thread, spikeyCactus, cactus, scroll] of _501_Static.children) {
