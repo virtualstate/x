@@ -1,21 +1,13 @@
 import { h, createFragment } from "@virtualstate/fringe";
 import { render } from "@virtualstate/dom";
 
-async function SiteContents() {
-  return createFragment(
-    {},
-    h("p", {}, "Hello World!"),
-    h(
-      "button",
-      {
-        type: "button",
-        onClick() {
-          alert("Button clicked!");
-        }
-      },
-      "Press me!!"
-    )
-  );
+function SiteContents() {
+  return (
+    <>
+      <p>Hello World!</p>
+      <button type="button" onClick={() => alert("Button clicked!")}>Press me!!</button>
+    </>
+  )
 }
 
 async function Site() {

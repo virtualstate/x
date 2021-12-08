@@ -1,5 +1,5 @@
 import { Source, h, createToken } from "@virtualstate/fringe";
-import { Transform } from "@virtualstate/examples";
+import { Transform } from "./transform";
 
 function FnComponent({ meta }) {
   return `${meta} 📜`;
