@@ -624,6 +624,14 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
           return undefined;
         }
         return flattened[Symbol.iterator].bind(flattened)
+      },
+      then(resolve, reject) {
+        return asyncChildren().then(resolve, reject);
+        async function asyncChildren() {
+          let result;
+          for await (result of children) {}
+          return result;
+        }
       }
     };
     return children;

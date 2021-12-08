@@ -32,6 +32,11 @@ export interface VNodeChildren<N extends VNode = VNode> extends AsyncIterable<N[
    * @experimental
    */
   [ChildrenOptions]?: unknown;
+
+  /**
+   * @experimental
+   */
+  then?: PromiseLike<VNode[]>["then"]
 }
 
 
