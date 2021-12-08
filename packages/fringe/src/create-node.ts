@@ -572,6 +572,12 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     let flattenedInitial: VNode[];
     let flattened: VNode[];
     const children: VNodeChildren = {
+      get [Symbol("@virtualstate/fringe/VNodeChildren/DebugFlattenedInitial")]() {
+        return flattenedInitial
+      },
+      get [Symbol("@virtualstate/fringe/VNodeChildren/DebugFlattened")]() {
+        return flattened;
+      },
       async *[Symbol.asyncIterator]() {
         if (isIterable(children)) {
           yield [...children];
