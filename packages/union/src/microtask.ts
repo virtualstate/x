@@ -1,4 +1,4 @@
-export const DefaultUnionTask = Symbol("Default Union Task");
+export const DefaultUnionTask = Symbol.for("@virtualstate/union/DefaultTask");
 
 interface Task {
   (fn: () => void): void
