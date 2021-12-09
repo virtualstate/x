@@ -27,13 +27,15 @@
     "release": "yarn build && lerna publish",
     "examples:log": "yarn build && node packages/examples/lib/log.js",
     "examples:build": "yarn build && yarn examples:build:run && yarn build",
-    "examples:build:run": "node packages/examples/lib/build.js"
+    "examples:build:run": "node packages/examples/lib/build.js",
+    "examples:build:coverage": "c8 -r html -r text-summary --lines 50 --functions 50 --branches 50 --all yarn examples:build:run"
   },
   "private": true,
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "@types/node": "^15.6.0",
     "babel-jest": "^27.0.2",
+    "c8": "^7.10.0",
     "commander": "^7.2.0",
     "csv-parser": "^3.0.0",
     "dom-lite": "^20.2.0",
