@@ -816,6 +816,23 @@ export const _903_ExampleInformation: ExampleInformation = {
       throw new Error("Not available");
     }
 }
+export const _CH0001_ExampleInformation: ExampleInformation = {
+    name: "",
+    id: "CH0001",
+    exportedAs: "_CH0001",
+    source: "import { h, VNode, createFragment } from \"@virtualstate/fringe\";\n\nasync function Parent(options: unknown, input?: VNode) {\n  const children = (await input?.children) ?? [];\n  return (\n    <parent empty={!children.length}>\n        {children.length ? children : \"\\n\"}\n    </parent>\n  )\n}\n\nconst EmptyChild1 = undefined;\nconst EmptyChild2 = () => undefined;\nconst EmptyChild3 = () => h(() => undefined);\nconst Child4 = () => h(async () => \"actual value!\");\n\nexport const _CH0001 = (\n    <>\n        <Parent>\n            <EmptyChild1 />\n        </Parent>\n        <Parent>\n            <EmptyChild2 />\n        </Parent>\n        <Parent>\n            <EmptyChild3 />\n        </Parent>\n        <Parent>\n            <Child4 />\n        </Parent>\n    </>\n);\nexport const _CH0001_URL = import.meta.url;",
+    sourceURL: "file:///workspaces/x/packages/examples/lib/examples/children/empty-children.js",
+    output: "import { h, createFragment } from \"@virtualstate/fringe\";\nasync function Parent(options, input) {\n    const children = (await input?.children) ?? [];\n    return (h(\"parent\", { empty: !children.length }, children.length ? children : \"\\n\"));\n}\nconst EmptyChild1 = undefined;\nconst EmptyChild2 = () => undefined;\nconst EmptyChild3 = () => h(() => undefined);\nconst Child4 = () => h(async () => \"actual value!\");\nexport const _CH0001 = (h(createFragment, null,\n    h(Parent, null,\n        h(EmptyChild1, null)),\n    h(Parent, null,\n        h(EmptyChild2, null)),\n    h(Parent, null,\n        h(EmptyChild3, null)),\n    h(Parent, null,\n        h(Child4, null))));\nexport const _CH0001_URL = import.meta.url;\n//# sourceMappingURL=empty-children.js.map",
+    cleanerSource: "import { h, VNode, createFragment } from \"@virtualstate/fringe\";\n\nasync function Parent(options, input?: VNode) {\n  const children = (await input?.children) ?? [];\n  return (\n    <parent empty={!children.length}>\n        {children.length ? children : \"\\n\"}\n    </parent>\n  )\n}\n\nconst EmptyChild1 = undefined;\nconst EmptyChild2 = () => undefined;\nconst EmptyChild3 = () => h(() => undefined);\nconst Child4 = () => h(async () => \"actual value!\");\n\nexport const _CH0001 = (\n    <>\n        <Parent>\n            <EmptyChild1 />\n        </Parent>\n        <Parent>\n            <EmptyChild2 />\n        </Parent>\n        <Parent>\n            <EmptyChild3 />\n        </Parent>\n        <Parent>\n            <Child4 />\n        </Parent>\n    </>\n);",
+    structure: "<>\n  <parent empty={true}>\n    {\"\\n\"}\n  </parent>\n  <parent empty={true}>\n    {\"\\n\"}\n  </parent>\n  <parent empty={true}>\n    {\"\\n\"}\n  </parent>\n  <parent empty={false}>\n    {\"actual value!\"}\n  </parent>\n</>",
+    info: undefined,
+    engineURL: undefined,
+    sourceInterfaceURL: undefined,
+    sourceInterface: undefined,
+    import: async (context?: Record<string, unknown>, state?: VNode): Promise<VNode> => {
+      throw new Error("Not available");
+    }
+}
 export const _CT0001_ExampleInformation: ExampleInformation = {
     name: "CompileTransform",
     id: "CT0001",
