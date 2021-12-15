@@ -20,6 +20,12 @@ const EmptyChild6 = () => h(async function *() {
     // Settles that there is nothing to render
     yield <EmptyChild5 />;
 });
+const EmptyChild7 = () => h(async function *() {
+    yield "Initial loading"; // Initial yields a loading indicator
+    await new Promise(resolve => setTimeout(resolve, 10));
+    // Settles that there is nothing to render
+    yield undefined;
+});
 const ActualChild1 = () => h(async () => "actual value!");
 
 export const _CH0001 = (
@@ -41,6 +47,9 @@ export const _CH0001 = (
         </Parent>
         <Parent>
             <EmptyChild6 />
+        </Parent>
+        <Parent>
+            <EmptyChild7 />
         </Parent>
         <Parent>
             <ActualChild1 />
