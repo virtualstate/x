@@ -65,21 +65,16 @@ export interface ChildrenTransformOptions extends UnionOptions {
 export const ChildrenOptions = Symbol.for("@virtualstate/fringe/ChildrenOptions");
 
 export async function* childrenUnion<N extends VNode>(context: UnionOptions, childrenGroups: UnionInput<N[]>): AsyncIterable<N[]> {
+  let yielded = false;
   for await (const parts of union(childrenGroups, context)) {
     yield parts.reduce(
       (updates: N[], part: N[]): N[] => part ? updates.concat(part.filter(Boolean)) : updates,
       []
     );
+    yielded = true;
   }
-}
-
-function *flat(iterable: Iterable<VNodeRepresentationSource>): Iterable<VNodeRepresentationSource> {
-  for (const item of iterable) {
-    if (typeof item !== "string" && isIterable(item)) {
-      yield * flat(item);
-    } else {
-      yield item;
-    }
+  if (!yielded) {
+    yield [];
   }
 }
 
@@ -89,7 +84,7 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
     let source: VNodeRepresentationSource = original;
 
     if (typeof source === "undefined") {
-      return;
+      return yield [];
     }
 
     const context = isChildrenOptions(source) ? source[ChildrenOptions] : givenContext;
@@ -103,7 +98,7 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
        * If a fragment has no children, it will never yield a result
        */
       if (!source.children) {
-        return;
+        return yield [];
       }
       if (isIterable(source.children)) {
         return yield [...source.children];
@@ -121,11 +116,16 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
           [ChildrenOptions]: context
         });
       }
+      let yielded = false;
       for await (const children of iterable) {
         yield * childrenUnion(
           context,
           children.map(eachSource)
         );
+        yielded = true;
+      }
+      if (!yielded) {
+        yield [];
       }
       return;
     }
@@ -148,11 +148,11 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
     if (isIterable(source)) {
       const initial = [...source];
       if (!initial.length) {
-        return;
+        return yield [];
       }
       const allChildren = [...flattenChildrenSource(context, initial)];
       if (!allChildren.length) {
-        return;
+        return yield [];
       }
       if (allChildren.every(isSyncChild)) {
         return yield [...allChildren];
@@ -178,7 +178,9 @@ export async function *children(givenContext: ChildrenTransformOptions, ...sourc
     )
   }
 
-  if (source.length === 1) {
+  if (source.length === 0) {
+    return yield []; // Yield a single empty array to indicate these children are definitely empty
+  } else if (source.length === 1) {
     return yield* eachSource(source[0]);
   } else {
     return yield* childrenUnion(givenContext, source.map(eachSource));

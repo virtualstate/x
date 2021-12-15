@@ -255,7 +255,7 @@ async function build(exampleKey: string) {
 
   const module = await import(`./${targetImport}`);
 
-  const staticNode = (
+  const staticNode = module[`_${id}_IsResolving`] ? module[exampleKey] : (
     <Static>
       {module[exampleKey]}
     </Static>

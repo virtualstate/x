@@ -12,7 +12,15 @@ async function Parent(options: unknown, input?: VNode) {
 const EmptyChild1 = undefined;
 const EmptyChild2 = () => undefined;
 const EmptyChild3 = () => h(() => undefined);
-const Child4 = () => h(async () => "actual value!");
+const EmptyChild4 = () => h(async () => undefined);
+const EmptyChild5 = () => h(async function *() {});
+const EmptyChild6 = () => h(async function *() {
+    yield "Initial loading"; // Initial yields a loading indicator
+    await new Promise(resolve => setTimeout(resolve, 10));
+    // Settles that there is nothing to render
+    yield <EmptyChild5 />;
+});
+const ActualChild1 = () => h(async () => "actual value!");
 
 export const _CH0001 = (
     <>
@@ -26,8 +34,18 @@ export const _CH0001 = (
             <EmptyChild3 />
         </Parent>
         <Parent>
-            <Child4 />
+            <EmptyChild4 />
+        </Parent>
+        <Parent>
+            <EmptyChild5 />
+        </Parent>
+        <Parent>
+            <EmptyChild6 />
+        </Parent>
+        <Parent>
+            <ActualChild1 />
         </Parent>
     </>
 );
 export const _CH0001_URL = import.meta.url;
+export const _CH0001_IsResolving = true;
