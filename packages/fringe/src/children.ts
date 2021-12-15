@@ -210,7 +210,7 @@ export function *flattenChildrenSourceRepresentation(source: Iterable<VNodeRepre
 /**
  * @experimental
  */
-export function *flattenChildrenSource(context: ChildrenTransformOptions, source: Iterable<VNodeRepresentationSource>) {
+export function *flattenChildrenSource(context: ChildrenTransformOptions, source: Iterable<VNodeRepresentationSource>): Iterable<VNode> {
   for (const item of flattenChildrenSourceRepresentation(source)) {
     if (typeof item !== "string" && isIterable(item)) {
       yield * flattenChildrenSource(context, item);
