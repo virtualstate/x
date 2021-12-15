@@ -1,6 +1,6 @@
 # [@virtualstate/x](http://npmjs.com/package/@virtualstate/x) 
 
-_In depth documentation coming soon!_
+[]
 
 > If you want to get started, fork or clone the 
 > [virtualstate.dev](https://github.com/virtualstate/virtualstate.dev)

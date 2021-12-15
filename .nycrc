@@ -1,0 +1,14 @@
+{
+  "exclude": [
+    "**/dom",
+    "**/*.spec.*",
+    "**/experiments",
+    "**/compile-transform"
+  ],
+  "reporter": [
+    "clover",
+    "json-summary",
+    "html",
+    "text-summary"
+  ]
+}
