@@ -16,6 +16,9 @@ declare global {
 
 }
 
+declare const global: unknown;
+declare const setImmediate: unknown;
+
 export function defaultTask(fn: () => void): void {
   if (typeof window !== "undefined" && typeof window[DefaultUnionTask] === "function") {
     window[DefaultUnionTask](fn);
