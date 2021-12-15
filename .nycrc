@@ -10,5 +10,8 @@
     "json-summary",
     "html",
     "text-summary"
-  ]
+  ],
+  "lines": 50,
+  "functions": 50,
+  "branches": 50
 }

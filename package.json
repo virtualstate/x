@@ -28,7 +28,7 @@
     "examples:log": "yarn build && node packages/examples/lib/log.js",
     "examples:build": "yarn build && yarn examples:build:run && yarn build",
     "examples:build:run": "node packages/examples/lib/build.js",
-    "examples:build:coverage": "c8 --lines 50 --functions 50 --branches 50 yarn examples:build:run",
+    "examples:build:coverage": "c8 yarn examples:build:run",
     "coverage": "yarn examples:build:coverage",
     "coverage:post": "jest-coverage-badges"
   },
