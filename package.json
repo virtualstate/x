@@ -23,7 +23,7 @@
     "clean": "yarn workspaces run clean",
     "test": "yarn jest",
     "build": "tsc -b ./tsconfig.repo.json && yarn build:post",
-    "build:post": "node correct-import-extensions.js",
+    "build:post": "node post-build.js",
     "release": "yarn build && lerna publish",
     "examples:log": "yarn build && node packages/examples/lib/log.js",
     "examples:build": "yarn build && yarn examples:build:run && yarn build",

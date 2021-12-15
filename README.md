@@ -1,6 +1,10 @@
 # [@virtualstate/x](http://npmjs.com/package/@virtualstate/x) 
 
-[]
+[//]: # (badges)
+
+![nycrc config on GitHub](https://img.shields.io/nycrc/virtualstate/x) ![87.99%25 lines covered](https://img.shields.io/badge/lines-87.99%25-brightgreen) ![87.99%25 statements covered](https://img.shields.io/badge/statements-87.99%25-brightgreen) ![67.61%25 functions covered](https://img.shields.io/badge/functions-67.61%25-yellow) ![83.31%25 branches covered](https://img.shields.io/badge/branches-83.31%25-brightgreen)
+
+[//]: # (badges)
 
 > If you want to get started, fork or clone the 
 > [virtualstate.dev](https://github.com/virtualstate/virtualstate.dev)
