@@ -22,9 +22,15 @@ jobs:
       - run: npm config set @virtualstate:registry "https://registry.npmjs.org/"
       - run: npm config set "//registry.npmjs.org/:_authToken" "$NODE_AUTH_TOKEN"
         env:
+          YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
+          NPM_TOKEN: ${{ secrets.YARN_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
       - run: yarn lerna:publish
         continue-on-error: true
+        env:
+          YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
+          NPM_TOKEN: ${{ secrets.YARN_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
       - uses: actions/setup-node@v2
         with:
           node-version: '16.x'
@@ -32,6 +38,12 @@ jobs:
       - run: npm config set @virtualstate:registry "https://npm.pkg.github.com/"
       - run: npm config set "//npm.pkg.github.com/:_authToken" "$NODE_AUTH_TOKEN"
         env:
+          YARN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: yarn lerna:publish
         continue-on-error: true
+        env:
+          YARN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
