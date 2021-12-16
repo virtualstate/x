@@ -19,7 +19,10 @@ jobs:
           registyr-url: 'https://registry.npmjs.org'
       - run: yarn install
       - run: yarn build
-      - run: yarn coverage
+      - run: |
+          yarn coverage
+          rm -rf coverage
+          git reset --hard HEAD
       - run: yarn examples:build
       - name: Package Registry Publish - npm
         run: |
