@@ -21,17 +21,22 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16.x'
+          registyr-url: 'https://registry.npmjs.org'
       - run: yarn install
       - run: yarn build
       - run: yarn coverage
       - run: yarn examples:build
-      - run: yarn lerna:publish
+      - run: npm config set @virtualstate:registry "https://registry.npmjs.org/"
+      - run: npm config -- @virtualstate:registry "//registry.npmjs.org/:_authToken" "${NODE_AUTH_TOKEN}"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
+      - run: yarn lerna:publish
       - uses: actions/setup-node@v2
         with:
           node-version: '16.x'
           registry-url: 'https://npm.pkg.github.com'
-      - run: yarn lerna:publish
+      - run: npm config set @virtualstate:registry "https://npm.pkg.github.com/"
+      - run: npm config -- @virtualstate:registry "//npm.pkg.github.com/:_authToken" "${NODE_AUTH_TOKEN}"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: yarn lerna:publish
