@@ -30,7 +30,6 @@ jobs:
           npm set "registry=https://registry.npmjs.org/"
           npm set "@virtualstate:registry=https://registry.npmjs.org/"
           npm set "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}"
-          lerna publish --canary --yes --no-verify-access --registry https://registry.npmjs.org/
           lerna publish from-package --yes --no-verify-access --registry https://registry.npmjs.org/
         continue-on-error: true
         env:
@@ -48,7 +47,6 @@ jobs:
           npm set "registry=https://npm.pkg.github.com/"
           npm set "@virtualstate:registry=https://npm.pkg.github.com/virtualstate"
           npm set "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}"
-          lerna publish --canary --yes --no-verify-access --registry https://npm.pkg.github.com/
           lerna publish from-package --yes --no-verify-access --registry https://npm.pkg.github.com/
         env:
           YARN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
