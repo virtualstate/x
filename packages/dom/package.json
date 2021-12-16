@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/dom",
-  "version": "2.45.24",
+  "version": "2.45.25",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -18,10 +18,10 @@
     "virtual-state"
   ],
   "dependencies": {
-    "@virtualstate/fringe": "^2.45.24",
-    "@virtualstate/hooks": "^2.45.24",
-    "@virtualstate/union": "^2.45.24",
-    "@virtualstate/x": "^2.45.24",
+    "@virtualstate/fringe": "^2.45.25",
+    "@virtualstate/hooks": "^2.45.25",
+    "@virtualstate/union": "^2.45.25",
+    "@virtualstate/x": "^2.45.25",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
