@@ -34,5 +34,8 @@ if (!process.env.NO_COVERAGE_BADGE_UPDATE) {
   const readMeBefore = readMe.slice(0, badgeStart);
   const readMeAfter = readMe.slice(badgeEndAfter);
 
-  await fs.writeFile("README.md", `${readMeBefore}${tag}\n\n${badges.join(" ")}\n\n${tag}${readMeAfter}`);
+  const readMeNext = `${readMeBefore}${tag}\n\n${badges.join(" ")}\n\n${tag}${readMeAfter}`;
+  await fs.writeFile("README.md", readMeNext);
+  await fs.writeFile("packages/x/README.md", readMeNext);
+  console.log("Wrote coverage badges!");
 }
