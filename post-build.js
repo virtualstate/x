@@ -9,7 +9,7 @@ badges.push(
 
 const coverage = await fs.readFile("coverage/coverage-summary.json", "utf8").then(JSON.parse).catch(() => ({}));
 const coverageConfig = await fs.readFile(".nycrc", "utf8").then(JSON.parse);
-for (const [name, { pct }] of Object.entries(coverage.total)) {
+for (const [name, { pct }] of Object.entries(coverage?.total ?? {})) {
   if (name.includes("/")) continue; // It is a file
   const good = coverageConfig[name] ?? 80;
   const color = pct >= good ? "brightgreen" : "yellow";
