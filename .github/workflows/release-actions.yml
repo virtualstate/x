@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v2
         with:
           node-version: '16.x'
@@ -21,9 +23,11 @@ jobs:
       - run: yarn examples:build
       - name: Package Registry Publish - npm
         run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor}}@users.noreply.github.com"
           npm set "registry=https://registry.npmjs.org/"
           npm set "@virtualstate:registry=https://registry.npmjs.org/"
-          npm set "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN"
+          npm set "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}"
           yarn lerna:publish
         continue-on-error: true
         env:
@@ -36,9 +40,11 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
       - name: Package Registry Publish - GitHub
         run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor}}@users.noreply.github.com"
           npm set "registry=https://npm.pkg.github.com/"
-          npm set "@virtualstate:registry=https://npm.pkg.github.com/"
-          npm set "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN"
+          npm set "@virtualstate:registry=https://npm.pkg.github.com/virtualstate"
+          npm set "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}"
           yarn lerna:publish
         env:
           YARN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
