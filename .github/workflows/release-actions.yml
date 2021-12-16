@@ -21,9 +21,9 @@ jobs:
       - run: yarn examples:build
       - name: Package Registry Publish - npm
         run: |
-          npm config set registry "https://npm.pkg.github.com/"
+          npm config set registry "https://registry.npmjs.org/"
           npm config set @virtualstate:registry "https://registry.npmjs.org/"
-          npm config set "//npm.pkg.github.com/:_authToken" "$NODE_AUTH_TOKEN"
+          npm config set "//registry.npmjs.org/:_authToken" "$NODE_AUTH_TOKEN"
           yarn lerna:publish
         continue-on-error: true
         env:
