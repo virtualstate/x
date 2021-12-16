@@ -9,6 +9,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      NO_COVERAGE_BADGE_UPDATE: 1
     steps:
       - uses: actions/checkout@v2
         with:
@@ -19,10 +21,7 @@ jobs:
           registyr-url: 'https://registry.npmjs.org'
       - run: yarn install
       - run: yarn build
-      - run: |
-          yarn coverage
-          rm -rf coverage
-          git reset --hard HEAD
+      - run: yarn coverage
       - run: yarn examples:build
       - name: Package Registry Publish - npm
         run: |
