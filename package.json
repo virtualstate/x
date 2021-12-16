@@ -24,13 +24,17 @@
     "test": "yarn jest",
     "build": "tsc -b ./tsconfig.repo.json && yarn build:post",
     "build:post": "node post-build.js",
-    "release": "yarn build && lerna publish",
+    "release": "yarn examples:build && yarn publish",
+    "publish": "lerna publish from-package --yes",
+    "version:patch": "lerna version patch --force-publish --yes",
+    "version:minor": "lerna version minor --force-publish --yes",
+    "version:major": "lerna version major --force-publish --yes",
     "examples:log": "yarn build && node packages/examples/lib/log.js",
     "examples:build": "yarn build && yarn examples:build:run && yarn build",
     "examples:build:run": "node packages/examples/lib/build.js",
     "examples:build:coverage": "c8 yarn examples:build:run",
     "coverage": "yarn examples:build:coverage",
-    "coverage:post": "jest-coverage-badges"
+    "coverage:post": "yarn build:post"
   },
   "private": true,
   "devDependencies": {
