@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/astro-renderer",
-  "version": "2.45.9",
+  "version": "2.45.10",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
