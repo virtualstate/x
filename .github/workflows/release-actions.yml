@@ -15,18 +15,16 @@ jobs:
         with:
           node-version: '16.x'
           registyr-url: 'https://registry.npmjs.org'
-      - run: npm config set "https://registry.npmjs.org/"
-      - run: npm config set @virtualstate:registry "https://registry.npmjs.org/"
       - run: yarn install
       - run: yarn build
       - run: yarn coverage
       - run: yarn examples:build
-      - run: npm config set "//registry.npmjs.org/:_authToken" "$NODE_AUTH_TOKEN"
-        env:
-          YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
-          NPM_TOKEN: ${{ secrets.YARN_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
-      - run: yarn lerna:publish
+      - name: Package Registry Publish - npm
+        run: |
+          npm config set registry "https://npm.pkg.github.com/"
+          npm config set @virtualstate:registry "https://registry.npmjs.org/"
+          npm config set "//npm.pkg.github.com/:_authToken" "$NODE_AUTH_TOKEN"
+          yarn lerna:publish
         continue-on-error: true
         env:
           YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
@@ -36,15 +34,12 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://npm.pkg.github.com'
-      - run: npm config set registry "https://npm.pkg.github.com/"
-      - run: npm config set @virtualstate:registry "https://npm.pkg.github.com/"
-      - run: npm config set "//npm.pkg.github.com/:_authToken" "$NODE_AUTH_TOKEN"
-        env:
-          YARN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: yarn lerna:publish
-        continue-on-error: true
+      - name: Package Registry Publish - GitHub
+        run: |
+          npm config set registry "https://npm.pkg.github.com/"
+          npm config set @virtualstate:registry "https://npm.pkg.github.com/"
+          npm config set "//npm.pkg.github.com/:_authToken" "$NODE_AUTH_TOKEN"
+          yarn lerna:publish
         env:
           YARN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
