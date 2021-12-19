@@ -10,3 +10,4 @@ export * from "./dom/another";
 export * from "./thing";
 export * from "./generalisation";
 export * from "./cached";
+export * from "./union";

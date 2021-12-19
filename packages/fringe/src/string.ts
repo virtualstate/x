@@ -210,19 +210,25 @@ async function *toStringIterable(this: ToStringContext, node: VNode & Partial<To
             current.reject(nextError);
           }
         },
-        async *[Symbol.asyncIterator](): AsyncIterator<T> {
-          if (typeof value !== "undefined") {
-            yield value;
-          }
+        [Symbol.asyncIterator](): AsyncIterator<T> {
+          let initialValue = value;
           let result: Partial<QueueResult> = {
             next: current.promise
-          }
-          do {
-            result = await result.next;
-            if (!result.done && typeof result.value !== "undefined") {
-              yield value;
+          };
+          return {
+            async next() {
+              if (typeof initialValue !== "undefined") {
+                const result = { value: initialValue, done: false };
+                initialValue = undefined;
+                return result;
+              }
+              result = await result.next;
+              return {
+                value: result.value,
+                done: result.done
+              }
             }
-          } while (!result.done)
+          }
         },
         async then(resolve, reject) {
           if (error) {

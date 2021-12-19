@@ -11,13 +11,25 @@ export const Scalar = Symbol.for("@virtualstate/fringe/token/Scalar");
 /**
  * @experimental
  */
+export const SetTokenSource = Symbol.for("@virtualstate/fringe/token/setSource");
+
+/**
+ * @experimental
+ */
+export const TokenAncestor = Symbol.for("@virtualstate/fringe/token/ancestor");
+
+/**
+ * @experimental
+ */
 export const TokenConstructor = Symbol.for("@virtualstate/fringe/token/TokenConstructor");
 const TokenConstructorSymbol = TokenConstructor;
 
 export type TokenOptionsRecord = Record<string | symbol | number, unknown>;
 
-export interface TokenOptions {
+export interface TokenOptions<TSetTokenSource extends SourceReference = SourceReference> {
   [IsTokenOptions]?(value: unknown): boolean;
+  [SetTokenSource]?: TSetTokenSource;
+  [TokenAncestor]?: boolean;
 }
 
 export interface IsTokenSourceVNodeFn<T extends SourceReference = SourceReference> {
@@ -46,7 +58,7 @@ export interface AssertTokenVNodeFnFn<T extends SourceReference = SourceReferenc
 
 export interface TokenVNodeBase<T extends SourceReference = SourceReference, O extends object = TokenOptionsRecord, Initial extends Partial<O> = Partial<O>> extends VNode {
   options: Initial & Partial<O & TokenOptions & TokenOptionsRecord>;
-  source: T;
+  source: O extends { [SetTokenSource]: infer TSet } ? TSet : T;
   reference: typeof Token;
   isTokenSource: IsTokenSourceVNodeFn<T>;
   isTokenOptions: IsTokenOptionsVNodeFn<O>;
@@ -54,19 +66,20 @@ export interface TokenVNodeBase<T extends SourceReference = SourceReference, O e
   isFn: IsTokenVNodeFnFn<T, O, Initial>;
   assert: AssertTokenVNodeFn<T, O>;
   assertFn: AssertTokenVNodeFnFn<T, O, Initial>;
+  [TokenAncestor]?: TokenVNodeFn
 }
 
 export interface TokenVNode<T extends SourceReference = SourceReference, O extends object = TokenOptionsRecord> extends TokenVNodeBase<T, O> {
   options: O & TokenOptions & TokenOptionsRecord;
 }
 
-export type TokenRequiredOptions<O extends object, InitialOptions extends Partial<O>> = Partial<O> & Omit<O, keyof InitialOptions>;
-export type TokenResolvedOptions<O extends object, InitialOptions extends Partial<O>, PassedOptions extends TokenRequiredOptions<O, InitialOptions>> =
-  Omit<InitialOptions, keyof PassedOptions> & PassedOptions;
+export type TokenRequiredOptions<O extends object, InitialOptions> = Omit<Partial<O> & Omit<O, keyof InitialOptions>, keyof TokenOptions>;
+export type TokenResolvedOptions<O extends object, InitialOptions, PassedOptions extends TokenRequiredOptions<O, InitialOptions>> =
+  Partial<Omit<O, keyof PassedOptions>> & Omit<InitialOptions, keyof PassedOptions> & PassedOptions;
 
-export interface TokenVNodeFn<T extends SourceReference = SourceReference, O extends object = TokenOptionsRecord, InitialOptions extends Partial<O> = Partial<O>> extends TokenVNodeBase<T, O, InitialOptions> {
-  (): TokenVNodeFn<T, O & Partial<TokenOptions>, O & Partial<TokenOptions>>;
+export interface TokenVNodeFn<T extends SourceReference = SourceReference, O extends object = TokenOptionsRecord, InitialOptions = Partial<O>> extends TokenVNodeBase<T, O, InitialOptions> {
   <PassedOptions extends TokenRequiredOptions<O, InitialOptions> & TokenOptions>(options: PassedOptions , child?: VNode): TokenVNodeFn<T, TokenResolvedOptions<O, InitialOptions, PassedOptions>, TokenResolvedOptions<O, InitialOptions, PassedOptions>>;
+  (): TokenVNodeFn<T, O & Partial<TokenOptions>, O & Partial<TokenOptions>>;
 }
 
 export function createToken<T extends SourceReference, O extends object>(source: T): TokenVNodeFn<T, O>
@@ -96,7 +109,7 @@ export function createToken<T extends SourceReference, O extends object, Initial
     // Terminates the node, will no longer be a function if it still was one
     function TokenInstance(this: unknown, innerPartialOptions?: I, innerChild?: VNode) {
       return TokenConstructor.call(
-        this,
+        this ?? TokenInstance,
         innerPartialOptions ?
          (partialOptions ? { ...partialOptions, ...innerPartialOptions } : innerPartialOptions) :
           partialOptions,
@@ -104,7 +117,12 @@ export function createToken<T extends SourceReference, O extends object, Initial
       );
     }
     const almost: object = TokenInstance;
-    defineProperties(almost, nextOptions, nextChildren, isTokenSource, isTokenOptions);
+
+    function isTokenSource(value: unknown): value is T {
+      return Object.is(value, nextOptions?.[SetTokenSource] ?? source);
+    }
+
+    defineProperties(almost, nextOptions, nextChildren, isTokenSource, isTokenOptions, node);
     if (isFrozenOptionsToken(almost) && !child) {
       return Object.freeze(almost);
     }
@@ -116,7 +134,7 @@ export function createToken<T extends SourceReference, O extends object, Initial
     options,
     children ? createFragment({}, ...children).children : undefined,
     isTokenSource,
-    isInitialOptions
+    isTokenOptions
   );
   tokenized = almost;
   return almost;
@@ -125,7 +143,7 @@ export function createToken<T extends SourceReference, O extends object, Initial
     return isOptionsFrozenStatic && isTokenVNode(instance, isTokenSource);
   }
 
-  function defineProperties<T extends SourceReference = SourceReference, O extends object = TokenOptionsRecord, Initial extends Partial<O> = Partial<O>>(token: object, options?: object, children?: AsyncIterable<VNode[]>, isTokenSource?: (value: unknown) => value is T, isTokenOptions?: (value: unknown) => value is O | Initial): asserts token is TokenVNodeFn<T, O, Initial> {
+  function defineProperties<T extends SourceReference = SourceReference, O extends object = TokenOptionsRecord, Initial extends Partial<O> = Partial<O>>(token: object, options?: object, children?: AsyncIterable<VNode[]>, isTokenSource?: (value: unknown) => value is T, isTokenOptions?: (value: unknown) => value is O | Initial, ancestor?: VNode): asserts token is TokenVNodeFn<T, O, Initial> {
     const accessOnly: PropertyDescriptor = {
       enumerable: false,
       writable: false,
@@ -139,7 +157,7 @@ export function createToken<T extends SourceReference, O extends object, Initial
       },
       source: {
         ...accessOnly,
-        value: source,
+        value: options?.[SetTokenSource] ?? source,
         enumerable: true,
       },
       options: {
@@ -187,9 +205,19 @@ export function createToken<T extends SourceReference, O extends object, Initial
       [TokenConstructorSymbol]: {
         ...accessOnly,
         value: TokenConstructor,
-      }
+      },
+      ...options?.[TokenAncestor] && ancestor ? (
+        {
+          [TokenAncestor]: {
+            writable: true,
+            enumerable: true,
+            configurable: true,
+            value: ancestor
+          }
+        }
+      ) : undefined
     });
-    assertTokenVNodeFn<T, O, Initial>(token, isTokenSource, isTokenOptions);
+    assertTokenVNodeFn<T, O, Initial>(token, isTokenSource);
   }
 
   function isInitialOptions(value: unknown): value is Initial {
@@ -262,6 +290,10 @@ export function assertTokenVNodeFn<T extends SourceReference = SourceReference, 
 }
 
 function hasOwnPropertyAvailable(object: object) {
+  const symbols = Object.getOwnPropertySymbols(object);
+  if (symbols.length) {
+    return true;
+  }
   for (const key in object) {
     if (Object.prototype.hasOwnProperty.call(object, key)) {
       return true;

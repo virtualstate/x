@@ -132,6 +132,9 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
    * Shortcut a functional token, this will allow the node to be directly created here
    */
   if (isTokenVNodeFn(source)) {
+    if (!source.isTokenOptions(options)) {
+      throw new Error("Invalid options");
+    }
     const node = source(options, children.length ? createFragment({}, ...children) : undefined);
     enableThen(node, source);
     return node;
