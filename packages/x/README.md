@@ -2,7 +2,7 @@
 
 [//]: # (badges)
 
-![nycrc config on GitHub](https://img.shields.io/nycrc/virtualstate/x) ![87.98%25 lines covered](https://img.shields.io/badge/lines-87.98%25-brightgreen) ![87.98%25 statements covered](https://img.shields.io/badge/statements-87.98%25-brightgreen) ![67.51%25 functions covered](https://img.shields.io/badge/functions-67.51%25-yellow) ![83.33%25 branches covered](https://img.shields.io/badge/branches-83.33%25-brightgreen)
+![nycrc config on GitHub](https://img.shields.io/nycrc/virtualstate/x) ![87.84%25 lines covered](https://img.shields.io/badge/lines-87.84%25-brightgreen) ![87.84%25 statements covered](https://img.shields.io/badge/statements-87.84%25-brightgreen) ![67.32%25 functions covered](https://img.shields.io/badge/functions-67.32%25-yellow) ![83.15%25 branches covered](https://img.shields.io/badge/branches-83.15%25-brightgreen)
 
 [//]: # (badges)
 
