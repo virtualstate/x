@@ -303,7 +303,7 @@ async function *toStringIterable(this: ToStringContext, node: VNode & Partial<To
 }
 
 interface IterablePromise<V> extends AsyncIterable<V> {
-  then(resolve: (value: V) => void, reject: (error: unknown) => void): void
+  then: PromiseLike<V>["then"]
 }
 
 /**
@@ -323,7 +323,7 @@ export function toString(this: Partial<ToStringContext> | undefined, input?: VNo
   assertVNode(node);
   const toStringInstance: IterablePromise<string> = {
     then(resolve, reject) {
-      toStringInvoked().then(resolve, reject);
+      return toStringInvoked().then(resolve, reject);
       async function toStringInvoked(): Promise<string> {
         let iteration = "";
         for await (iteration of toStringInstance) {}
