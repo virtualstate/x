@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/typescript",
-  "version": "2.46.0",
+  "version": "2.46.1",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
