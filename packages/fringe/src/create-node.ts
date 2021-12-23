@@ -330,9 +330,19 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
       const value: unknown = next.value;
       const nextNode = createNode(value);
       if (isFragmentVNode(nextNode)) {
-        yield* nextNode.children ?? [];
+        let yielded = false;
+        if (nextNode.children) {
+          for await (const children of nextNode.children) {
+            yield children;
+            yielded = true;
+          }
+        }
+        if (!yielded) {
+          yield [];
+        }
+      } else {
+        yield [nextNode];
       }
-      yield [nextNode];
     } while (!next.done);
   }
 
