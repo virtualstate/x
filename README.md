@@ -1,18 +1,43 @@
 # [@virtualstate/x](http://npmjs.com/package/@virtualstate/x) 
 
+> _Bring your own_ JavaScript tooling
+
+### Test Coverage
+
 [//]: # (badges)
 
-![nycrc config on GitHub](https://img.shields.io/nycrc/virtualstate/x) ![87.84%25 lines covered](https://img.shields.io/badge/lines-87.84%25-brightgreen) ![87.84%25 statements covered](https://img.shields.io/badge/statements-87.84%25-brightgreen) ![67.51%25 functions covered](https://img.shields.io/badge/functions-67.51%25-yellow) ![83.09%25 branches covered](https://img.shields.io/badge/branches-83.09%25-brightgreen)
+![nycrc config on GitHub](https://img.shields.io/nycrc/virtualstate/x) ![87.85%25 lines covered](https://img.shields.io/badge/lines-87.85%25-brightgreen) ![87.85%25 statements covered](https://img.shields.io/badge/statements-87.85%25-brightgreen) ![67.51%25 functions covered](https://img.shields.io/badge/functions-67.51%25-yellow) ![83.11%25 branches covered](https://img.shields.io/badge/branches-83.11%25-brightgreen)
 
 [//]: # (badges)
+
+## About
+
+`@virtualstate/x` (or vsx) provides baseline functionality to enable a wide range of 
+solutions for JavaScript based services, user interfaces, or scripts. 
+
+The core module [`@virtualstate/fringe`](https://github.com/virtualstate/x/tree/main/packages/fringe) provides a `jsx` interface to enable developer
+driven definitions, workflows, transitions, and logic, while providing consistent
+a inline async resolution interface. 
+
+By default, all JavaScript patterns can be utilised within the base tooling, and 
+it is up to individual implementations to decide on finer details, for example 
+if your project needs copy node trees into a [web page's DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
+or if your individual component (or entire site?) could be rendered as a static string, 
+these code paths will need to be decided on, as there is no one size fits all.
 
 > If you want to get started, fork or clone the 
 > [virtualstate.dev](https://github.com/virtualstate/virtualstate.dev)
 > repository for an already set up project. 
+> 
+> It utilises [@virtualstate/dom's render function](https://github.com/virtualstate/virtualstate.dev/blob/main/src/index.tsx#L22) to 
+> render a tree into the documents body in page, while also [doing the same in a prerender step](https://github.com/virtualstate/virtualstate.dev/blob/38bde3c370ebaf72b1a5ed1548f0f3a58ceb26c2/scripts/prerender.js#L47) to
+> allow for static loading of pages where JavaScript is not available.
 
 ## Running Examples
 
-To run the examples located at [packages/examples](https://github.com/virtualstate/x/tree/main/packages/examples) see:
+There is a bunch of different examples available in [packages/examples](https://github.com/virtualstate/x/tree/main/packages/examples) see:
+
+> If you have a code example you would like to share and it utilises one of the packages provided by this repository, you're very welcome to [fork this repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo) and raise a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) with your example!
 
 - [Deno](#running-examples-with-deno)
 - [Node](#running-examples-with-node)
@@ -44,6 +69,25 @@ npx @virtualstate/examples@^2.14.10
 ```
 
 ## [`h`](http://npmjs.com/package/@virtualstate/fringe)
+
+The `h` function provides [JSX](https://www.typescriptlang.org/docs/handbook/jsx.html) functionality to your code. 
+
+If you are utilising TypeScript, in your `tsconfig.config.json` you will need to add to `compilerOptions` the
+keys `jsx`, `jsxFactory`, and `jsxFragmentFactory`:
+
+```json
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "createFragment"
+  }
+}
+```
+
+If you are using a JavaScript build tool like [Snowpack](https://www.snowpack.dev/)
+you may also need to add addition JSX related configuration, e.g. [`"jsxFactory": "h"`](https://www.snowpack.dev/reference/configuration#buildoptionsjsxfactory) and
+[`"jsxFactory": "createFragment"`](https://www.snowpack.dev/reference/configuration#buildoptionsjsxfragment)
 
 [Demo Usage](https://github.com/fabiancook/fabiancook.dev)
 
@@ -82,6 +126,8 @@ export async function InitialExample() {
 
 [Related Blog Post](https://fabiancook.dev/2021/05/23/rendering)
 
+> Psst, the VNode type can be found at [packages/frings/src/vnode.ts](https://github.com/virtualstate/x/blob/main/packages/fringe/src/vnode.ts)
+
 The returned of `h` is a `VNode`:
 
 ```typescript
@@ -103,6 +149,12 @@ console.log({ one }); // Logs { one: 1 }
 ```
 
 Any scalar nodes with `h` that have children can be read using `for await`
+
+> Psst, new documentation is expected here [completely static nodes can be read in a completely static way]()
+> however this is a bit more specific to use
+> 
+> An example of this can be found at [packages/examples/static](https://github.com/virtualstate/x/blob/a450413207532f8202279bd6a032a2a89df68940/packages/examples/src/examples/static/static.tsx#L16)
+> where `children` is accessed like `const [thread, spikeyCactus, cactus, scroll] = node.children;` 
 
 ```typescript
 
@@ -160,9 +212,24 @@ for await (const results of children) {
   // Eventually Logs { results: ["Fn", "AsyncFn", "GeneratorFn", "AsyncGeneratorFn" ] }
   console.log({ results: results.map(node => node.options.name) });
 }
+
 ```
 
 ## [`union`](http://npmjs.com/package/@virtualstate/union)
+
+Union provides direct async resolution of multiple async iterators, for example
+the returned type of `h(...).children` has an async iterator that produces
+values that represents groups of output state, these groups need to be chopped up
+into workable sync units. 
+
+`union` does this by resolving in the best case all known iterators in a single microtask,
+or at the works case, at least one iterator resolution. 
+
+Using `union` a developer can treat a group of values with async iterators
+as single unit with all async resolution abstracted away to within.
+
+Below are some demos/examples that display patterns accessible through `union`.
+Feel free to add your own!
 
 - [CodeSandbox Demo 1](https://codesandbox.io/s/interesting-yalow-hh5ow?file=/src/index.ts:809-880)
 - [CodeSandbox Demo 2](https://codesandbox.io/s/cool-snow-z6ese?file=/src/index.ts)
