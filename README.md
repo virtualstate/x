@@ -86,7 +86,7 @@ keys `jsx`, `jsxFactory`, and `jsxFragmentFactory`:
 ```
 
 If you are using a JavaScript build tool like [Snowpack](https://www.snowpack.dev/)
-you may also need to add addition JSX related configuration, e.g. [`"jsxFactory": "h"`](https://www.snowpack.dev/reference/configuration#buildoptionsjsxfactory) and
+you may also need to add JSX related configuration, e.g. [`"jsxFactory": "h"`](https://www.snowpack.dev/reference/configuration#buildoptionsjsxfactory) and
 [`"jsxFactory": "createFragment"`](https://www.snowpack.dev/reference/configuration#buildoptionsjsxfragment)
 
 [Demo Usage](https://github.com/fabiancook/fabiancook.dev)
