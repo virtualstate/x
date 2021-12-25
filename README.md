@@ -223,7 +223,7 @@ values that represents groups of output state, these groups need to be chopped u
 into workable sync units. 
 
 `union` does this by resolving in the best case all known iterators in under a single microtask,
-or at the works case, at least one iterator resolution. 
+or at the works case, at least one iterator resolution, after the microtask cut off point. 
 
 Using `union` a developer can treat a group of values with async iterators
 as single unit with all async resolution abstracted away to within.
