@@ -222,7 +222,7 @@ the returned type of `h(...).children` has an async iterator that produces
 values that represents groups of output state, these groups need to be chopped up
 into workable sync units. 
 
-`union` does this by resolving in the best case all known iterators in a single microtask,
+`union` does this by resolving in the best case all known iterators in under a single microtask,
 or at the works case, at least one iterator resolution. 
 
 Using `union` a developer can treat a group of values with async iterators
