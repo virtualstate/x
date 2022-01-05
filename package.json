@@ -29,6 +29,7 @@
     "version:patch": "lerna version patch --force-publish --yes",
     "version:minor": "lerna version minor --force-publish --yes",
     "version:major": "lerna version major --force-publish --yes",
+    "version:prerelease:next": "lerna version prerelease --preid=next --force-publish --yes",
     "examples:log": "yarn build && node packages/examples/lib/log.js",
     "examples:build": "yarn build && yarn examples:build:run && yarn build",
     "examples:build:run": "node packages/examples/lib/build.js",
