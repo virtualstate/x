@@ -833,6 +833,23 @@ export const _CH0001_ExampleInformation: ExampleInformation = {
       throw new Error("Not available");
     }
 }
+export const _CH0002_ExampleInformation: ExampleInformation = {
+    name: "ChildrenMap",
+    id: "CH0002",
+    exportedAs: "_CH0002_ChildrenMap",
+    source: "import {h, createFragment, VNode} from \"@virtualstate/fringe\";\n\nconst input: VNode = (\n  <>\n    <number value={1} />\n    <number value={2} />\n    <number value={3} />\n    <done />\n  </>\n)\n\nasync function Map() {\n  const iterations = await input.children[Symbol.asyncIterator]()\n    .map(children => children.map(child => {\n      if (!isNumber(child)) return child;\n      return {\n        ...child,\n        source: child.options.value,\n        scalar: true,\n        options: undefined\n      };\n    }))\n    .toArray();\n\n  console.log(iterations)\n\n  return iterations[iterations.length - 1];\n\n  function isNumber(value: VNode): value is VNode & { source: \"number\", options: { value: number } } {\n    return value.source === \"number\";\n  }\n}\nexport const _CH0002_ChildrenMap = <Map />;\nexport const _CH0002_URL = import.meta.url;\nexport const _CH0002_IsResolving = true;\n\n",
+    sourceURL: "file:///workspaces/x/packages/examples/lib/examples/children/map.js",
+    output: "import { h, createFragment } from \"@virtualstate/fringe\";\nconst input = (h(createFragment, null,\n    h(\"number\", { value: 1 }),\n    h(\"number\", { value: 2 }),\n    h(\"number\", { value: 3 }),\n    h(\"done\", null)));\nasync function Map() {\n    const iterations = await input.children[Symbol.asyncIterator]()\n        .map(children => children.map(child => {\n        if (!isNumber(child))\n            return child;\n        return {\n            ...child,\n            source: child.options.value,\n            scalar: true,\n            options: undefined\n        };\n    }))\n        .toArray();\n    console.log(iterations);\n    return iterations[iterations.length - 1];\n    function isNumber(value) {\n        return value.source === \"number\";\n    }\n}\nexport const _CH0002_ChildrenMap = h(Map, null);\nexport const _CH0002_URL = import.meta.url;\nexport const _CH0002_IsResolving = true;\n//# sourceMappingURL=map.js.map",
+    cleanerSource: "import {h, createFragment, VNode} from \"@virtualstate/fringe\";\n\nconst input: VNode = (\n  <>\n    <number value={1} />\n    <number value={2} />\n    <number value={3} />\n    <done />\n  </>\n)\n\nasync function Map() {\n  const iterations = await input.children[Symbol.asyncIterator]()\n    .map(children => children.map(child => {\n      if (!isNumber(child)) return child;\n      return {\n        ...child,\n        source: child.options.value,\n        scalar: true,\n        options: undefined\n      };\n    }))\n    .toArray();\n\n  console.log(iterations)\n\n  return iterations[iterations.length - 1];\n\n  function isNumber(value: VNode): value is VNode & { source: \"number\", options: { value: number } } {\n    return value.source === \"number\";\n  }\n}\nexport const Example = <Map />;",
+    structure: "<>\n  {1}\n  {2}\n  {3}\n  {\"done\"}\n</>",
+    info: undefined,
+    engineURL: undefined,
+    sourceInterfaceURL: undefined,
+    sourceInterface: undefined,
+    import: async (context?: Record<string, unknown>, state?: VNode): Promise<VNode> => {
+      throw new Error("Not available");
+    }
+}
 export const _CT0001_ExampleInformation: ExampleInformation = {
     name: "CompileTransform",
     id: "CT0001",

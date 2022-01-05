@@ -5,7 +5,8 @@ import {
   extendedIterable,
   isIterable,
   isIterableIterator,
-  isPromise
+  isPromise,
+  TC39AsyncIteratorHelpers
 } from "iterable";
 import { UnionInput, union, UnionOptions } from "@virtualstate/union";
 import type { CreateNodeFn } from "./create-node";
@@ -17,6 +18,11 @@ export interface VNodeChildren<N extends VNode = VNode> extends AsyncIterable<N[
    * @experimental
    */
   [Symbol.iterator]?(): Iterator<N>;
+
+  /**
+   * @experimental
+   */
+  [Symbol.asyncIterator](): AsyncIterator<N[]> & Partial<TC39AsyncIteratorHelpers<N[]>>;
 
   /**
    * @experimental

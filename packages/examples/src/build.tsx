@@ -142,6 +142,9 @@ async function recreate(node: VNode, root: boolean, known = new WeakMap<object, 
     if (typeof node.source === "string") {
       return node.source;
     }
+    if (typeof node.source === "number" || typeof node.source === "boolean") {
+      return `${node.source}`;
+    }
     if (typeof node.source === "undefined") {
       return typeof node.reference === "symbol" ? symbol(node.reference) : node.reference.toString();
     }

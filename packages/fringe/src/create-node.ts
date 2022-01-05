@@ -29,7 +29,9 @@ import {
   isPromise,
   asyncExtendedIterable,
   isIterableIterator,
-  getNext
+  getNext,
+  TC39AsyncIteratorHelpers,
+  TC39SyncIteratorHelpers
 } from "iterable";
 import {
   children as childrenGenerator,
@@ -584,25 +586,31 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
     // We will use this variable to store a static snapshot of our children, if they are available
     let flattenedInitial: VNode[];
     let flattened: VNode[];
-    const children: VNodeChildren = {
-      get [Symbol("@virtualstate/fringe/VNodeChildren/DebugFlattenedInitial")]() {
-        return flattenedInitial
-      },
-      get [Symbol("@virtualstate/fringe/VNodeChildren/DebugFlattened")]() {
-        return flattened;
-      },
-      async *[Symbol.asyncIterator]() {
-        if (isIterable<VNode[]>(children)) {
-          yield [...children];
-        } else {
-          return yield * children[ChildrenSourceFunction]();
-        }
-      },
-      [ChildrenSource]: source,
-      [ChildrenSourceFunction](this: unknown): AsyncIterable<VNode[]> {
-        return fn.call(this, flattenedInitial ?? source, getOptions.call(this) ?? { createNode });
-      },
-      get [Symbol.iterator]() {
+
+    class SyncChildrenIterator extends TC39SyncIteratorHelpers<VNode> implements Iterator<VNode> {
+
+      #iterator: Iterator<VNode>;
+
+      next(value) {
+        this.#iterator = this.#iterator ?? this[Symbol.iterator]();
+        return this.#iterator.next(value);
+      }
+
+      return(value) {
+        const iterator = this.#iterator;
+        this.#iterator = undefined;
+        return (iterator?.return(value)) ?? { done: true, value: undefined };
+      }
+
+      throw(reason) {
+        const iterator = this.#iterator;
+        this.#iterator = undefined;
+        const result = iterator?.throw(reason);
+        if (result) return result;
+        throw reason;
+      }
+
+      static getIterable() {
         if (!flattened) {
           if (!isIterable(source)) {
             flattened = [];
@@ -642,7 +650,74 @@ export function createNode(source?: Source, options?: Record<string, unknown> | 
         if (!flattened.length) {
           return undefined;
         }
-        return flattened[Symbol.iterator].bind(flattened)
+        return {
+          [Symbol.iterator]: flattened[Symbol.iterator].bind(flattened)
+        }
+      }
+
+      *[Symbol.iterator](): Iterator<VNode> {
+        yield * SyncChildrenIterator.getIterable();
+      }
+    }
+
+    class AsyncChildrenIterator extends TC39AsyncIteratorHelpers<VNode[]> implements AsyncIterator<VNode[]> {
+
+      #iterator: AsyncIterator<VNode[]>;
+
+      async next(value) {
+        this.#iterator = this.#iterator ?? this[Symbol.asyncIterator]();
+        return this.#iterator.next(value);
+      }
+
+      async return(value) {
+        const iterator = this.#iterator;
+        this.#iterator = undefined;
+        return (await iterator?.return(value)) ?? { done: true, value: undefined };
+      }
+
+      async throw(reason) {
+        const iterator = this.#iterator;
+        this.#iterator = undefined;
+        const result = await iterator?.throw(reason);
+        if (result) return result;
+        throw await Promise.reject(reason);
+      }
+
+      async *[Symbol.asyncIterator](): AsyncIterator<VNode[]> {
+        const iterable = SyncChildrenIterator.getIterable();
+        if (iterable) {
+          yield [...iterable];
+        } else {
+          return yield * children[ChildrenSourceFunction]();
+        }
+      }
+    }
+
+    const children: VNodeChildren = {
+      get [Symbol("@virtualstate/fringe/VNodeChildren/DebugFlattenedInitial")]() {
+        return flattenedInitial
+      },
+      get [Symbol("@virtualstate/fringe/VNodeChildren/DebugFlattened")]() {
+        return flattened;
+      },
+      [Symbol.asyncIterator]() {
+        // const iterable = SyncChildrenIterator.getIterable();
+        return new AsyncChildrenIterator();
+        // if (iterable) {
+        //   yield [...iterable];
+        // } else {
+        //   return yield * children[ChildrenSourceFunction]();
+        // }
+      },
+      [ChildrenSource]: source,
+      [ChildrenSourceFunction](this: unknown): AsyncIterable<VNode[]> {
+        return fn.call(this, flattenedInitial ?? source, getOptions.call(this) ?? { createNode });
+      },
+      get [Symbol.iterator]() {
+        const iterable = SyncChildrenIterator.getIterable();
+        if (!iterable) return undefined;
+        // const instance = new SyncChildrenIterator();
+        return () => new SyncChildrenIterator()[Symbol.iterator]();
       },
       then(resolve, reject) {
         return asyncChildren().then(resolve, reject);

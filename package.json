@@ -49,7 +49,7 @@
     "eslint": "^7.27.0",
     "filehound": "^1.17.4",
     "isomorphic-fetch": "^3.0.0",
-    "iterable": "^5.7.0",
+    "iterable": "^6.0.1-beta.5",
     "jest": "^26.6.3",
     "jest-coverage-badges": "^1.1.2",
     "jsdom": "^16.6.0",

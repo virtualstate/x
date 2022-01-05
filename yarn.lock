@@ -2136,6 +2136,11 @@
   resolved "https://registry.npmjs.org/@opennetwork/linked-list/-/linked-list-4.0.0.tgz#69e25d0b00387f00da91faea2a5b77897d920712"
   integrity sha512-aMEXPA0y3FZd5IlPPNVLHf5jxwNE9bo6d+5OgCsqZhRilftUuaytEnAS+7ggjiPekAtVDFl2okYROqtL3f02+g==
 
+"@opennetwork/linked-list@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.npmjs.org/@opennetwork/linked-list/-/linked-list-5.0.2.tgz#f037ffd01def851f217f890c6c0e03228e3e5f17"
+  integrity sha512-9okCEFDjIllv6XAUixhMBLytvll2e5i94TfRo4OuqjfMkFCiVSe0865Z5JVhPqNjFEWamo+EsxMC9o0Hkgg7eA==
+
 "@opennetwork/rdf-data-model@^6.2.0":
   version "6.2.0"
   resolved "https://registry.npmjs.org/@opennetwork/rdf-data-model/-/rdf-data-model-6.2.0.tgz#f30558caf52d693edcb8b1b807f6fa9abc6d047c"
@@ -5157,6 +5162,13 @@ iterable@^5.6.0, iterable@^5.7.0:
   version "5.7.0"
   resolved "https://registry.npmjs.org/iterable/-/iterable-5.7.0.tgz#6937296d3380c227f55fd5ca299e41a821d573f7"
   integrity sha512-xLERMG+ha4eAxSkms2iaJbjFW5V2uB8vFZVq6Kh+YwPax29IwMTdOIOoieeXOu6+nV0+xe82i2H346RLvsyigA==
+
+iterable@^6.0.1-beta.5:
+  version "6.0.1-beta.5"
+  resolved "https://registry.npmjs.org/iterable/-/iterable-6.0.1-beta.5.tgz#b351f47ac79ab82045cc10c6c2904fa199bb340a"
+  integrity sha512-s3a+atUlT7hzAZSr0hEmQW+M67SxdmK5cEOtLtw2EppELicp1Uv+Z0CWXMtu+6MoUFfl59wCwJQ6U7EeB5kTPQ==
+  dependencies:
+    "@opennetwork/linked-list" "^5.0.2"
 
 jest-changed-files@^26.6.2:
   version "26.6.2"
