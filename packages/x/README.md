@@ -1,4 +1,4 @@
-# [@virtualstate/x](http://npmjs.com/package/@virtualstate/x) 
+# [@virtualstate/x](http://npmjs.com/package/@virtualstate/x)
 
 > _Bring your own_ JavaScript tooling
 
@@ -12,24 +12,24 @@
 
 ## About
 
-`@virtualstate/x` (or vsx) provides baseline functionality to enable a wide range of 
-solutions for JavaScript based services, user interfaces, or scripts. 
+`@virtualstate/x` (or vsx) provides baseline functionality to enable a wide range of
+solutions for JavaScript based services, user interfaces, or scripts.
 
 The core module [`@virtualstate/fringe`](https://github.com/virtualstate/x/tree/main/packages/fringe) provides a `jsx` interface to enable developer
 driven definitions, workflows, transitions, and logic, while providing consistent
-a inline async resolution interface. 
+a inline async resolution interface.
 
-By default, all JavaScript patterns can be utilised within the base tooling, and 
-it is up to individual implementations to decide on finer details, for example 
+By default, all JavaScript patterns can be utilised within the base tooling, and
+it is up to individual implementations to decide on finer details, for example
 if your project needs copy node trees into a [web page's DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
-or if your individual component (or entire site?) could be rendered as a static string, 
+or if your individual component (or entire site?) could be rendered as a static string,
 these code paths will need to be decided on, as there is no one size fits all.
 
-> If you want to get started, fork or clone the 
+> If you want to get started, fork or clone the
 > [virtualstate.dev](https://github.com/virtualstate/virtualstate.dev)
-> repository for an already set up project. 
-> 
-> It utilises [@virtualstate/dom's render function](https://github.com/virtualstate/virtualstate.dev/blob/main/src/index.tsx#L22) to 
+> repository for an already set up project.
+>
+> It utilises [@virtualstate/dom's render function](https://github.com/virtualstate/virtualstate.dev/blob/main/src/index.tsx#L22) to
 > render a tree into the documents body in page, while also [doing the same in a prerender step](https://github.com/virtualstate/virtualstate.dev/blob/38bde3c370ebaf72b1a5ed1548f0f3a58ceb26c2/scripts/prerender.js#L47) to
 > allow for static loading of pages where JavaScript is not available.
 
@@ -43,7 +43,7 @@ There is a bunch of different examples available in [packages/examples](https://
 - [Node](#running-examples-with-node)
 - [npx](#running-examples-with-npx)
 
-### Running examples with Deno 
+### Running examples with Deno
 
 ```bash 
 deno run \                                                                                                                                                                                             *[main] 
@@ -70,7 +70,7 @@ npx @virtualstate/examples@^2.14.10
 
 ## [`h`](http://npmjs.com/package/@virtualstate/fringe)
 
-The `h` function provides [JSX](https://www.typescriptlang.org/docs/handbook/jsx.html) functionality to your code. 
+The `h` function provides [JSX](https://www.typescriptlang.org/docs/handbook/jsx.html) functionality to your code.
 
 If you are utilising TypeScript, in your `tsconfig.config.json` you will need to add to `compilerOptions` the
 keys `jsx`, `jsxFactory`, and `jsxFragmentFactory`:
@@ -110,15 +110,15 @@ export async function InitialExample() {
     <div class="output">
       <h3>
         This is an example of various
-        capabilities of this pattern
-      </h3>
-      <pre>
-        <Loading>
-          <AsyncExample />
-        </Loading>
-      </pre>
-    </div>
-  )
+  capabilities of this pattern
+  </h3>
+  <pre>
+  <Loading>
+    <AsyncExample />
+  </Loading>
+  </pre>
+  </div>
+)
 }
 ```
 
@@ -152,9 +152,9 @@ Any scalar nodes with `h` that have children can be read using `for await`
 
 > Psst, new documentation is expected here [completely static nodes can be read in a completely static way]()
 > however this is a bit more specific to use
-> 
+>
 > An example of this can be found at [packages/examples/static](https://github.com/virtualstate/x/blob/a450413207532f8202279bd6a032a2a89df68940/packages/examples/src/examples/static/static.tsx#L16)
-> where `children` is accessed like `const [thread, spikeyCactus, cactus, scroll] = node.children;` 
+> where `children` is accessed like `const [thread, spikeyCactus, cactus, scroll] = node.children;`
 
 ```typescript
 
@@ -220,10 +220,10 @@ for await (const results of children) {
 Union provides direct async resolution of multiple async iterators, for example
 the returned type of `h(...).children` has an async iterator that produces
 values that represents groups of output state, these groups need to be chopped up
-into workable sync units. 
+into workable sync units.
 
 `union` does this by resolving in the best case all known iterators in under a single microtask,
-or at the works case, at least one iterator resolution, after the microtask cut off point. 
+or at the works case, at least one iterator resolution, after the microtask cut off point.
 
 Using `union` a developer can treat a group of values with async iterators
 as single unit with all async resolution abstracted away to within.
@@ -283,7 +283,7 @@ Interested in talking more about the project? Find us on [Discord](https://disco
 
 Please see [Contributing](./CONTRIBUTING.md)
 
-## Code of Conduct 
+## Code of Conduct
 
 This project and everyone participating in it is governed by the [Code of Conduct listed here](./CODE-OF-CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [conduct@fabiancook.dev](mailto:conduct@fabiancook.dev).
 
