@@ -239,7 +239,11 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
     const nextIterator = iteratorAvailable.promise;
 
     if (!pendingIterators.length) {
-      await nextIterator;
+      // If our iterators complete while we are waiting for our next iterator,
+      await Promise.any([
+        nextIterator,
+        iteratorsComplete.promise
+      ]);
       return waitForResult(iteration);
     }
 
