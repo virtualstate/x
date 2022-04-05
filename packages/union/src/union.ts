@@ -223,17 +223,17 @@ export async function *union<T>(source: UnionInput<T>, options: UnionOptions = {
       return [];
     }
 
-    if (iteratorsDone && !knownIterators.length) {
-      // No lanes to do anything, exit
-      return [];
-    }
-
     if (errors.length) {
       // We have a problem, exit
       return [];
     }
 
     const pendingIterators = filter(knownIterators, iterator => !read(iterator)?.done);
+
+    if (iteratorsDone && !pendingIterators.length) {
+      // No lanes to do anything, exit
+      return [];
+    }
 
     // Grab onto this promise early so we don't miss one
     const nextIterator = iteratorAvailable.promise;
