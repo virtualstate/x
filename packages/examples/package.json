@@ -1,6 +1,6 @@
 {
   "name": "@virtualstate/examples",
-  "version": "2.47.5",
+  "version": "2.48.0",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -20,11 +20,11 @@
   ],
   "dependencies": {
     "@opennetwork/rdf-data-model": "^6.2.0",
-    "@virtualstate/fringe": "^2.47.5",
-    "@virtualstate/hooks": "^2.47.5",
-    "@virtualstate/hooks-extended": "^2.47.5",
-    "@virtualstate/union": "^2.47.5",
-    "@virtualstate/x": "^2.47.5",
+    "@virtualstate/fringe": "^2.48.0",
+    "@virtualstate/hooks": "^2.48.0",
+    "@virtualstate/hooks-extended": "^2.48.0",
+    "@virtualstate/union": "^2.48.0",
+    "@virtualstate/x": "^2.48.0",
     "iterable": "^5.6.0",
     "microtask-collector": "^3.1.0"
   },
